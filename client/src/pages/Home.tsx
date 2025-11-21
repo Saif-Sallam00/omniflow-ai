@@ -3,7 +3,7 @@ import { ArrowRight, Check, Sparkles, Zap, Shield, TrendingUp, Code, Bot, BarCha
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useI18n } from '@/lib/i18n';
-import heroImage from '@assets/generated_images/hero_workspace_collaboration_scene.png';
+import heroImage from '@assets/generated_images/hero_workspace_collaboration_scene.png'; // Kept for potential fallback, though unused in new hero
 import dashboardImage from '@assets/generated_images/website_dashboard_mockup_showcase.png';
 import aiImage from '@assets/generated_images/ai_automation_visual_concept.png';
 
@@ -99,34 +99,42 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
-      <section className="relative min-h-[700px] flex items-center overflow-hidden pt-20">
+      {/* HERO SECTION START - Updated Design */}
+      <section className="relative min-h-[80vh] flex items-center overflow-hidden pt-20 bg-background">
+
+        {/* Abstract Tech Background Layer */}
         <div className="absolute inset-0 z-0">
-          <img
-            src={heroImage}
-            alt="Modern workspace"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-background/60"></div>
+          {/* Dark gradient base */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-background to-background"></div>
+
+          {/* Grid Pattern Overlay - Creating the 'Web Dev' look */}
+          <div className="absolute inset-0" style={{ 
+            backgroundImage: 'radial-gradient(circle at 1px 1px, var(--border) 1px, transparent 0)',
+            backgroundSize: '40px 40px',
+            opacity: 0.4
+          }}></div>
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 py-24">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8">
-              <div className="space-y-4">
-                <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold font-display leading-tight">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+
+            {/* Left Content: Headline & CTA - Adjusted width to col-span-7 */}
+            <div className="lg:col-span-7 space-y-8">
+              <div className="space-y-6">
+                <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold font-display leading-[1.1] tracking-tight">
                   {t('hero.title')}
-                  <span className="block bg-gradient-to-r from-primary to-chart-2 bg-clip-text text-transparent">
+                  <span className="block text-primary mt-2">
                     {t('hero.subtitle')}
                   </span>
                 </h1>
-                <p className="text-xl md:text-2xl text-muted-foreground font-medium">
+                <p className="text-xl md:text-2xl text-muted-foreground font-light max-w-2xl leading-relaxed">
                   {t('hero.description')}
                 </p>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link href="/contact">
-                  <Button size="lg" className="text-lg px-8 py-6" data-testid="button-hero-cta">
+                  <Button size="lg" className="text-lg px-8 py-6 h-auto shadow-xl shadow-primary/20" data-testid="button-hero-cta">
                     {t('hero.cta')}
                     <ArrowRight className={`w-5 h-5 ${isRTL ? 'mr-2' : 'ml-2'}`} />
                   </Button>
@@ -135,7 +143,7 @@ export default function Home() {
                   <Button
                     size="lg"
                     variant="outline"
-                    className="text-lg px-8 py-6 bg-background/50 backdrop-blur-sm"
+                    className="text-lg px-8 py-6 h-auto bg-background/60 backdrop-blur-sm border-primary/20 hover:bg-primary/5"
                     data-testid="button-hero-secondary"
                   >
                     {t('hero.cta.secondary')}
@@ -143,14 +151,45 @@ export default function Home() {
                 </Link>
               </div>
 
-              <p className="text-sm text-muted-foreground flex items-center gap-2">
-                <Check className="w-5 h-5 text-chart-2" />
-                {t('hero.trust')}
-              </p>
+              <div className="flex items-center gap-4 pt-4 text-sm font-medium text-muted-foreground">
+                <div className="flex -space-x-2">
+                   {/* Simulated user avatars for social proof */}
+                   <div className="w-8 h-8 rounded-full border-2 border-background bg-slate-300"></div>
+                   <div className="w-8 h-8 rounded-full border-2 border-background bg-slate-400"></div>
+                   <div className="w-8 h-8 rounded-full border-2 border-background bg-slate-500"></div>
+                </div>
+                <p className="flex items-center gap-2">
+                  <span className="text-primary">★★★★★</span>
+                  {t('hero.trust')}
+                </p>
+              </div>
             </div>
+
+            {/* Right Content: Visual Element - Floating Dashboard */}
+            <div className="lg:col-span-5 hidden lg:block relative">
+                <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-border/50 bg-card/50 backdrop-blur-xl p-2 rotate-1 hover:rotate-0 transition-transform duration-500">
+                    <img 
+                        src={dashboardImage} 
+                        alt="Dashboard Preview" 
+                        className="rounded-xl w-full h-auto opacity-95"
+                    />
+                    {/* Floating Stats Card */}
+                    <div className="absolute -bottom-6 -left-6 bg-background p-4 rounded-xl shadow-xl border border-border flex items-center gap-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                        <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                            <TrendingUp className="w-6 h-6" />
+                        </div>
+                        <div>
+                            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Growth</p>
+                            <p className="font-bold text-xl">+240%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
           </div>
         </div>
       </section>
+      {/* HERO SECTION END */}
 
       <section className="py-24 bg-card">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
