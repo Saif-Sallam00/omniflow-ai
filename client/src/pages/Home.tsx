@@ -3,7 +3,10 @@ import { ArrowRight, Check, Sparkles, Zap, Shield, TrendingUp, Code, Bot, BarCha
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useI18n } from '@/lib/i18n';
-import heroImage from '@assets/generated_images/hero_workspace_collaboration_scene.png'; // Kept for potential fallback, though unused in new hero
+// Import the new background image. 
+// Note: Ensure the file is actually named 'background.png.png' in your assets folder. 
+// If it is just 'background.png', remove the second .png
+import heroBg from '@/assets/background.png.png'; 
 import dashboardImage from '@assets/generated_images/website_dashboard_mockup_showcase.png';
 import aiImage from '@assets/generated_images/ai_automation_visual_concept.png';
 
@@ -99,26 +102,24 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
-      {/* HERO SECTION START - Updated Design */}
+      {/* HERO SECTION START - Updated with new Background Image */}
       <section className="relative min-h-[80vh] flex items-center overflow-hidden pt-20 bg-background">
 
-        {/* Abstract Tech Background Layer */}
+        {/* Background Image Layer */}
         <div className="absolute inset-0 z-0">
-          {/* Dark gradient base */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-background to-background"></div>
-
-          {/* Grid Pattern Overlay - Creating the 'Web Dev' look */}
-          <div className="absolute inset-0" style={{ 
-            backgroundImage: 'radial-gradient(circle at 1px 1px, var(--border) 1px, transparent 0)',
-            backgroundSize: '40px 40px',
-            opacity: 0.4
-          }}></div>
+          <img 
+            src={heroBg} 
+            alt="Hero Background" 
+            className="w-full h-full object-cover"
+          />
+          {/* Overlay to ensure text readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-background/40"></div>
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 py-24">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
 
-            {/* Left Content: Headline & CTA - Adjusted width to col-span-7 */}
+            {/* Left Content: Headline & CTA */}
             <div className="lg:col-span-7 space-y-8">
               <div className="space-y-6">
                 <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold font-display leading-[1.1] tracking-tight">
