@@ -45,6 +45,18 @@
   --chart-3: 271 81% 56%;
   --chart-4: 24 100% 50%;
   --chart-5: 340 82% 52%;
+
+  /* Modern Tech Colors */
+  --tech-cyan: 189 94% 43%;
+  --tech-purple: 271 81% 65%;
+  --tech-pink: 330 81% 60%;
+  --tech-blue: 217 91% 60%;
+
+  /* Glass Effect */
+  --glass: 0 0% 100%;
+  --glass-foreground: 0 0% 10%;
+  --glass-border: 0 0% 90%;
+
   --font-sans: Open Sans, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: Menlo, monospace;
@@ -60,7 +72,7 @@
   --tracking-normal: 0em;
   --spacing: 0.25rem;
 
-/* Fallback for older browsers */
+  /* Fallback for older browsers */
   --sidebar-primary-border: hsl(var(--sidebar-primary));
   --sidebar-primary-border: hsl(from hsl(var(--sidebar-primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
 
@@ -129,6 +141,18 @@
   --chart-3: 271 81% 75%;
   --chart-4: 24 100% 65%;
   --chart-5: 340 82% 70%;
+
+  /* Modern Tech Colors - brighter in dark mode */
+  --tech-cyan: 189 94% 53%;
+  --tech-purple: 271 81% 70%;
+  --tech-pink: 330 81% 65%;
+  --tech-blue: 217 91% 65%;
+
+  /* Glass Effect - darker in dark mode */
+  --glass: 0 0% 10%;
+  --glass-foreground: 0 0% 95%;
+  --glass-border: 0 0% 20%;
+
   --shadow-2xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.00);
   --shadow-xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.00);
   --shadow-sm: 0px 2px 0px 0px hsl(0 0% 0% / 0.00), 0px 1px 2px -1px hsl(0 0% 0% / 0.00);
@@ -138,7 +162,7 @@
   --shadow-xl: 0px 2px 0px 0px hsl(0 0% 0% / 0.00), 0px 8px 10px -1px hsl(0 0% 0% / 0.00);
   --shadow-2xl: 0px 2px 0px 0px hsl(0 0% 0% / 0.00);
 
-/* Fallback for older browsers */
+  /* Fallback for older browsers */
   --sidebar-primary-border: hsl(var(--sidebar-primary));
   --sidebar-primary-border: hsl(from hsl(var(--sidebar-primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
 
@@ -174,6 +198,11 @@
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
   }
 }
 
@@ -286,5 +315,149 @@
   .border.active-elevate-2:not(.no-active-interaction-elevate)::after,
   .border.hover-elevate:not(.no-hover-interaction-elevate)::after {
     inset: -1px;
+  }
+
+  /* ============================================ */
+  /* MODERN TECH UTILITIES */
+  /* ============================================ */
+
+  /* Glassmorphism effect */
+  .glass {
+    background: hsl(var(--glass) / 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid hsl(var(--glass-border) / 0.5);
+  }
+
+  .glass-strong {
+    background: hsl(var(--glass) / 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid hsl(var(--glass-border) / 0.7);
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    background: linear-gradient(135deg, hsl(var(--tech-cyan)), hsl(var(--tech-purple)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-text-alt {
+    background: linear-gradient(135deg, hsl(var(--tech-blue)), hsl(var(--tech-pink)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Animated gradient backgrounds */
+  .gradient-animated {
+    background: linear-gradient(135deg, hsl(var(--tech-cyan)), hsl(var(--tech-purple)), hsl(var(--tech-pink)));
+    background-size: 200% 200%;
+    animation: gradient-shift 3s ease infinite;
+  }
+
+  /* Glow effects */
+  .glow-cyan {
+    box-shadow: 0 0 20px hsl(var(--tech-cyan) / 0.5);
+  }
+
+  .glow-purple {
+    box-shadow: 0 0 20px hsl(var(--tech-purple) / 0.5);
+  }
+
+  .glow-blue {
+    box-shadow: 0 0 20px hsl(var(--tech-blue) / 0.5);
+  }
+
+  /* Hover glow */
+  .hover-glow-cyan {
+    transition: box-shadow 0.3s ease;
+  }
+
+  .hover-glow-cyan:hover {
+    box-shadow: 0 0 30px hsl(var(--tech-cyan) / 0.6);
+  }
+
+  .hover-glow-purple:hover {
+    box-shadow: 0 0 30px hsl(var(--tech-purple) / 0.6);
+  }
+
+  /* Card hover effects */
+  .card-hover {
+    transition: all 0.3s ease;
+  }
+
+  .card-hover:hover {
+    transform: translateY(-4px);
+  }
+
+  /* Mesh gradient background */
+  .mesh-bg {
+    background: 
+      radial-gradient(at 40% 20%, hsl(var(--tech-cyan) / 0.3) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, hsl(var(--tech-purple) / 0.3) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, hsl(var(--tech-blue) / 0.3) 0px, transparent 50%),
+      radial-gradient(at 80% 50%, hsl(var(--tech-pink) / 0.2) 0px, transparent 50%);
+  }
+
+  /* Border gradient */
+  .border-gradient {
+    border: 2px solid transparent;
+    background: linear-gradient(hsl(var(--background)), hsl(var(--background))) padding-box,
+                linear-gradient(135deg, hsl(var(--tech-cyan)), hsl(var(--tech-purple))) border-box;
+  }
+
+  /* Smooth transitions */
+  .transition-smooth {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Code block styling */
+  .code-block {
+    @apply bg-muted/50 border border-border rounded-lg p-4 font-mono text-sm;
+    overflow-x: auto;
+  }
+
+  /* Service card style */
+  .service-card {
+    @apply glass rounded-xl p-6 card-hover border-gradient;
+  }
+
+  /* CTA button with gradient */
+  .cta-gradient {
+    @apply bg-gradient-to-r from-tech-cyan to-tech-purple text-white font-semibold;
+    @apply hover:shadow-neon-cyan transition-all duration-300;
+  }
+
+  /* Subtle animation on scroll */
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Tech grid pattern */
+  .tech-grid {
+    background-image: 
+      linear-gradient(hsl(var(--border) / 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border) / 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+
+  /* Floating animation helper */
+  .float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  /* Pulse glow */
+  .pulse-glow {
+    animation: glow 2s ease-in-out infinite;
   }
 }
