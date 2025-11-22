@@ -73,6 +73,15 @@ const translations = {
     'contact.error': 'Something went wrong. Please try again.',
     'footer.tagline': 'Transform your business with custom websites and AI-powered automation.',
     'footer.rights': '© 2024 OmniflowAI. All rights reserved.',
+    'split.brand.title': 'Elevate Your Brand',
+    'split.brand.subtitle': 'For Legal, Medical & Creative Professionals',
+    'split.brand.desc': 'Bespoke websites that build trust, authority, and distinct market presence.',
+    'split.brand.cta': 'View Design Services',
+
+    'split.tech.title': 'Automate Your Business',
+    'split.tech.subtitle': 'For SMBs, Real Estate & Enterprise',
+    'split.tech.desc': 'Scalable ERP systems, AI agents, and workflow automation to multiply your revenue.',
+    'split.tech.cta': 'Explore Automation',
   },
   ar: {
     'nav.home': 'الرئيسية',
@@ -135,6 +144,15 @@ const translations = {
     'contact.error': 'حدث خطأ ما. يرجى المحاولة مرة أخرى.',
     'footer.tagline': 'حول عملك بمواقع مخصصة وأتمتة مدعومة بالذكاء الاصطناعي.',
     'footer.rights': '© 2024 OmniflowAI. جميع الحقوق محفوظة.',
+    'split.brand.title': 'ارتقِ بعلامتك التجارية',
+    'split.brand.subtitle': 'للمحامين والأطباء والمبدعين',
+    'split.brand.desc': 'مواقع إلكترونية مصممة خصيصاً لبناء الثقة والهيبة والحضور المميز في السوق.',
+    'split.brand.cta': 'تصفح خدمات التصميم',
+
+    'split.tech.title': 'أتمتة أعمالك',
+    'split.tech.subtitle': 'للشركات الصغيرة والمتوسطة والعقارات',
+    'split.tech.desc': 'أنظمة ERP قابلة للتوسع، ووكلاء ذكاء اصطناعي، وأتمتة سير العمل لمضاعفة أرباحك.',
+    'split.tech.cta': 'اكتشف حلول الأتمتة',
   },
 };
 
