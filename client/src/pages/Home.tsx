@@ -7,6 +7,7 @@ import { useI18n } from '@/lib/i18n';
 // Note: Ensure the file is actually named 'background.png.png' in your assets folder. 
 // If it is just 'background.png', remove the second .png
 import heroBg from '@/assets/background.png.png'; 
+import dashboardImage from '@assets/generated_images/website_dashboard_mockup_showcase.png';
 import aiImage from '@assets/generated_images/ai_automation_visual_concept.png';
 
 export default function Home() {
@@ -58,6 +59,18 @@ export default function Home() {
   ];
 
   const portfolioProjects = [
+    {
+      title: 'Luxury Real Estate Platform',
+      client: 'Premium Properties Inc.',
+      result: '+250% lead generation',
+      image: dashboardImage,
+    },
+    {
+      title: 'Beauty Center Booking System',
+      client: 'Elegance Spa & Beauty',
+      result: '+180% online bookings',
+      image: dashboardImage,
+    },
     {
       title: 'AI-Powered Customer Service',
       client: 'TechCorp Solutions',
@@ -192,6 +205,14 @@ export default function Home() {
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className={`order-2 lg:order-1 ${isRTL ? 'lg:order-2' : ''}`}>
+              <img
+                src={dashboardImage}
+                alt="Website dashboard"
+                className="rounded-xl shadow-lg w-full"
+                data-testid="img-service-spotlight"
+              />
+            </div>
 
             <div className={`order-1 lg:order-2 space-y-6 ${isRTL ? 'lg:order-1' : ''}`}>
               <h2 className="text-4xl md:text-5xl font-bold font-display">
