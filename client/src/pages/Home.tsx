@@ -7,7 +7,6 @@ import { useI18n } from '@/lib/i18n';
 // Note: Ensure the file is actually named 'background.png.png' in your assets folder. 
 // If it is just 'background.png', remove the second .png
 import heroBg from '@/assets/background.png.png'; 
-import dashboardImage from '@assets/generated_images/website_dashboard_mockup_showcase.png';
 import aiImage from '@assets/generated_images/ai_automation_visual_concept.png';
 
 export default function Home() {
@@ -59,18 +58,6 @@ export default function Home() {
   ];
 
   const portfolioProjects = [
-    {
-      title: 'Luxury Real Estate Platform',
-      client: 'Premium Properties Inc.',
-      result: '+250% lead generation',
-      image: dashboardImage,
-    },
-    {
-      title: 'Beauty Center Booking System',
-      client: 'Elegance Spa & Beauty',
-      result: '+180% online bookings',
-      image: dashboardImage,
-    },
     {
       title: 'AI-Powered Customer Service',
       client: 'TechCorp Solutions',
@@ -165,28 +152,6 @@ export default function Home() {
                 </p>
               </div>
             </div>
-
-            {/* Right Content: Visual Element - Floating Dashboard */}
-            <div className="lg:col-span-5 hidden lg:block relative">
-                <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-border/50 bg-card/50 backdrop-blur-xl p-2 rotate-1 hover:rotate-0 transition-transform duration-500">
-                    <img 
-                        src={dashboardImage} 
-                        alt="Dashboard Preview" 
-                        className="rounded-xl w-full h-auto opacity-95"
-                    />
-                    {/* Floating Stats Card */}
-                    <div className="absolute -bottom-6 -left-6 bg-background p-4 rounded-xl shadow-xl border border-border flex items-center gap-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                        <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-green-600">
-                            <TrendingUp className="w-6 h-6" />
-                        </div>
-                        <div>
-                            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Growth</p>
-                            <p className="font-bold text-xl">+240%</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
           </div>
         </div>
       </section>
@@ -227,14 +192,6 @@ export default function Home() {
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className={`order-2 lg:order-1 ${isRTL ? 'lg:order-2' : ''}`}>
-              <img
-                src={dashboardImage}
-                alt="Website dashboard"
-                className="rounded-xl shadow-lg w-full"
-                data-testid="img-service-spotlight"
-              />
-            </div>
 
             <div className={`order-1 lg:order-2 space-y-6 ${isRTL ? 'lg:order-1' : ''}`}>
               <h2 className="text-4xl md:text-5xl font-bold font-display">
