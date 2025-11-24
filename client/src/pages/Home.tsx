@@ -8,15 +8,19 @@ import aiImage from '@assets/generated_images/ai_automation_visual_concept.png';
 export default function Home() {
   const { t, isRTL } = useI18n();
 
-  // Updated Partners List with Fixed URLs
-  const partners = [
+  const partners = [  // Updated Partners List with Verified Official Assets
+
     { 
       name: "Shopify", 
       logo: "https://cdn.worldvectorlogo.com/logos/shopify.svg" 
     },
     { 
       name: "n8n", 
-      logo: "https://upload.wikimedia.org/wikipedia/commons/5/53/N8n-logo-new.svg" 
+      logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/n8n.svg" 
+    },
+    { 
+      name: "Zapier",
+      logo: "https://upload.wikimedia.org/wikipedia/commons/f/fd/Zapier_logo.svg" 
     },
     { 
       name: "ERPNext", 
@@ -24,7 +28,7 @@ export default function Home() {
     },
     { 
       name: "WhatsApp", 
-      logo: "https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
+      logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/whatsapp.svg" 
     },
     { 
       name: "Facebook", 
@@ -106,17 +110,19 @@ export default function Home() {
 
         <div className="flex w-max animate-scroll gap-24 items-center group-hover:[animation-play-state:paused]">
           {scrollingPartners.map((partner, index) => (
-            <div key={index} className="flex flex-col items-center justify-center gap-3 min-w-[100px] transition-transform duration-300 hover:scale-110 cursor-default">
-              {/* Logo Image - Full Color */}
-              <div className="h-12 flex items-center justify-center">
+            <div key={index} className="flex flex-col items-center justify-center gap-6 min-w-[180px] transition-transform duration-300 hover:scale-105 cursor-default">
+
+              {/* Logo Image - Full Color, Increased size for better visibility */}
+              <div className="h-20 w-full flex items-center justify-center">
                 <img 
                   src={partner.logo} 
                   alt={partner.name} 
-                  className="h-full w-auto object-contain max-h-10 drop-shadow-sm"
+                  className="h-full w-auto object-contain max-h-16 drop-shadow-sm"
                 />
               </div>
-              {/* Partner Name Below */}
-              <span className="text-sm font-medium text-slate-500 font-display tracking-wide">
+
+              {/* RESTORED TEXT STYLE FROM PREVIOUS REQUEST */}
+              <span className="text-2xl font-bold font-display text-slate-800 tracking-tight text-center">
                 {partner.name}
               </span>
             </div>
