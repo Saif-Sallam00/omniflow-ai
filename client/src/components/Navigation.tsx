@@ -3,6 +3,8 @@ import { Link, useLocation } from 'wouter';
 import { Menu, X, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useI18n } from '@/lib/i18n';
+// Import the logo file - Ensure omniflowlogo.jpg is in client/src/assets/
+import logo from '@/assets/omniflowlogo.jpg';
 
 export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -39,8 +41,14 @@ export function Navigation() {
       <div className="max-w-7xl mx-auto px-6 md:px-8">
         <div className="flex items-center justify-between h-20">
           <Link href="/" data-testid="link-home">
-            <span className="flex items-center gap-2 hover-elevate active-elevate-2 rounded-md px-3 py-2 -ml-3 cursor-pointer">
-              <span className="text-2xl font-bold font-display bg-gradient-to-r from-primary to-chart-2 bg-clip-text text-transparent">
+            <span className="flex items-center gap-3 hover-elevate active-elevate-2 rounded-md px-3 py-2 -ml-3 cursor-pointer">
+              {/* LOGO IMAGE ADDED HERE */}
+              <img 
+                src={logo} 
+                alt="OmniflowAI Logo" 
+                className="h-8 w-8 rounded-full object-cover border border-slate-200" 
+              />
+              <span className="text-2xl font-bold font-display text-slate-900 tracking-tight">
                 OmniflowAI
               </span>
             </span>
@@ -71,7 +79,7 @@ export function Navigation() {
             >
               <Globe className="w-5 h-5" />
             </Button>
-            <Button asChild data-testid="button-cta-nav">
+            <Button asChild data-testid="button-cta-nav" className="bg-slate-900 text-white hover:bg-slate-800">
               <Link href="/contact">
                 {t('hero.cta.secondary')}
               </Link>
@@ -115,7 +123,7 @@ export function Navigation() {
                 <Globe className="w-4 h-4 mr-2" />
                 {language === 'en' ? 'العربية' : 'English'}
               </Button>
-              <Button asChild size="sm" className="flex-1" onClick={() => setIsMobileMenuOpen(false)}>
+              <Button asChild size="sm" className="flex-1 bg-slate-900 text-white" onClick={() => setIsMobileMenuOpen(false)}>
                 <Link href="/contact">
                   {t('hero.cta.secondary')}
                 </Link>

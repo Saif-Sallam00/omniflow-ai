@@ -1,5 +1,6 @@
 import { Link } from 'wouter';
 import { useI18n } from '@/lib/i18n';
+import logo from '@/assets/omniflowlogo.jpg';
 
 export function Footer() {
   const { t } = useI18n();
@@ -9,10 +10,18 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-6 md:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
           <div>
-            <h3 className="text-2xl font-bold font-display mb-4 bg-gradient-to-r from-primary to-chart-2 bg-clip-text text-transparent">
-              OmniflowAI
-            </h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
+            {/* LOGO IN FOOTER */}
+            <div className="flex items-center gap-3 mb-4">
+              <img 
+                src={logo} 
+                alt="OmniflowAI Logo" 
+                className="h-8 w-8 rounded-full object-cover border border-slate-200" 
+              />
+              <h3 className="text-2xl font-bold font-display text-slate-900">
+                OmniflowAI
+              </h3>
+            </div>
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
               {t('footer.tagline')}
             </p>
           </div>
