@@ -5,6 +5,7 @@ export default {
   content: ["./client/index.html", "./client/src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      // ... keep existing radii/colors ...
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
@@ -26,7 +27,7 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary) / <alpha-value>)",
           foreground: "hsl(var(--primary-foreground) / <alpha-value>)",
-          border: "var(--primary-border)", // Using direct CSS var
+          border: "var(--primary-border)",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary) / <alpha-value>)",
@@ -58,7 +59,6 @@ export default {
           "4": "hsl(var(--chart-4) / <alpha-value>)",
           "5": "hsl(var(--chart-5) / <alpha-value>)",
         },
-        // Sidebar colors kept for compatibility
         sidebar: {
           DEFAULT: "hsl(var(--sidebar) / <alpha-value>)",
           foreground: "hsl(var(--sidebar-foreground) / <alpha-value>)",
@@ -72,7 +72,7 @@ export default {
       },
       fontFamily: {
         sans: ["Inter", "var(--font-sans)"],
-        display: ["Space Grotesk", "Inter", "sans-serif"], // Ensure display font is widely available
+        display: ["Space Grotesk", "Inter", "sans-serif"],
         serif: ["var(--font-serif)"],
         mono: ["var(--font-mono)"],
       },
@@ -85,16 +85,21 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        // Add a subtle float animation for your hero images
         float: {
           '0%, 100%': { transform: 'translateY(0)' },
           '50%': { transform: 'translateY(-10px)' },
-        }
+        },
+        // New scroll animation for the logo ticker
+        scroll: {
+          to: { transform: "translate(calc(-50% - 0.5rem))" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "float": "float 6s ease-in-out infinite", // Slow float for hero images
+        "float": "float 6s ease-in-out infinite",
+        // Scroll takes 40s to loop - adjust for speed
+        "scroll": "scroll 40s linear infinite",
       },
     },
   },

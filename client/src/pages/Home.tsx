@@ -1,5 +1,5 @@
 import { Link } from 'wouter';
-import { ArrowRight, Sparkles, Zap, Palette, Settings, BarChart3, Globe, Database, Bot } from 'lucide-react';
+import { ArrowRight, Sparkles, Zap, Palette, Settings, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useI18n } from '@/lib/i18n';
 import dashboardImage from '@assets/generated_images/website_dashboard_mockup_showcase.png';
@@ -7,6 +7,37 @@ import aiImage from '@assets/generated_images/ai_automation_visual_concept.png';
 
 export default function Home() {
   const { t, isRTL } = useI18n();
+
+  // Updated Partners List with Fixed URLs
+  const partners = [
+    { 
+      name: "Shopify", 
+      logo: "https://cdn.worldvectorlogo.com/logos/shopify.svg" 
+    },
+    { 
+      name: "n8n", 
+      logo: "https://upload.wikimedia.org/wikipedia/commons/5/53/N8n-logo-new.svg" 
+    },
+    { 
+      name: "ERPNext", 
+      logo: "https://upload.wikimedia.org/wikipedia/commons/9/95/Erpnext_logo.svg" 
+    },
+    { 
+      name: "WhatsApp", 
+      logo: "https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
+    },
+    { 
+      name: "Facebook", 
+      logo: "https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" 
+    },
+    { 
+      name: "Instagram", 
+      logo: "https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" 
+    },
+  ];
+
+  // Duplicate list for seamless infinite scroll
+  const scrollingPartners = [...partners, ...partners];
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -35,13 +66,12 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Decorative BG Element for "Brand" side */}
+          {/* Decorative BG Element */}
           <div className="absolute bottom-0 right-0 w-full h-1/3 bg-gradient-to-t from-slate-100/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
         </div>
 
         {/* RIGHT DOOR: The Engine (Automation/Tech) */}
         <div className="relative group overflow-hidden bg-[#0F172A] text-white flex flex-col justify-center p-8 md:p-16 lg:p-24 transition-all duration-500 hover:bg-[#020617]">
-          {/* Abstract Tech Background */}
           <div className="absolute inset-0 opacity-20">
              <div className="absolute right-[-20%] top-[-20%] w-[600px] h-[600px] bg-blue-600/30 rounded-full blur-[120px]" />
              <div className="absolute left-[-10%] bottom-[-10%] w-[400px] h-[400px] bg-indigo-500/20 rounded-full blur-[100px]" />
@@ -68,22 +98,35 @@ export default function Home() {
         </div>
       </section>
 
-      {/* === TRUST SECTION (Unified) === */}
-      <div className="border-y border-slate-100 bg-white py-12">
-        <div className="max-w-7xl mx-auto px-6 flex flex-wrap justify-center gap-8 md:gap-16 opacity-60 grayscale">
-           {/* Placeholder Logos - Ideally replace with SVG logos of "Salesforce", "HubSpot", "Shopify" etc. */}
-           <div className="text-xl font-bold font-display text-slate-400">SHOPIFY</div>
-           <div className="text-xl font-bold font-display text-slate-400">WORDPRESS</div>
-           <div className="text-xl font-bold font-display text-slate-400">HUBSPOT</div>
-           <div className="text-xl font-bold font-display text-slate-400">SALESFORCE</div>
-           <div className="text-xl font-bold font-display text-slate-400">STRIPE</div>
+      {/* === TECH PARTNERS MARQUEE (Infinite Scroll) === */}
+      <div className="border-y border-slate-100 bg-white py-16 overflow-hidden relative group">
+        {/* Fade edges for smooth look */}
+        <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+
+        <div className="flex w-max animate-scroll gap-24 items-center group-hover:[animation-play-state:paused]">
+          {scrollingPartners.map((partner, index) => (
+            <div key={index} className="flex flex-col items-center justify-center gap-3 min-w-[100px] transition-transform duration-300 hover:scale-110 cursor-default">
+              {/* Logo Image - Full Color */}
+              <div className="h-12 flex items-center justify-center">
+                <img 
+                  src={partner.logo} 
+                  alt={partner.name} 
+                  className="h-full w-auto object-contain max-h-10 drop-shadow-sm"
+                />
+              </div>
+              {/* Partner Name Below */}
+              <span className="text-sm font-medium text-slate-500 font-display tracking-wide">
+                {partner.name}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
 
       {/* === SEGMENTED SERVICES OVERVIEW === */}
       <section className="py-24 bg-slate-50">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
-
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
             {/* COLUMN 1: For Brands */}
             <div className="space-y-8">
@@ -93,7 +136,6 @@ export default function Home() {
                 </div>
                 <h3 className="text-2xl font-serif font-medium">For Brands & Professionals</h3>
               </div>
-
               <div className="group bg-white p-6 rounded-xl border border-slate-100 hover:shadow-lg transition-all cursor-pointer">
                 <h4 className="text-lg font-bold mb-2">Bespoke Website Design</h4>
                 <p className="text-slate-500 text-sm leading-relaxed">Minimalist, high-performance websites tailored for lawyers, architects, and premium service providers.</p>
@@ -112,7 +154,6 @@ export default function Home() {
                 </div>
                 <h3 className="text-2xl font-display font-bold">For Enterprise & Scale</h3>
               </div>
-
               <div className="group bg-white p-6 rounded-xl border border-slate-100 hover:shadow-lg hover:border-blue-100 transition-all cursor-pointer">
                 <h4 className="text-lg font-bold mb-2 font-display">ERP & CRM Integration</h4>
                 <p className="text-slate-500 text-sm leading-relaxed">Connect your inventory to accounting. Sync leads to Slack. Stop manual data entry.</p>
@@ -123,17 +164,15 @@ export default function Home() {
               </div>
             </div>
           </div>
-
         </div>
       </section>
 
-      {/* === FEATURED WORK (Condensed) === */}
+      {/* === FEATURED WORK === */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <h2 className="text-3xl md:text-4xl font-bold font-display mb-12 text-center">Selected Work</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Project 1: The Brand Side */}
-            <div className="group relative overflow-hidden rounded-2xl aspect-[4/3] cursor-pointer">
+            <div className="group relative overflow-hidden rounded-2xl aspect-[4/3] cursor-pointer shadow-lg">
               <img src={dashboardImage} alt="Real Estate" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all" />
               <div className="absolute bottom-0 left-0 p-8">
@@ -141,9 +180,7 @@ export default function Home() {
                 <h3 className="text-2xl font-serif text-white">Luxury Property Portfolio</h3>
               </div>
             </div>
-
-            {/* Project 2: The Tech Side */}
-            <div className="group relative overflow-hidden rounded-2xl aspect-[4/3] cursor-pointer">
+            <div className="group relative overflow-hidden rounded-2xl aspect-[4/3] cursor-pointer shadow-lg">
               <img src={aiImage} alt="Automation" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-blue-900/60 group-hover:bg-blue-900/40 transition-all" />
               <div className="absolute bottom-0 left-0 p-8">
@@ -161,7 +198,7 @@ export default function Home() {
           <h2 className="text-4xl md:text-5xl font-display font-bold">Ready to Transform?</h2>
           <p className="text-xl text-slate-400 font-light">Whether you need a brand overhaul or a system upgrade, we have the team.</p>
           <Link href="/contact">
-            <Button size="lg" className="bg-white text-slate-900 hover:bg-slate-200 px-10 py-6 text-lg font-bold rounded-full">
+            <Button size="lg" className="bg-white text-slate-900 hover:bg-slate-200 px-10 py-6 text-lg font-bold rounded-full border-none">
               Start Your Project
             </Button>
           </Link>
