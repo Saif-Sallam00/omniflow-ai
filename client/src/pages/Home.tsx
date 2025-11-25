@@ -4,12 +4,12 @@ import { Button } from '@/components/ui/button';
 import { useI18n } from '@/lib/i18n';
 import dashboardImage from '@assets/generated_images/website_dashboard_mockup_showcase.png';
 import aiImage from '@assets/generated_images/ai_automation_visual_concept.png';
+import { ROICalculator } from '@/components/ROICalculator';
 
 export default function Home() {
   const { t, isRTL } = useI18n();
 
-  const partners = [  // Updated Partners List with Verified Official Assets
-
+  const partners = [
     { 
       name: "Shopify", 
       logo: "https://cdn.worldvectorlogo.com/logos/shopify.svg" 
@@ -60,6 +60,7 @@ export default function Home() {
           </span>
         </div>
       </a>
+
       {/* === THE SPLIT HERO === */}
       <section className="flex-1 grid grid-cols-1 lg:grid-cols-2 min-h-[calc(100vh-80px)] mt-20">
 
@@ -135,7 +136,6 @@ export default function Home() {
                 />
               </div>
 
-              {/* RESTORED TEXT STYLE FROM PREVIOUS REQUEST */}
               <span className="text-2xl font-bold font-display text-slate-800 tracking-tight text-center">
                 {partner.name}
               </span>
@@ -186,6 +186,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* === ROI CALCULATOR === */}
+      <ROICalculator />
 
       {/* === FEATURED WORK === */}
       <section className="py-24 bg-white">
