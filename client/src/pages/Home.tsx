@@ -119,6 +119,14 @@ export default function Home() {
 
       {/* === TECH PARTNERS MARQUEE (Infinite Scroll) === */}
       <div className="border-y border-slate-100 bg-white py-16 overflow-hidden relative group">
+
+        {/* Trusted Partners Header */}
+        <div className="text-center mb-12 relative z-20">
+          <p className="text-xl md:text-2xl font-bold text-slate-600 uppercase tracking-widest">
+            Trusted Partners
+          </p>
+        </div>
+
         {/* Fade edges for smooth look */}
         <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
         <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
