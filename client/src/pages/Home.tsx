@@ -1,5 +1,5 @@
 import { Link } from 'wouter';
-import { ArrowRight, Sparkles, Zap, Palette, Settings, Bot, Quote } from 'lucide-react';
+import { ArrowRight, Sparkles, Zap, Palette, Settings, Bot, MessageCircle, Quote } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useI18n } from '@/lib/i18n';
@@ -19,16 +19,16 @@ export default function Home() {
     { name: "Instagram", logo: "https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" },
   ];
 
-  // Testimonials Data
+  // Updated Testimonials Data
   const testimonials = [
     {
-      quote: "The level of detail in our new website is unmatched. It perfectly positions us as the leader in our market.",
+      quote: "Our website now looks premium, loads faster, and converts better. Clients started taking us more seriously from week one.",
       author: "Sarah J.",
       role: "CEO, Luxury Estates",
       type: "brand"
     },
     {
-      quote: "We saved 40 hours a week with the automation system. The ROI was realized in less than 2 months.",
+      quote: "The automation system removed manual work from 7 people. Tasks that took a full day now take minutes.",
       author: "Michael R.",
       role: "Operations Director, LogisticsCo",
       type: "tech"
@@ -48,7 +48,7 @@ export default function Home() {
     <div className="min-h-screen flex flex-col">
       {/* === THE SPLIT HERO === */}
       <section className="flex-1 grid grid-cols-1 lg:grid-cols-2 min-h-[calc(100vh-80px)] mt-20">
-        {/* LEFT DOOR: The Boutique (Brand/Design) */}
+        {/* LEFT DOOR: The Brand Side */}
         <div className="relative group overflow-hidden bg-[#FDFBF7] text-slate-900 flex flex-col justify-center p-8 md:p-16 lg:p-24 transition-all duration-500 hover:bg-white border-b lg:border-b-0 lg:border-r border-slate-200">
           <div className="z-10 max-w-xl mx-auto lg:mx-0 transition-transform duration-500 group-hover:translate-y-[-8px]">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-200/50 text-slate-700 text-xs font-medium mb-6 tracking-wider uppercase">
@@ -71,7 +71,7 @@ export default function Home() {
           <div className="absolute bottom-0 right-0 w-full h-1/3 bg-gradient-to-t from-slate-100/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
         </div>
 
-        {/* RIGHT DOOR: The Engine (Automation/Tech) */}
+        {/* RIGHT DOOR: The Tech Side */}
         <div className="relative group overflow-hidden bg-[#0F172A] text-white flex flex-col justify-center p-8 md:p-16 lg:p-24 transition-all duration-500 hover:bg-[#020617]">
           <div className="absolute inset-0 opacity-20">
              <div className="absolute right-[-20%] top-[-20%] w-[600px] h-[600px] bg-blue-600/30 rounded-full blur-[120px]" />
@@ -102,7 +102,7 @@ export default function Home() {
       <div className="border-y border-slate-100 bg-white py-16 overflow-hidden relative group">
         <div className="text-center mb-12 relative z-20">
           <p className="text-xl md:text-2xl font-bold text-slate-600 uppercase tracking-widest">
-            {t('partners.trusted')}
+            {t('trusted partners')}
           </p>
         </div>
         <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
@@ -125,10 +125,12 @@ export default function Home() {
         </div>
       </div>
 
-      {/* === SEGMENTED SERVICES OVERVIEW === */}
+      {/* === SEGMENTED SERVICES OVERVIEW (Updated Copy) === */}
       <section className="py-24 bg-slate-50">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+
+            {/* COLUMN 1: For Brands */}
             <div className="space-y-8">
               <div className="flex items-center gap-3 mb-8">
                 <div className="w-10 h-10 rounded-full bg-[#FDFBF7] border border-slate-200 flex items-center justify-center">
@@ -136,15 +138,23 @@ export default function Home() {
                 </div>
                 <h3 className="text-2xl font-serif font-medium">For Brands & Professionals</h3>
               </div>
+
               <div className="group bg-white p-6 rounded-xl border border-slate-100 hover:shadow-lg transition-all cursor-pointer">
-                <h4 className="text-lg font-bold mb-2">Bespoke Website Design</h4>
-                <p className="text-slate-500 text-sm leading-relaxed">Minimalist, high-performance websites tailored for lawyers, architects, and premium service providers.</p>
+                <h4 className="text-lg font-bold mb-2">Website Development</h4>
+                <p className="text-slate-500 text-sm leading-relaxed">
+                  We build websites that act as digital identities — visually distinct, technically solid, and designed to leave a lasting impression.
+                </p>
               </div>
+
               <div className="group bg-white p-6 rounded-xl border border-slate-100 hover:shadow-lg transition-all cursor-pointer">
-                <h4 className="text-lg font-bold mb-2">Visual Identity & SEO</h4>
-                <p className="text-slate-500 text-sm leading-relaxed">Ensure your practice appears first when clients search for "Best [Service] in [City]".</p>
+                <h4 className="text-lg font-bold mb-2">Brand Strategy</h4>
+                <p className="text-slate-500 text-sm leading-relaxed">
+                  Research-driven branding built on market insight, audience psychology, and a clear visual identity that communicates authority.
+                </p>
               </div>
             </div>
+
+            {/* COLUMN 2: For Operations */}
             <div className="space-y-8">
               <div className="flex items-center gap-3 mb-8">
                 <div className="w-10 h-10 rounded-full bg-[#0F172A] flex items-center justify-center">
@@ -152,13 +162,19 @@ export default function Home() {
                 </div>
                 <h3 className="text-2xl font-display font-bold">For Enterprise & Scale</h3>
               </div>
+
               <div className="group bg-white p-6 rounded-xl border border-slate-100 hover:shadow-lg hover:border-blue-100 transition-all cursor-pointer">
-                <h4 className="text-lg font-bold mb-2 font-display">ERP & CRM Integration</h4>
-                <p className="text-slate-500 text-sm leading-relaxed">Connect your inventory to accounting. Sync leads to Slack. Stop manual data entry.</p>
+                <h4 className="text-lg font-bold mb-2 font-display">Workflow Automation</h4>
+                <p className="text-slate-500 text-sm leading-relaxed">
+                  Connect your tools, remove manual work, and build processes that run consistently without human oversight.
+                </p>
               </div>
+
               <div className="group bg-white p-6 rounded-xl border border-slate-100 hover:shadow-lg hover:border-blue-100 transition-all cursor-pointer">
-                <h4 className="text-lg font-bold mb-2 font-display">AI Customer Agents</h4>
-                <p className="text-slate-500 text-sm leading-relaxed">Train an AI on your data to handle support tickets, booking inquiries, and HR questions 24/7.</p>
+                <h4 className="text-lg font-bold mb-2 font-display">AI Agents</h4>
+                <p className="text-slate-500 text-sm leading-relaxed">
+                  AI agents trained on your data to handle support, bookings, repetitive tasks, and internal operations — available nonstop.
+                </p>
               </div>
             </div>
           </div>
@@ -198,7 +214,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* === TESTIMONIALS (NEW SECTION) === */}
+      {/* === TESTIMONIALS === */}
       <section className="py-24 bg-slate-50 border-y border-slate-200">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <h2 className="text-3xl md:text-4xl font-bold font-display mb-4 text-center">{t('testimonials.title')}</h2>
@@ -223,11 +239,15 @@ export default function Home() {
         </div>
       </section>
 
-      {/* === FINAL CTA === */}
+      {/* === FINAL CTA (Updated Copy) === */}
       <section className="py-32 bg-[#0F172A] text-white text-center px-6">
         <div className="max-w-3xl mx-auto space-y-8">
-          <h2 className="text-4xl md:text-5xl font-display font-bold">Ready to Transform?</h2>
-          <p className="text-xl text-slate-400 font-light">Whether you need a brand overhaul or a system upgrade, we have the team.</p>
+          <h2 className="text-4xl md:text-5xl font-display font-bold">
+            Ready to Transform Your Business or Personal Brand?
+          </h2>
+          <p className="text-xl text-slate-400 font-light">
+            Book a strategy session and get a clear plan for your website, automation system, or AI workflow.
+          </p>
           <Link href="/contact">
             <Button size="lg" className="bg-white text-slate-900 hover:bg-slate-200 px-10 py-6 text-lg font-bold rounded-full border-none">
               Start Your Project

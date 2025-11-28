@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 type Language = 'en' | 'ar';
 
@@ -73,15 +73,39 @@ const translations = {
     'contact.error': 'Something went wrong. Please try again.',
     'footer.tagline': 'Transform your business with custom websites and AI-powered automation.',
     'footer.rights': '© 2024 OmniflowAI. All rights reserved.',
-    'split.brand.title': 'Elevate Your Brand',
-    'split.brand.subtitle': 'For Legal, Medical & Creative Professionals',
-    'split.brand.desc': 'Bespoke websites that build trust, authority, and distinct market presence.',
-    'split.brand.cta': 'View Design Services',
 
-    'split.tech.title': 'Automate Your Business',
+    // UPDATED SPLIT HERO COPY
+    'split.brand.title': 'Build a Brand That Looks Expensive',
+    'split.brand.subtitle': 'For Legal, Medical & Creative Professionals',
+    'split.brand.desc': 'We craft digital identities that elevate your presence, influence perception, and make your audience take you seriously.',
+    'split.brand.cta': 'Craft My Brand Presence',
+
+    'split.tech.title': 'Automate the Work That Slows Your Business',
     'split.tech.subtitle': 'For SMBs, Real Estate & Enterprise',
-    'split.tech.desc': 'Scalable ERP systems, AI agents, and workflow automation to multiply your revenue.',
-    'split.tech.cta': 'Explore Automation',
+    'split.tech.desc': 'We design intelligent workflows and AI systems that cut costs, eliminate repetitive tasks, and streamline operations for scale.',
+    'split.tech.cta': 'Automate My Operations',
+
+    'partners.trusted': 'Trusted Partners',
+    'roi.badge': 'ROI Calculator',
+    'roi.title': 'Stop Paying for',
+    'roi.title.highlight': 'Repetitive Work',
+    'roi.desc': 'Calculate how much your business wastes on manual data entry, scheduling, and repetitive tasks. See how OmniflowAI automation pays for itself.',
+    'roi.savings': 'Potential Annual Savings',
+    'roi.hours': 'Hours Saved Annually',
+    'roi.cta': 'Start Saving Today',
+    'roi.input.employees': 'Employees doing manual tasks',
+    'roi.input.hours': 'Hours per week (per person)',
+    'roi.input.wage': 'Average Hourly Wage',
+    'roi.insight.prefix': 'Insight: You are currently spending',
+    'roi.insight.mid': 'on manual labor. OmniflowAI could reduce this to approximately',
+    'roi.chart.current': 'Current Cost',
+    'roi.chart.automated': 'With Automation',
+    'nav.category.brand': 'Brand & Presence',
+    'nav.category.growth': 'Growth & Operations',
+    'nav.service.website.desc': 'Bespoke design & high performance',
+    'nav.service.marketing.desc': 'SEO & market positioning',
+    'nav.service.automation.desc': 'Streamline workflows & ERP',
+    'nav.service.ai.desc': '24/7 Intelligent support',
   },
   ar: {
     'nav.home': 'الرئيسية',
@@ -148,25 +172,50 @@ const translations = {
     'split.brand.subtitle': 'للمحامين والأطباء والمبدعين',
     'split.brand.desc': 'مواقع إلكترونية مصممة خصيصاً لبناء الثقة والهيبة والحضور المميز في السوق.',
     'split.brand.cta': 'تصفح خدمات التصميم',
-
     'split.tech.title': 'أتمتة أعمالك',
     'split.tech.subtitle': 'للشركات الصغيرة والمتوسطة والعقارات',
     'split.tech.desc': 'أنظمة ERP قابلة للتوسع، ووكلاء ذكاء اصطناعي، وأتمتة سير العمل لمضاعفة أرباحك.',
     'split.tech.cta': 'اكتشف حلول الأتمتة',
+    'partners.trusted': 'شركاء النجاح',
+    'roi.badge': 'حاسبة العائد على الاستثمار',
+    'roi.title': 'توقف عن الدفع مقابل',
+    'roi.title.highlight': 'العمل المتكرر',
+    'roi.desc': 'احسب تكلفة إهدار الوقت في إدخال البيانات يدوياً، والجدولة، والمهام المتكررة. اكتشف كيف تدفع أتمتة OmniflowAI تكلفتها بنفسها.',
+    'roi.savings': 'التوفير السنوي المتوقع',
+    'roi.hours': 'ساعات العمل الموفرة سنوياً',
+    'roi.cta': 'ابدأ التوفير اليوم',
+    'roi.input.employees': 'عدد الموظفين في المهام اليدوية',
+    'roi.input.hours': 'الساعات أسبوعياً (للموظف)',
+    'roi.input.wage': 'متوسط الأجر بالساعة ($)',
+    'roi.insight.prefix': 'رؤية: أنت تنفق حالياً',
+    'roi.insight.mid': 'على العمل اليدوي. يمكننا تقليل هذا إلى',
+    'roi.chart.current': 'التكلفة الحالية',
+    'roi.chart.automated': 'مع الأتمتة',
+    'nav.category.brand': 'العلامة التجارية والحضور الرقمي',
+    'nav.category.growth': 'النمو والعمليات',
+    'nav.service.website.desc': 'تصميم مخصص وأداء عالي',
+    'nav.service.marketing.desc': 'تحسين محركات البحث وتموضع السوق',
+    'nav.service.automation.desc': 'تبسيط سير العمل وأنظمة ERP',
+    'nav.service.ai.desc': 'دعم ذكي على مدار الساعة',
   },
 };
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>(() => {
-    const saved = localStorage.getItem('language');
-    return (saved === 'ar' || saved === 'en') ? saved : 'en';
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const saved = localStorage.getItem('language');
+      return (saved === 'ar' || saved === 'en') ? saved : 'en';
+    }
+    return 'en';
   });
 
   useEffect(() => {
-    localStorage.setItem('language', language);
-    document.documentElement.lang = language;
-    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-    document.body.dir = language === 'ar' ? 'rtl' : 'ltr';
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.setItem('language', language);
+      document.documentElement.lang = language;
+      document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
+      document.body.dir = language === 'ar' ? 'rtl' : 'ltr';
+    }
   }, [language]);
 
   const setLanguage = (lang: Language) => {
