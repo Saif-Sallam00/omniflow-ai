@@ -1,43 +1,45 @@
+// 
 import { Link } from 'wouter';
-import { ArrowRight, Sparkles, Zap, Palette, Settings, Bot, MessageCircle } from 'lucide-react';
+import { ArrowRight, Sparkles, Zap, Palette, Settings, Bot, MessageCircle, Quote } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { useI18n } from '@/lib/i18n';
 import dashboardImage from '@assets/generated_images/website_dashboard_mockup_showcase.png';
 import aiImage from '@assets/generated_images/ai_automation_visual_concept.png';
-import { ROICalculator } from '@/components/ROICalculator';
 
 export default function Home() {
   const { t, isRTL } = useI18n();
 
   const partners = [
-    { 
-      name: "Shopify", 
-      logo: "https://cdn.worldvectorlogo.com/logos/shopify.svg" 
+    { name: "Shopify", logo: "https://cdn.worldvectorlogo.com/logos/shopify.svg" },
+    { name: "n8n", logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/n8n.svg" },
+    { name: "Zapier", logo: "https://upload.wikimedia.org/wikipedia/commons/f/fd/Zapier_logo.svg" },
+    { name: "ERPNext", logo: "https://upload.wikimedia.org/wikipedia/commons/9/95/Erpnext_logo.svg" },
+    { name: "WhatsApp", logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/whatsapp.svg" },
+    { name: "Facebook", logo: "https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" },
+    { name: "Instagram", logo: "https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" },
+  ];
+
+  // Testimonials Data
+  const testimonials = [
+    {
+      quote: "The level of detail in our new website is unmatched. It perfectly positions us as the leader in our market.",
+      author: "Sarah J.",
+      role: "CEO, Luxury Estates",
+      type: "brand"
     },
-    { 
-      name: "n8n", 
-      logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/n8n.svg" 
+    {
+      quote: "We saved 40 hours a week with the automation system. The ROI was realized in less than 2 months.",
+      author: "Michael R.",
+      role: "Operations Director, LogisticsCo",
+      type: "tech"
     },
-    { 
-      name: "Zapier",
-      logo: "https://upload.wikimedia.org/wikipedia/commons/f/fd/Zapier_logo.svg" 
-    },
-    { 
-      name: "ERPNext", 
-      logo: "https://upload.wikimedia.org/wikipedia/commons/9/95/Erpnext_logo.svg" 
-    },
-    { 
-      name: "WhatsApp", 
-      logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/whatsapp.svg" 
-    },
-    { 
-      name: "Facebook", 
-      logo: "https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" 
-    },
-    { 
-      name: "Instagram", 
-      logo: "https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" 
-    },
+    {
+      quote: "Finally, a development team that understands both high-end design and complex backend logic.",
+      author: "David K.",
+      role: "Founder, FinTech Startups",
+      type: "brand"
+    }
   ];
 
   // Duplicate list for seamless infinite scroll
@@ -63,7 +65,6 @@ export default function Home() {
 
       {/* === THE SPLIT HERO === */}
       <section className="flex-1 grid grid-cols-1 lg:grid-cols-2 min-h-[calc(100vh-80px)] mt-20">
-
         {/* LEFT DOOR: The Boutique (Brand/Design) */}
         <div className="relative group overflow-hidden bg-[#FDFBF7] text-slate-900 flex flex-col justify-center p-8 md:p-16 lg:p-24 transition-all duration-500 hover:bg-white border-b lg:border-b-0 lg:border-r border-slate-200">
           <div className="z-10 max-w-xl mx-auto lg:mx-0 transition-transform duration-500 group-hover:translate-y-[-8px]">
@@ -84,8 +85,6 @@ export default function Home() {
               </Button>
             </Link>
           </div>
-
-          {/* Decorative BG Element */}
           <div className="absolute bottom-0 right-0 w-full h-1/3 bg-gradient-to-t from-slate-100/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
         </div>
 
@@ -95,7 +94,6 @@ export default function Home() {
              <div className="absolute right-[-20%] top-[-20%] w-[600px] h-[600px] bg-blue-600/30 rounded-full blur-[120px]" />
              <div className="absolute left-[-10%] bottom-[-10%] w-[400px] h-[400px] bg-indigo-500/20 rounded-full blur-[100px]" />
           </div>
-
           <div className="z-10 max-w-xl mx-auto lg:mx-0 transition-transform duration-500 group-hover:translate-y-[-8px]">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-900/50 text-blue-200 border border-blue-800/50 text-xs font-medium mb-6 tracking-wider uppercase font-mono">
               <Bot className="w-3 h-3" />
@@ -117,25 +115,18 @@ export default function Home() {
         </div>
       </section>
 
-      {/* === TECH PARTNERS MARQUEE (Infinite Scroll) === */}
+      {/* === TECH PARTNERS MARQUEE === */}
       <div className="border-y border-slate-100 bg-white py-16 overflow-hidden relative group">
-
-        {/* Trusted Partners Header */}
         <div className="text-center mb-12 relative z-20">
           <p className="text-xl md:text-2xl font-bold text-slate-600 uppercase tracking-widest">
-            Trusted Partners
+            {t('partners.trusted')}
           </p>
         </div>
-
-        {/* Fade edges for smooth look */}
         <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
         <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
-
         <div className="flex w-max animate-scroll gap-24 items-center group-hover:[animation-play-state:paused]">
           {scrollingPartners.map((partner, index) => (
             <div key={index} className="flex flex-col items-center justify-center gap-6 min-w-[180px] transition-transform duration-300 hover:scale-105 cursor-default">
-
-              {/* Logo Image - Full Color, Increased size for better visibility */}
               <div className="h-20 w-full flex items-center justify-center">
                 <img 
                   src={partner.logo} 
@@ -143,7 +134,6 @@ export default function Home() {
                   className="h-full w-auto object-contain max-h-16 drop-shadow-sm"
                 />
               </div>
-
               <span className="text-2xl font-bold font-display text-slate-800 tracking-tight text-center">
                 {partner.name}
               </span>
@@ -156,7 +146,6 @@ export default function Home() {
       <section className="py-24 bg-slate-50">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-            {/* COLUMN 1: For Brands */}
             <div className="space-y-8">
               <div className="flex items-center gap-3 mb-8">
                 <div className="w-10 h-10 rounded-full bg-[#FDFBF7] border border-slate-200 flex items-center justify-center">
@@ -173,8 +162,6 @@ export default function Home() {
                 <p className="text-slate-500 text-sm leading-relaxed">Ensure your practice appears first when clients search for "Best [Service] in [City]".</p>
               </div>
             </div>
-
-            {/* COLUMN 2: For Operations */}
             <div className="space-y-8">
               <div className="flex items-center gap-3 mb-8">
                 <div className="w-10 h-10 rounded-full bg-[#0F172A] flex items-center justify-center">
@@ -195,13 +182,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* === ROI CALCULATOR === */}
-      <ROICalculator />
-
-      {/* === FEATURED WORK === */}
+      {/* === FEATURED WORK (MOVED UP) === */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold font-display mb-12 text-center">Selected Work</h2>
+          <h2 className="text-3xl md:text-4xl font-bold font-display mb-12 text-center">{t('portfolio.title')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="group relative overflow-hidden rounded-2xl aspect-[4/3] cursor-pointer shadow-lg">
               <img src={dashboardImage} alt="Real Estate" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
@@ -220,6 +204,39 @@ export default function Home() {
               </div>
             </div>
           </div>
+          <div className="text-center mt-12">
+            <Link href="/portfolio">
+              <Button variant="outline" size="lg" className="rounded-full px-8">
+                {t('portfolio.cta')}
+                <ArrowRight className={`w-4 h-4 ${isRTL ? 'mr-2' : 'ml-2'}`} />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* === TESTIMONIALS (NEW SECTION) === */}
+      <section className="py-24 bg-slate-50 border-y border-slate-200">
+        <div className="max-w-7xl mx-auto px-6 md:px-8">
+          <h2 className="text-3xl md:text-4xl font-bold font-display mb-4 text-center">{t('testimonials.title')}</h2>
+          <p className="text-center text-slate-500 mb-16">{t('testimonials.subtitle')}</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {testimonials.map((test, index) => (
+              <Card key={index} className="bg-white border-slate-100 shadow-sm hover:shadow-md transition-all">
+                <CardContent className="p-8 flex flex-col gap-6 h-full">
+                  <Quote className={`w-8 h-8 ${test.type === 'brand' ? 'text-amber-500' : 'text-blue-500'} opacity-50`} />
+                  <p className="text-lg text-slate-700 leading-relaxed italic flex-1">
+                    "{test.quote}"
+                  </p>
+                  <div>
+                    <p className="font-bold text-slate-900">{test.author}</p>
+                    <p className="text-sm text-slate-500">{test.role}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -235,7 +252,6 @@ export default function Home() {
           </Link>
         </div>
       </section>
-
     </div>
   );
 }
