@@ -1,6 +1,5 @@
-// 
 import { Link } from 'wouter';
-import { ArrowRight, Sparkles, Zap, Palette, Settings, Bot, MessageCircle, Quote } from 'lucide-react';
+import { ArrowRight, Sparkles, Zap, Palette, Settings, Bot, Quote } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useI18n } from '@/lib/i18n';
@@ -47,22 +46,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* === FLOATING WHATSAPP CTA === */}
-      <a 
-        href="https://wa.me/201092849400" 
-        target="_blank" 
-        rel="noopener noreferrer"
-        className="fixed bottom-8 right-8 z-50 group"
-      >
-        <div className="absolute inset-0 bg-green-500 rounded-full animate-ping opacity-75 group-hover:opacity-100"></div>
-        <div className="relative bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center gap-2">
-          <MessageCircle className="w-8 h-8" />
-          <span className="hidden group-hover:block font-bold pr-2 whitespace-nowrap transition-all">
-            Chat on WhatsApp
-          </span>
-        </div>
-      </a>
-
       {/* === THE SPLIT HERO === */}
       <section className="flex-1 grid grid-cols-1 lg:grid-cols-2 min-h-[calc(100vh-80px)] mt-20">
         {/* LEFT DOOR: The Boutique (Brand/Design) */}

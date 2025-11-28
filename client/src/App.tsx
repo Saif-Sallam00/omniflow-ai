@@ -16,6 +16,7 @@ import ServiceDetail from "@/pages/ServiceDetail";
 import Portfolio from "@/pages/Portfolio";
 import Contact from "@/pages/Contact";
 import NotFound from "@/pages/not-found";
+import { MessageCircle } from 'lucide-react';
 
 function Router() {
   useAnalytics();
@@ -33,6 +34,22 @@ function Router() {
         <Route component={NotFound} />
       </Switch>
       <Footer />
+
+      {/* === GLOBAL FLOATING WHATSAPP CTA === */}
+      <a 
+        href="https://wa.me/201092849400" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="fixed bottom-8 right-8 z-50 group"
+      >
+        <div className="absolute inset-0 bg-green-500 rounded-full animate-ping opacity-75 group-hover:opacity-100"></div>
+        <div className="relative bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center gap-2">
+          <MessageCircle className="w-8 h-8" />
+          <span className="hidden group-hover:block font-bold pr-2 whitespace-nowrap transition-all">
+            Chat on WhatsApp
+          </span>
+        </div>
+      </a>
     </>
   );
 }
