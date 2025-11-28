@@ -1,3 +1,4 @@
+// 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 type Language = 'en' | 'ar';
@@ -13,6 +14,7 @@ const I18nContext = createContext<I18nContextType | undefined>(undefined);
 
 const translations = {
   en: {
+    // ... (keep existing translations)
     'nav.home': 'Home',
     'nav.services': 'Services',
     'nav.portfolio': 'Portfolio',
@@ -73,18 +75,14 @@ const translations = {
     'contact.error': 'Something went wrong. Please try again.',
     'footer.tagline': 'Transform your business with custom websites and AI-powered automation.',
     'footer.rights': '© 2024 OmniflowAI. All rights reserved.',
-
-    // UPDATED SPLIT HERO COPY
     'split.brand.title': 'Build a Brand That Looks Expensive',
     'split.brand.subtitle': 'For Legal, Medical & Creative Professionals',
     'split.brand.desc': 'We craft digital identities that elevate your presence, influence perception, and make your audience take you seriously.',
     'split.brand.cta': 'Craft My Brand Presence',
-
     'split.tech.title': 'Automate the Work That Slows Your Business',
     'split.tech.subtitle': 'For SMBs, Real Estate & Enterprise',
     'split.tech.desc': 'We design intelligent workflows and AI systems that cut costs, eliminate repetitive tasks, and streamline operations for scale.',
     'split.tech.cta': 'Automate My Operations',
-
     'partners.trusted': 'Trusted Partners',
     'roi.badge': 'ROI Calculator',
     'roi.title': 'Stop Paying for',
@@ -106,8 +104,20 @@ const translations = {
     'nav.service.marketing.desc': 'SEO & market positioning',
     'nav.service.automation.desc': 'Streamline workflows & ERP',
     'nav.service.ai.desc': '24/7 Intelligent support',
+
+    // NEW SERVICES PAGE KEYS
+    'services.selector.title': 'Choose Your Need',
+    'services.selector.brand.title': 'For Individuals & Personal Brands',
+    'services.selector.brand.desc': 'Build a premium digital identity that elevates your presence.',
+    'services.selector.brand.cta': 'Explore Branding & Websites',
+    'services.selector.business.title': 'For Businesses',
+    'services.selector.business.desc': 'Automate your operations, scale your workflows, and integrate AI.',
+    'services.selector.business.cta': 'Explore Business Solutions',
+    'services.cta.brand': 'Book a Brand Strategy Call',
+    'services.cta.business': 'Request a Business Automation Assessment',
   },
   ar: {
+    // ... (keep existing translations)
     'nav.home': 'الرئيسية',
     'nav.services': 'الخدمات',
     'nav.portfolio': 'الأعمال',
@@ -197,6 +207,17 @@ const translations = {
     'nav.service.marketing.desc': 'تحسين محركات البحث وتموضع السوق',
     'nav.service.automation.desc': 'تبسيط سير العمل وأنظمة ERP',
     'nav.service.ai.desc': 'دعم ذكي على مدار الساعة',
+
+    // NEW SERVICES PAGE KEYS (ARABIC)
+    'services.selector.title': 'اختر ما يناسبك',
+    'services.selector.brand.title': 'للأفراد والعلامات التجارية الشخصية',
+    'services.selector.brand.desc': 'ابني هوية رقمية متميزة تعزز حضورك.',
+    'services.selector.brand.cta': 'اكتشف العلامة التجارية والمواقع',
+    'services.selector.business.title': 'للشركات',
+    'services.selector.business.desc': 'أتمتة عملياتك، وتوسيع سير عملك، ودمج الذكاء الاصطناعي.',
+    'services.selector.business.cta': 'اكتشف حلول الأعمال',
+    'services.cta.brand': 'احجز جلسة استراتيجية للعلامة التجارية',
+    'services.cta.business': 'طلب تقييم أتمتة الأعمال',
   },
 };
 
