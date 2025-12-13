@@ -104,8 +104,6 @@ const translations = {
     'nav.service.marketing.desc': 'SEO & market positioning',
     'nav.service.automation.desc': 'Streamline workflows & ERP',
     'nav.service.ai.desc': '24/7 Intelligent support',
-
-    // NEW SERVICES PAGE KEYS
     'services.selector.title': 'Choose Your Need',
     'services.selector.brand.title': 'For Individuals & Personal Brands',
     'services.selector.brand.desc': 'Build a premium digital identity that elevates your presence.',
@@ -115,6 +113,11 @@ const translations = {
     'services.selector.business.cta': 'Explore Business Solutions',
     'services.cta.brand': 'Book a Brand Strategy Call',
     'services.cta.business': 'Request a Business Automation Assessment',
+
+    // NEW PORTFOLIO CATEGORIES
+    'portfolio.category.websites': 'Custom Websites',
+    'portfolio.category.automation': 'Automation Systems',
+    'portfolio.category.ai': 'AI Agents & AI Systems',
   },
   ar: {
     // ... (keep existing translations)
@@ -207,8 +210,6 @@ const translations = {
     'nav.service.marketing.desc': 'تحسين محركات البحث وتموضع السوق',
     'nav.service.automation.desc': 'تبسيط سير العمل وأنظمة ERP',
     'nav.service.ai.desc': 'دعم ذكي على مدار الساعة',
-
-    // NEW SERVICES PAGE KEYS (ARABIC)
     'services.selector.title': 'اختر ما يناسبك',
     'services.selector.brand.title': 'للأفراد والعلامات التجارية الشخصية',
     'services.selector.brand.desc': 'ابني هوية رقمية متميزة تعزز حضورك.',
@@ -218,6 +219,11 @@ const translations = {
     'services.selector.business.cta': 'اكتشف حلول الأعمال',
     'services.cta.brand': 'احجز جلسة استراتيجية للعلامة التجارية',
     'services.cta.business': 'طلب تقييم أتمتة الأعمال',
+
+    // NEW PORTFOLIO CATEGORIES (ARABIC)
+    'portfolio.category.websites': 'مواقع مخصصة',
+    'portfolio.category.automation': 'أنظمة الأتمتة',
+    'portfolio.category.ai': 'وكلاء وأنظمة الذكاء الاصطناعي',
   },
 };
 

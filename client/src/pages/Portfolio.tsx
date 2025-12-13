@@ -1,5 +1,6 @@
+// 
 import { Link } from 'wouter';
-import { ArrowRight, ExternalLink } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -10,11 +11,13 @@ import aiImage from '@assets/generated_images/ai_automation_visual_concept.png';
 export default function Portfolio() {
   const { t, isRTL } = useI18n();
 
+  // Categories aligned with UX recommendations
   const projects = [
+    // === CATEGORY A: CUSTOM WEBSITES ===
     {
       title: 'Luxury Real Estate Platform',
       client: 'Premium Properties Inc.',
-      category: 'Website Development',
+      categoryKey: 'portfolio.category.websites', // Custom Websites
       description: 'A high-end real estate platform featuring advanced property search, virtual tours, and lead management system.',
       results: [
         '+250% increase in qualified leads',
@@ -27,7 +30,7 @@ export default function Portfolio() {
     {
       title: 'Beauty Center Booking System',
       client: 'Elegance Spa & Beauty',
-      category: 'Website Development + Automation',
+      categoryKey: 'portfolio.category.websites', // Custom Websites
       description: 'Complete booking and management system with automated reminders, payment processing, and customer management.',
       results: [
         '+180% in online bookings',
@@ -38,9 +41,39 @@ export default function Portfolio() {
       image: dashboardImage,
     },
     {
+      title: 'Multi-Vendor Marketplace',
+      client: 'LocalMarket Hub',
+      categoryKey: 'portfolio.category.websites', // Custom Websites
+      description: 'Scalable marketplace platform connecting local vendors with customers, featuring vendor dashboards and analytics.',
+      results: [
+        '150+ vendors onboarded',
+        '+300% monthly transactions',
+        'Advanced analytics dashboard',
+      ],
+      technologies: ['React', 'Node.js', 'MongoDB', 'Stripe'],
+      image: dashboardImage,
+    },
+
+    // === CATEGORY B: AUTOMATION SYSTEMS ===
+    {
+      title: 'E-commerce Automation Suite',
+      client: 'Fashion Forward LLC',
+      categoryKey: 'portfolio.category.automation', // Automation Systems
+      description: 'Complete e-commerce automation including inventory management, order processing, and marketing automation.',
+      results: [
+        '75% time saved on operations',
+        '+200% email conversion rate',
+        'Real-time inventory sync',
+      ],
+      technologies: ['Python', 'APIs', 'Zapier', 'SEO Tools'],
+      image: dashboardImage,
+    },
+
+    // === CATEGORY C: AI AGENTS & AI SYSTEMS ===
+    {
       title: 'AI Customer Service Agent',
       client: 'TechCorp Solutions',
-      category: 'AI Agents',
+      categoryKey: 'portfolio.category.ai', // AI Agents & AI Systems
       description: 'Intelligent AI-powered customer service system handling inquiries, support tickets, and product recommendations.',
       results: [
         '24/7 automated customer support',
@@ -51,35 +84,9 @@ export default function Portfolio() {
       image: aiImage,
     },
     {
-      title: 'E-commerce Automation Suite',
-      client: 'Fashion Forward LLC',
-      category: 'Automation + Marketing',
-      description: 'Complete e-commerce automation including inventory management, order processing, and marketing automation.',
-      results: [
-        '75% time saved on operations',
-        '+200% email conversion rate',
-        'Real-time inventory sync',
-      ],
-      technologies: ['Python', 'APIs', 'Zapier', 'SEO Tools'],
-      image: dashboardImage,
-    },
-    {
-      title: 'Multi-Vendor Marketplace',
-      client: 'LocalMarket Hub',
-      category: 'Website Development',
-      description: 'Scalable marketplace platform connecting local vendors with customers, featuring vendor dashboards and analytics.',
-      results: [
-        '150+ vendors onboarded',
-        '+300% monthly transactions',
-        'Advanced analytics dashboard',
-      ],
-      technologies: ['React', 'Node.js', 'MongoDB', 'Stripe'],
-      image: dashboardImage,
-    },
-    {
       title: 'Marketing Analytics Dashboard',
       client: 'Digital Growth Agency',
-      category: 'Digital Marketing',
+      categoryKey: 'portfolio.category.ai', // AI Agents & AI Systems
       description: 'Comprehensive marketing analytics platform aggregating data from multiple sources with AI-powered insights.',
       results: [
         'Unified data from 15+ platforms',
@@ -114,11 +121,13 @@ export default function Portfolio() {
                 />
                 <CardContent className="p-8 space-y-6">
                   <div className="space-y-2">
-                    <Badge variant="secondary" data-testid={`badge-category-${index}`}>
-                      {project.category}
-                    </Badge>
+                    <div className="flex justify-between items-start">
+                      <Badge variant="secondary" className="mb-2" data-testid={`badge-category-${index}`}>
+                        {t(project.categoryKey)}
+                      </Badge>
+                    </div>
                     <h3 className="text-2xl font-bold">{project.title}</h3>
-                    <p className="text-sm text-muted-foreground">{project.client}</p>
+                    <p className="text-sm text-muted-foreground font-medium">{project.client}</p>
                   </div>
 
                   <p className="text-muted-foreground leading-relaxed">
@@ -137,9 +146,9 @@ export default function Portfolio() {
                     </ul>
                   </div>
 
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2 pt-2">
                     {project.technologies.map((tech, i) => (
-                      <Badge key={i} variant="outline" className="text-xs">
+                      <Badge key={i} variant="outline" className="text-xs bg-slate-50">
                         {tech}
                       </Badge>
                     ))}
@@ -149,7 +158,7 @@ export default function Portfolio() {
             ))}
           </div>
 
-          <div className="mt-16 text-center bg-card rounded-xl p-12">
+          <div className="mt-16 text-center bg-card rounded-xl p-12 border border-slate-100 shadow-sm">
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-6">
               Want to See Your Project Here?
             </h2>
