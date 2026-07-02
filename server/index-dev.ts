@@ -1,5 +1,8 @@
+import "dotenv/config";
+
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { type Server } from "node:http";
 
 import { nanoid } from "nanoid";
@@ -37,7 +40,7 @@ export async function setupVite(app: Express, server: Server) {
 
     try {
       const clientTemplate = path.resolve(
-        import.meta.dirname,
+        path.dirname(fileURLToPath(import.meta.url)),
         "..",
         "client",
         "index.html",
