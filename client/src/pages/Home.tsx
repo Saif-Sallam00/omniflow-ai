@@ -265,6 +265,11 @@ export default function Home() {
               </p>
             </div>
 
+            {/* TODO(Layer3-proof): when real aggregate metrics exist (e.g. total
+                revenue lifted, avg. delivery speedup, clients served), render an
+                aggregate stat strip here. Do NOT invent numbers — leave empty
+                until real data is available. Per-project results surface below. */}
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {featured.map((project) => (
                 <Link key={project.id} href={`/portfolio/${project.id}`}>
@@ -283,6 +288,10 @@ export default function Home() {
                       {project.title}
                     </h3>
                     <p className="text-sm text-slate-500">{t(`category.${project.category}`)}</p>
+                    {/* Real per-project result (CMS-entered). Renders nothing when absent — never fabricated. */}
+                    {project.results?.[0] && (
+                      <p className="text-sm font-semibold text-orange-400 mt-2">{project.results[0]}</p>
+                    )}
                   </div>
                 </Link>
               ))}
@@ -332,6 +341,10 @@ export default function Home() {
                           {project.title}
                         </h3>
                         <p className="text-sm text-slate-500">{t(`category.${project.category}`)}</p>
+                        {/* Real per-project result (CMS-entered). Renders nothing when absent — never fabricated. */}
+                        {project.results?.[0] && (
+                          <p className="text-sm font-semibold text-orange-400 mt-2">{project.results[0]}</p>
+                        )}
                       </div>
                     </Link>
                   </CarouselItem>
