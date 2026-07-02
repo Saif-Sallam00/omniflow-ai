@@ -317,7 +317,7 @@ const translations: Record<Language, Record<string, string>> = {
     "common.cta.bookCall": "احجز مكالمة استراتيجية",
     "common.brandLine": "نحن لا نسلّم مخرجات ونمضي. نحن نبني أنظمة تستمر في العمل حتى بعد انتهاء تعاوننا.",
     "common.all": "الكل",
-    "common.viewAllProjects": "عرض جميع المشاريع",
+    "common.viewAllProjects": "عرض جميع الأعمال",
     "whatsapp.chat": "تواصل عبر واتساب",
 
     // --- CATEGORY LABELS (public) ---
@@ -326,10 +326,10 @@ const translations: Record<Language, Record<string, string>> = {
     "category.mobile": "تطبيقات الجوال",
     "category.automation": "الأتمتة والذكاء الاصطناعي",
     "category.digital-marketing": "التسويق الرقمي",
-    "category.ai-training": "تدريب الذكاء الاصطناعي",
+    "category.ai-training": "التدريب على الذكاء الاصطناعي",
 
     // --- CONTACT SERVICE OPTIONS ---
-    "serviceOpt.ai-training": "تدريب الذكاء الاصطناعي",
+    "serviceOpt.ai-training": "التدريب على الذكاء الاصطناعي",
     "serviceOpt.digital-marketing": "التسويق الرقمي",
     "serviceOpt.software": "البرمجيات",
     "serviceOpt.other": "أخرى",
@@ -340,15 +340,15 @@ const translations: Record<Language, Record<string, string>> = {
     "pillars.digitalMarketing.title": "تسويق مبني كنظام لاستقطاب العملاء",
     "pillars.digitalMarketing.body": "تحسين محركات البحث والحملات المدفوعة واستراتيجية التحويل، مدمجة في محرك واحد يستهدف المشترين المؤهّلين — لا الزيارات الشكلية. كل مرحلة قابلة للقياس، لتعرف كم يكلّفك العميل المحتمل فعلاً ومن أين تأتي الإيرادات.",
     "pillars.software.title": "برمجيات تتحوّل إلى العمود الفقري التشغيلي لأعمالك",
-    "pillars.software.body": "الأنظمة التي تدير أعمالك — منصّات تخطيط موارد المؤسسات (ERP) وإدارة علاقات العملاء (CRM)، ومواقع تواجه العملاء، وتطبيقات الجوال، والأتمتة التي تربطها معاً. مبنية لتملكها وتدمجها وتوسّعها، لا لتستأجرها.",
+    "pillars.software.body": "الأنظمة التي تدير أعمالك — منصّات تخطيط موارد المؤسسات (ERP) وإدارة علاقات العملاء (CRM)، ومواقع موجّهة للعملاء، وتطبيقات الجوال، والأتمتة التي تربطها معاً. مبنية لتملكها وتدمجها وتوسّعها، لا لتستأجرها.",
     "pillars.software.subcaps": "أنظمة الأعمال (ERP/CRM) · منصّات الويب · تطبيقات الجوال · الأتمتة والذكاء الاصطناعي",
 
     // --- HOME ---
     "home.hero.h1.lead": "نبني الأنظمة التي تقف خلف",
     "home.hero.h1.highlight": "نمو الأعمال.",
     "home.hero.sub": "شريكك في التحول الرقمي عبر تدريب الذكاء الاصطناعي والتسويق الرقمي وبرمجيات الأعمال — مصمَّمة كنظام واحد متكامل، لا كأربع خدمات منفصلة.",
-    "home.hero.cta2": "شاهد أعمالنا",
-    "home.trust": "موثوق به من فرق تبني مستقبل قطاعاتها.",
+    "home.hero.cta2": "استعرض أعمالنا",
+    "home.trust": "تثق بنا فرقٌ تبني مستقبل قطاعاتها.",
     "home.valueProp.title.lead": "معظم الشركات لا تعاني مشكلة تسويق.",
     "home.valueProp.title.highlight": "بل تعاني مشكلة أنظمة.",
     "home.valueProp.body": "أدوات غير مترابطة، وعمليات تسليم يدوية، وغياب رؤية واضحة من العميل المحتمل حتى إتمام الصفقة. نحن نربط السلسلة كاملة — كيف تستقطب عملاءك، وكيف تحوّلهم، وكيف تدير أعمالك بعد انضمامهم — لتعمل الأجزاء كنظام واحد يمكنك قياسه فعلاً.",
@@ -362,8 +362,8 @@ const translations: Record<Language, Record<string, string>> = {
     "home.transform.before.4": "غياب رؤية واضحة لما ينجح فعلاً",
     "home.transform.after.1": "نظام أعمال واحد متكامل",
     "home.transform.after.2": "ترابط بين الاستقطاب والتحويل والعمليات",
-    "home.transform.after.3": "سير عمل مؤتمت عبر الأعمال بأكملها",
-    "home.transform.after.4": "رؤية آنية للأداء",
+    "home.transform.after.3": "سير عمل مؤتمت في الشركة كلها",
+    "home.transform.after.4": "رؤية لحظية للأداء",
     "home.proof.title": "نُقاس بالنتائج، لا بالمخرجات",
     "home.proof.body": "كل مشروع مرتبط بأثر تلمسه أعمالك — إيرادات، كفاءة، تكلفة استقطاب، توسّع. وهذه هي الأعمال التي تقف وراء ذلك.",
     "home.recent.title": "أحدث الأعمال",
@@ -390,7 +390,7 @@ const translations: Record<Language, Record<string, string>> = {
     "services.featuredProject": "مشروع مميّز",
     "services.viewCaseStudy": "عرض دراسة الحالة",
     "services.together.title": "أقوى معاً",
-    "services.together.sub": "كل قدرة تعمل بمفردها. ومعاً تتضاعف قيمتها — برمجياتك تلتقط البيانات، وتسويقك يملأ مسار المبيعات، وأتمتتك تديره، وفريقك يعرف كيف يقود ذلك كله.",
+    "services.together.sub": "كل قدرة تعمل بمفردها. ومعاً تتضاعف قيمتها — برمجياتك تلتقط البيانات، وتسويقك يغذّي مسار المبيعات، وأتمتتك تديره، وفريقك يعرف كيف يقود ذلك كله.",
     "services.together.capture.title": "الالتقاط",
     "services.together.capture.desc": "موقعك يلتقط العملاء المحتملين ويجمع البيانات التي تحتاجها لتأهيلهم.",
     "services.together.attract.title": "الاستقطاب",
@@ -409,23 +409,23 @@ const translations: Record<Language, Record<string, string>> = {
     "serviceDetail.related.title": "نتائج مثبتة",
     "serviceDetail.related.sub": "شاهد كيف ساعدنا شركات مثل شركتك.",
     "serviceDetail.related.viewPortfolio": "عرض كامل الأعمال",
-    "serviceDetail.included": "ما الذي يتضمّنه",
+    "serviceDetail.included": "ما الذي تحصل عليه",
     "serviceDetail.how.title": "كيف يسير العمل",
-    "serviceDetail.how.sub": "لا غموض. لا اجتماعات لا تنتهي. إليك الآلية.",
+    "serviceDetail.how.sub": "لا غموض ولا اجتماعات بلا نهاية. إليك الآلية.",
     "serviceDetail.faqTitle": "أسئلة شائعة",
     "serviceDetail.cta.title": "جاهز للبدء؟",
     "serviceDetail.cta.body": "احجز مكالمة استراتيجية. سنناقش احتياجاتك ونخبرك بصدق إن كنا الخيار المناسب — بلا ضغط ولا عروض بيعية.",
 
     // Service Detail — SOFTWARE
     "serviceDetail.software.title": "برمجيات تتحوّل إلى العمود الفقري التشغيلي لأعمالك",
-    "serviceDetail.software.desc": "منصّات ERP وCRM، ومواقع تواجه العملاء، وتطبيقات جوال، والأتمتة التي تربطها — مصمّمة لتملكها وتدمجها وتوسّعها.",
+    "serviceDetail.software.desc": "منصّات ERP وCRM، ومواقع موجّهة للعملاء، وتطبيقات جوال، والأتمتة التي تربطها — مصمّمة لتملكها وتدمجها وتوسّعها.",
     "serviceDetail.software.cta": "ابنِ نظامك",
     "serviceDetail.software.feat.1.title": "أنظمة الأعمال (ERP / CRM)",
     "serviceDetail.software.feat.1.desc": "منصّات مخصّصة توحّد بيانات مبيعاتك وعملياتك وعملائك في مصدر واحد موثوق. مبنية على أطر عمل مُثبتة، ومصمّمة وفق طريقة عمل شركتك الفعلية.",
     "serviceDetail.software.feat.2.title": "منصّات الويب",
     "serviceDetail.software.feat.2.desc": "مواقع وتطبيقات ويب عالية الأداء مصمّمة للتحويل والسرعة — مرتبطة بأنظمتك منذ اليوم الأول، لا مضافة لاحقاً.",
     "serviceDetail.software.feat.3.title": "تطبيقات الجوال",
-    "serviceDetail.software.feat.3.desc": "تطبيقات تواجه العملاء وأخرى داخلية، مبنية للاستخدام الواقعي والتوسّع، ومدمجة مع الأنظمة الخلفية نفسها.",
+    "serviceDetail.software.feat.3.desc": "تطبيقات للعملاء وأخرى داخلية، مبنية للاستخدام الواقعي والتوسّع، ومدمجة مع الأنظمة الخلفية نفسها.",
     "serviceDetail.software.feat.4.title": "الأتمتة والذكاء الاصطناعي",
     "serviceDetail.software.feat.4.desc": "أتمتة سير العمل وتكاملات الذكاء الاصطناعي التي تزيل العمل اليدوي — توجيه العملاء المحتملين، ومزامنة البيانات، والمتابعات، والمهام المتكرّرة التي تستهلك وقت فريقك.",
     "serviceDetail.software.proc.1.title": "الاكتشاف",
@@ -443,14 +443,14 @@ const translations: Record<Language, Record<string, string>> = {
     "serviceDetail.software.faq.2.q": "هل يمكن أن يتكامل مع أدواتنا الحالية؟",
     "serviceDetail.software.faq.2.a": "هذا هو الهدف تماماً. نربط النظام بأنظمة CRM وERP وبقية أدواتك منذ اليوم الأول.",
     "serviceDetail.software.faq.3.q": "كم يستغرق البناء؟",
-    "serviceDetail.software.faq.3.a": "يعتمد على النطاق — نمنحك جدولاً زمنياً محدداً في العرض، لا مدى مبهماً.",
+    "serviceDetail.software.faq.3.a": "يعتمد على النطاق — نمنحك جدولاً زمنياً محدداً في العرض، لا تقديراً مبهماً.",
     "serviceDetail.software.faq.4.q": "ماذا لو كان لدينا نظام بالفعل؟",
     "serviceDetail.software.faq.4.a": "نعيد بناء ما لديك أو نطوّره، أيّهما أنسب لوضعك فعلاً.",
 
     // Service Detail — DIGITAL MARKETING
     "serviceDetail.dm.title": "تسويق مبني كنظام لاستقطاب العملاء",
     "serviceDetail.dm.desc": "تحسين محركات البحث والحملات المدفوعة واستراتيجية التحويل، مدمجة في محرك واحد قابل للقياس يجلب مشترين مؤهّلين — لا زيارات شكلية.",
-    "serviceDetail.dm.cta": "وسّع استقطابك",
+    "serviceDetail.dm.cta": "وسّع قاعدة عملائك",
     "serviceDetail.dm.feat.1.title": "حملات مدفوعة (جوجل / ميتا / لينكدإن)",
     "serviceDetail.dm.feat.2.title": "تحسين محركات بحث موجّه لنيّة الشراء",
     "serviceDetail.dm.feat.3.title": "تحسين معدّل التحويل",
@@ -464,9 +464,9 @@ const translations: Record<Language, Record<string, string>> = {
     "serviceDetail.dm.proc.4.title": "التحسين",
     "serviceDetail.dm.proc.4.desc": "اختبار مستمر استناداً إلى بيانات الأداء الحقيقية.",
     "serviceDetail.dm.faq.1.q": "ما الحد الأدنى اللازم لنجاح ذلك؟",
-    "serviceDetail.dm.faq.1.a": "نحن صريحون بشأن الملاءمة — نصارحك بما إذا كانت الميزانية تبرّر العمل، ونخبرك بذلك قبل أن تلتزم.",
+    "serviceDetail.dm.faq.1.a": "نحن صريحون معك — نصارحك إن كانت ميزانيتك تبرّر العمل، قبل أن تلتزم بأي شيء.",
     "serviceDetail.dm.faq.2.q": "متى تظهر النتائج؟",
-    "serviceDetail.dm.faq.2.a": "الحملات المدفوعة تتحرّك خلال أسابيع؛ أما تحسين محركات البحث فيحتاج بضعة أشهر لزيارات ذات قيمة. نضع توقعات واقعية قبل أن نبدأ.",
+    "serviceDetail.dm.faq.2.a": "الحملات المدفوعة تبدأ نتائجها خلال أسابيع؛ أما تحسين محركات البحث فيحتاج بضعة أشهر لزيارات ذات قيمة. نضع توقعات واقعية قبل أن نبدأ.",
     "serviceDetail.dm.faq.3.q": "هل تضمنون النتائج؟",
     "serviceDetail.dm.faq.3.a": "نضمن عملنا ومنهجيتنا، لا ظروف السوق. نتّفق على الأهداف مسبقاً ونكون مسؤولين عنها.",
 
@@ -495,7 +495,7 @@ const translations: Record<Language, Record<string, string>> = {
 
     // --- PORTFOLIO ---
     "portfolio.title": "أعمال مختارة",
-    "portfolio.sub": "باقة مختارة من البنى الرقمية وأنظمة النمو المصمّمة لروّاد السوق.",
+    "portfolio.sub": "نخبة من البنية الرقمية وأنظمة النمو المصمّمة لروّاد السوق.",
     "portfolio.empty": "لا توجد مشاريع في هذه الفئة.",
 
     // --- PROJECT DETAIL ---
@@ -509,7 +509,7 @@ const translations: Record<Language, Record<string, string>> = {
 
     // --- CONTACT ---
     "contact.title": "لنتحدث",
-    "contact.sub": "أخبرنا عن أعمالك وما الذي يبطّئها. وسنصارحك بما إذا كنا نستطيع المساعدة.",
+    "contact.sub": "أخبرنا عن أعمالك وما الذي يبطّئها، وسنخبرك بصراحة إن كنا نستطيع مساعدتك.",
     "contact.name": "الاسم",
     "contact.email": "البريد الإلكتروني",
     "contact.phone": "الهاتف",
@@ -532,9 +532,9 @@ const translations: Record<Language, Record<string, string>> = {
     "contact.responseLabel": "وقت الاستجابة",
     "contact.responseVal": "خلال 24 ساعة في أيام العمل",
     "contact.quick.title": "ضمان الاستجابة السريعة",
-    "contact.quick.body": "نردّ عادةً على جميع الاستفسارات خلال 24 ساعة في أيام العمل. وللأمور العاجلة، يُرجى الإشارة إلى ذلك في رسالتك.",
+    "contact.quick.body": "نردّ عادةً على كل الاستفسارات خلال 24 ساعة في أيام العمل. وإن كان الأمر عاجلاً، اذكر ذلك في رسالتك.",
     "contact.toast.success": "تم إرسال الرسالة — سنعاود التواصل معك خلال 24 ساعة.",
-    "contact.toast.error": "حدث خطأ ما — يُرجى المحاولة مجدداً، أو مراسلتنا مباشرةً عبر البريد.",
+    "contact.toast.error": "حدث خطأ ما — حاول مجدداً، أو راسلنا مباشرةً عبر البريد.",
 
     // --- FOOTER ---
     "footer.tagline": "نبني الأنظمة التي تقف خلف نمو الأعمال.",
@@ -554,7 +554,7 @@ const translations: Record<Language, Record<string, string>> = {
     "footer.location": "القاهرة، مصر",
     "footer.copyright": "وكالة OmniflowAI. جميع الحقوق محفوظة.",
     "footer.toast.subscribed": "شكراً — تم اشتراكك.",
-    "footer.toast.error": "حدث خطأ ما، يُرجى المحاولة مجدداً.",
+    "footer.toast.error": "حدث خطأ ما، حاول مجدداً.",
 
     // --- ABOUT (team/founder attribution stays frozen: [TODO(team-final)]) ---
     "about.badge": "من نحن",
