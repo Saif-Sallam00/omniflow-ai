@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, CheckCircle2, TrendingUp, Layers, Calendar, ArrowRight, Shield } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useI18n } from '@/lib/i18n';
+import { onImageError } from '@/lib/placeholder';
 
 export default function ProjectDetail() {
   const [, params] = useRoute("/portfolio/:id");
@@ -74,7 +75,7 @@ export default function ProjectDetail() {
       {/* MAIN VISUAL */}
       <section className="relative -mt-8 md:-mt-12 z-20 px-4 md:px-8 max-w-7xl mx-auto">
         <div className="rounded-xl md:rounded-2xl overflow-hidden shadow-2xl border border-slate-800 bg-slate-900">
-          <img src={project.image} alt={project.title} className="w-full h-auto object-cover max-h-[700px] opacity-90" />
+          <img src={project.image} alt={project.title} loading="lazy" decoding="async" onError={onImageError} className="w-full h-auto object-cover max-h-[700px] opacity-90" />
         </div>
       </section>
 

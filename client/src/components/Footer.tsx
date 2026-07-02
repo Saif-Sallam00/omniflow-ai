@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { CONTACT_EMAIL } from "@shared/taxonomy";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -18,8 +19,8 @@ export function Footer() {
   return (
     <footer className="bg-slate-950 text-slate-300 border-t border-slate-800 relative overflow-hidden">
       {/* Background Glow Effects */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-amber-500/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-[60px] pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-amber-500/5 rounded-full blur-[60px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-6 md:px-8 pt-12 md:pt-24 pb-10 relative z-10">
         {/* MOBILE: grid-cols-3 (Brand spans 3, others span 1)
@@ -37,7 +38,7 @@ export function Footer() {
               </span>
             </Link>
             <p className="text-slate-400 leading-relaxed text-sm md:text-base">
-              We build digital ecosystems that scale. Bridging the gap between premium design and intelligent automation.
+              We build the systems behind business growth.
             </p>
             <div className="flex items-center justify-center md:justify-start gap-4">
               <SocialIcon href="#" icon={Twitter} />
@@ -95,7 +96,7 @@ export function Footer() {
             <div className="space-y-3 pt-0 md:pt-2">
               <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3 text-xs md:text-sm text-slate-400">
                 <Mail className="w-4 h-4 text-amber-500 hidden md:block" />
-                <span className="break-all">hello@omniflow.ai</span>
+                <span className="break-all">{CONTACT_EMAIL}</span>
               </div>
               <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3 text-xs md:text-sm text-slate-400">
                 <MapPin className="w-4 h-4 text-amber-500 hidden md:block" />

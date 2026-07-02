@@ -5,17 +5,44 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useQuery } from '@tanstack/react-query';
 import { Project } from '@shared/schema';
+import { CATEGORY_LABELS, PORTFOLIO_TAB_ORDER, type Category } from '@shared/taxonomy';
+import { onImageError } from '@/lib/placeholder';
 
 export default function Portfolio() {
   const [activeFilter, setActiveFilter] = useState<string>('all');
 
-  const { data: projects, isLoading } = useQuery<Project[]>({
+  // Base query: ALL projects — used to decide which category tabs to show.
+  const { data: allProjects, isLoading: allLoading } = useQuery<Project[]>({
     queryKey: ['/api/projects'],
   });
 
-  const filteredProjects = projects?.filter(p => 
-    activeFilter === 'all' ? true : p.category === activeFilter
-  ) || [];
+  // Display query: hits /api/projects?category=<slug> when a specific tab is active.
+  const { data: filteredData, isLoading: filterLoading } = useQuery<Project[]>({
+    queryKey: ['/api/projects', 'filter', activeFilter],
+    queryFn: async () => {
+      const url =
+        activeFilter === 'all'
+          ? '/api/projects'
+          : `/api/projects?category=${activeFilter}`;
+      const res = await fetch(url, { credentials: 'include' });
+      if (!res.ok) throw new Error('Failed to load projects');
+      return res.json();
+    },
+  });
+
+  const isLoading = allLoading || filterLoading;
+  const filteredProjects = filteredData || [];
+
+  // Only surface a category tab if at least one project currently has it.
+  // "All" is always shown. No empty tabs.
+  const presentCategories = new Set((allProjects || []).map((p) => p.category));
+  const visibleTabs: string[] = [
+    'all',
+    ...PORTFOLIO_TAB_ORDER.filter((c) => presentCategories.has(c)),
+  ];
+
+  const tabLabel = (tab: string) =>
+    tab === 'all' ? 'All' : CATEGORY_LABELS[tab as Category];
 
   if (isLoading) return <PortfolioSkeleton />;
 
@@ -28,7 +55,7 @@ export default function Portfolio() {
           <h1 className="text-4xl md:text-5xl font-display font-bold text-white mb-6">
             Selected Work
           </h1>
-          <p className="text-xl text-slate-400 max-w-2xl mx-auto font-light">
+          <p className="text-xl text-slate-400 max-w-2xl mx-auto font-normal">
             A curation of digital infrastructure and growth systems engineered for market leaders.
           </p>
         </div>
@@ -37,15 +64,15 @@ export default function Portfolio() {
       {/* 2. Filter Tabs */}
       <section className="sticky top-16 z-30 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/50 py-4">
         <div className="max-w-7xl mx-auto px-6 md:px-8 flex justify-center">
-          <Tabs defaultValue="all" className="w-full max-w-md" onValueChange={setActiveFilter}>
-            <TabsList className="w-full bg-slate-900 border border-slate-800 rounded-full p-1">
-              {['all', 'build', 'attract', 'automate'].map((tab) => (
-                <TabsTrigger 
+          <Tabs defaultValue="all" className="w-full max-w-3xl" onValueChange={setActiveFilter}>
+            <TabsList className="w-full flex-wrap bg-slate-900 border border-slate-800 rounded-full p-1">
+              {visibleTabs.map((tab) => (
+                <TabsTrigger
                   key={tab}
-                  value={tab} 
-                  className="rounded-full px-4 py-2 text-sm font-medium text-slate-400 data-[state=active]:bg-slate-800 data-[state=active]:text-white data-[state=active]:shadow-sm transition-all flex-1 capitalize"
+                  value={tab}
+                  className="rounded-full px-4 py-2 text-sm font-medium text-slate-400 data-[state=active]:bg-slate-800 data-[state=active]:text-white data-[state=active]:shadow-sm transition-all flex-1"
                 >
-                  {tab}
+                  {tabLabel(tab)}
                 </TabsTrigger>
               ))}
             </TabsList>
@@ -79,11 +106,13 @@ export default function Portfolio() {
                         </div>
                       </div>
 
-                      <img 
-                        src={project.image} 
+                      <img
+                        src={project.image}
                         alt={project.title}
+                        loading="lazy"
+                        decoding="async"
+                        onError={onImageError}
                         className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
-                        onError={(e) => { (e.target as HTMLImageElement).src = 'https://placehold.co/600x400?text=No+Image' }}
                       />
                     </div>
 
@@ -94,7 +123,7 @@ export default function Portfolio() {
                           {project.title}
                         </h3>
                         <Badge variant="outline" className="border-slate-800 text-slate-500 text-[10px] uppercase tracking-wider bg-slate-900">
-                          {project.category}
+                          {CATEGORY_LABELS[project.category] ?? project.category}
                         </Badge>
                       </div>
                       <p className="text-sm text-slate-500 font-medium">

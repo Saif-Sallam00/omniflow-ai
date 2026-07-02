@@ -1,6 +1,7 @@
 import { users, projects, type User, type InsertUser, type Project, type InsertProject } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, ne } from "drizzle-orm";
+import type { Category } from "@shared/taxonomy";
 
 export interface IStorage {
   // --- User / Auth Methods ---
@@ -45,7 +46,7 @@ export class DatabaseStorage implements IStorage {
       .set({ isServiceShowcase: false })
       .where(
         and(
-          eq(projects.category, category),
+          eq(projects.category, category as Category),
           eq(projects.isServiceShowcase, true),
           excludeId ? ne(projects.id, excludeId) : undefined
         )
@@ -102,7 +103,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getProjectsByCategory(category: string, showOnServicePageOnly = false): Promise<Project[]> {
-    const conditions = [eq(projects.category, category)];
+    const conditions = [eq(projects.category, category as Category)];
     if (showOnServicePageOnly) {
       conditions.push(eq(projects.showOnServicePage, true));
     }

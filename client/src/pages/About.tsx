@@ -14,7 +14,7 @@ export default function About() {
   return (
     <div className="min-h-screen pt-20 bg-slate-950 text-white">
 
-      {/* 1. HERO: The Human Mission */}
+      {/* 1. HERO: Who we are */}
       <section className="py-20 md:py-24 relative overflow-hidden">
         {/* Background Gradients */}
         <div className="absolute top-0 right-0 w-[50%] h-[60%] bg-gradient-to-bl from-orange-950/30 via-transparent to-transparent pointer-events-none" />
@@ -25,24 +25,24 @@ export default function About() {
               variant="outline"
               className="mb-6 px-4 py-1 border-orange-500/30 text-orange-400 tracking-widest uppercase text-xs font-semibold bg-orange-500/10"
             >
-              Our DNA
+              Who we are
             </Badge>
             <h1 className="text-4xl md:text-6xl font-display font-bold text-white mb-8 leading-tight">
-              We are engineers who speak{" "}
+              Engineers who understand{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">
-                Business.
+                business.
               </span>
             </h1>
             <p className="text-xl text-slate-400 leading-relaxed max-w-2xl mx-auto">
-              OmniflowAI wasn't founded by salespeople. It was founded by senior
-              developers tired of seeing businesses overpay for "pretty" websites
-              that break under pressure.
+              OmniflowAI is a digital transformation partner built around one belief:
+              most companies don't need more tools — they need the right systems,
+              built well and connected properly.
             </p>
           </div>
         </div>
       </section>
 
-      {/* 2. FOUNDER STORY (The "Why") */}
+      {/* 2. STORY (company narrative) — founder attribution FROZEN */}
       <section className="py-20 md:py-24 bg-slate-900/30 border-y border-slate-800/30">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -52,6 +52,8 @@ export default function About() {
               <img
                 src={FounderImage}
                 alt="Founder of OmniflowAI"
+                loading="lazy"
+                decoding="async"
                 className="relative rounded-2xl shadow-2xl w-full object-cover aspect-[4/5] grayscale group-hover:grayscale-0 transition-all duration-700 border border-slate-800"
               />
             </div>
@@ -59,36 +61,38 @@ export default function About() {
             {/* Text Side */}
             <div className="space-y-8">
               <h2 className="text-3xl md:text-4xl font-display font-bold text-white">
-                "I built this to fix the agency model."
+                We started OmniflowAI to close a gap.
               </h2>
               <div className="prose prose-lg text-slate-400 space-y-6">
                 <p>
-                  For 20 years, I worked in enterprise software. I saw a massive
-                  gap: Small and mid-sized businesses were getting trapped.
-                  Agencies would sell them a "custom site" that was really just
-                  a cheap template, or worse, hold their code hostage with
-                  monthly fees.
+                  Too many businesses are sold disconnected pieces — a website here,
+                  an ad campaign there, a tool nobody integrates — and left to stitch
+                  them together themselves. The result is expensive fragmentation:
+                  software that doesn't talk, marketing that doesn't convert, and no
+                  clear view of what's working.
                 </p>
                 <p>
-                  I started OmniflowAI with one rule:{" "}
-                  <strong className="text-white">Transparency.</strong>
+                  We do the opposite. We start from how your business actually
+                  operates, then design and build the systems that fit it — software,
+                  marketing, and automation that work as one. You own everything we
+                  build. No lock-in, no dependency, no black boxes.
                 </p>
                 <p>
-                  We don't hide behind jargon. We build robust, scalable systems
-                  using the same technology used by tech giants—and then we hand
-                  you the keys. No lock-in. No secrets. Just engineering
-                  excellence that drives your bottom line.
+                  We work like engineers, not order-takers: we care about outcomes you
+                  can measure, systems that outlast the engagement, and giving you the
+                  keys at the end.
                 </p>
               </div>
 
-              {/* Founder info */}
+              {/* Founder info — FROZEN */}
+              {/* TODO(team-final) */}
               <div className="pt-6 border-t border-slate-800">
                 <div className="flex items-center gap-4">
                   <div>
                     <p className="text-lg font-bold text-white">
-                      Mosatafa Hekal
+                      [TODO(team-final)]
                     </p>
-                    <p className="text-orange-400 text-sm">Founder & Technical Lead</p>
+                    <p className="text-orange-400 text-sm">[TODO(team-final)]</p>
                   </div>
                 </div>
               </div>
@@ -97,7 +101,8 @@ export default function About() {
         </div>
       </section>
 
-      {/* 3. THE TEAM GRID */}
+      {/* 3. THE TEAM GRID — FROZEN */}
+      {/* TODO(team-final) */}
       <section className="py-20 md:py-24">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <div className="text-center mb-16">
@@ -113,21 +118,21 @@ export default function About() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <TeamCard
               image={DesignHeadImage}
-              name="Roaa Mohamed"
-              role="Head of Design"
-              bio="Ex-Shopify designer obsessed with conversion rates and user psychology."
+              name="[TODO(team-final)]"
+              role="[TODO(team-final)]"
+              bio="[TODO(team-final)]"
             />
             <TeamCard
               image={SoftwareHeadImage}
-              name="Saif Sallam"
-              role="Lead Systems Architect"
-              bio="Specialist in ERPNext and high-scale database automation."
+              name="[TODO(team-final)]"
+              role="[TODO(team-final)]"
+              bio="[TODO(team-final)]"
             />
             <TeamCard
               image={MarketingImage}
-              name="Faris Sallam"
-              role="Growth Strategist"
-              bio="Direct-response marketer who turns traffic into qualified B2B leads."
+              name="[TODO(team-final)]"
+              role="[TODO(team-final)]"
+              bio="[TODO(team-final)]"
             />
           </div>
         </div>
@@ -139,23 +144,23 @@ export default function About() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <ValueCard
               icon={Shield}
-              title="Code Ownership"
-              desc="You pay for it, you own it. We transfer full IP and source code upon completion."
+              title="Systems over services"
+              desc="We don't sell isolated deliverables. Everything we build is designed to connect and compound."
             />
             <ValueCard
               icon={Target}
-              title="Revenue First"
-              desc="We don't care about 'likes.' We care about leads, sales, and automation ROI."
+              title="You own it"
+              desc="Full source code and IP transfer on every build. What you pay for is yours."
             />
             <ValueCard
               icon={Users}
-              title="Direct Access"
-              desc="You talk to the engineers building your product, not an account manager."
+              title="Engineering-led"
+              desc="You work directly with the people building your systems, not an account manager relaying messages."
             />
             <ValueCard
               icon={Award}
-              title="Zero Bloat"
-              desc="We use lean, modern tech stacks. No heavy plugins. No slow loading times."
+              title="Measured by outcomes"
+              desc="We tie our work to business results — revenue, efficiency, acquisition — not hours logged or assets shipped."
             />
           </div>
         </div>
@@ -167,18 +172,18 @@ export default function About() {
 
         <div className="relative z-10 max-w-3xl mx-auto px-6 md:px-8">
           <h2 className="text-3xl font-display font-bold text-white mb-6">
-            Ready to work with adults?
+            Let's map your systems
           </h2>
           <p className="text-lg text-slate-400 mb-8">
-            Stop gambling on freelancers and templates. Partner with a team that
-            builds assets, not liabilities.
+            We don't hand over deliverables and walk away. We build systems that
+            keep working after we're gone.
           </p>
           <a href="/contact">
             <Button
               size="lg"
               className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white text-lg px-8 py-6 rounded-full font-bold shadow-lg shadow-orange-900/20"
             >
-              Book a Strategy Call
+              Book a strategy call
             </Button>
           </a>
         </div>
@@ -206,6 +211,8 @@ function TeamCard({
         <img
           src={image}
           alt={name}
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100"
         />
       </div>

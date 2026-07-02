@@ -1,11 +1,10 @@
 import { Link } from 'wouter';
-import { 
-  ArrowRight, Globe, Bot, Zap, BarChart3, 
-  CheckCircle2, ArrowUpRight
-} from 'lucide-react';
+import { ArrowRight, Globe, Bot, BarChart3, ArrowUpRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 import { Project } from '@shared/schema';
+import { CATEGORY_TO_PILLAR, type Pillar } from '@shared/taxonomy';
+import { onImageError } from '@/lib/placeholder';
 
 export default function Services() {
 
@@ -14,40 +13,40 @@ export default function Services() {
     queryKey: ['/api/projects/showcase'],
   });
 
-  const getShowcaseProject = (category: string) => {
-    return showcaseProjects?.find(p => p.category === category);
+  // A pillar's showcase = showcase projects whose category rolls up to it.
+  // Deterministic winner when several qualify: most recently created (highest id;
+  // there is no updatedAt column). No behaviour change for 0 or 1 match.
+  const getShowcaseProject = (pillar: Pillar) => {
+    return (showcaseProjects || [])
+      .filter(p => CATEGORY_TO_PILLAR[p.category] === pillar)
+      .sort((a, b) => b.id - a.id)[0];
   };
 
   const services = [
     {
-      id: 'website-development',
-      category: 'build',
-      icon: Globe,
-      title: 'Web Development',
-      tagline: 'Your website should close deals, not just look pretty.',
-      description: 'We build custom platforms that convert visitors into customers. Fast, mobile-first, and integrated with your existing tools. You own every line of code.',
-      features: ['Custom development (React, Next.js)', 'CRM & ERP integrations', 'Conversion-optimized design', 'Full code ownership'],
-      href: '/services/website-development',
+      id: 'ai-training',
+      pillar: 'ai-training' as Pillar,
+      icon: Bot,
+      title: 'AI training that turns tools into capability',
+      body: "We run structured AI adoption programs for teams and leadership — from executive strategy sessions to hands-on workflow integration. The goal isn't awareness, it's operational capability: your people using AI on real work, not watching a demo.",
+      href: '/services/ai-training',
     },
     {
       id: 'digital-marketing',
-      category: 'attract',
+      pillar: 'digital-marketing' as Pillar,
       icon: BarChart3,
-      title: 'Digital Marketing',
-      tagline: "Stop paying for traffic that doesn't convert.",
-      description: 'We run campaigns that target decision-makers in your industry. SEO that ranks for buyer-intent keywords. Ads that pay for themselves.',
-      features: ['B2B-focused paid campaigns', 'Technical SEO & content', 'Conversion tracking', 'Monthly performance reports'],
+      title: 'Marketing built as an acquisition system',
+      body: 'SEO, paid campaigns, and conversion strategy wired into one engine that targets qualified buyers — not vanity traffic. Every stage is tracked, so you know what a lead actually costs and where revenue comes from.',
       href: '/services/digital-marketing',
     },
     {
-      id: 'automation',
-      category: 'automate',
-      icon: Bot,
-      title: 'AI & Automation',
-      tagline: 'Your team is too expensive for repetitive tasks.',
-      description: 'We build intelligent workflows that handle the boring stuff. Your team focuses on closing deals while the system runs 24/7.',
-      features: ['Custom workflow automation', 'AI chatbots for qualification', 'CRM & tool integrations', 'WhatsApp/SMS automation'],
-      href: '/services/automation',
+      id: 'software',
+      pillar: 'software' as Pillar,
+      icon: Globe,
+      title: 'Software that becomes your operational backbone',
+      body: 'The systems your business runs on — ERP and CRM platforms, customer-facing web, mobile apps, and the automation that connects them. Built to own, integrate, and scale, not to rent.',
+      subcaps: 'Business Systems (ERP/CRM) · Web Platforms · Mobile Apps · Automation & AI',
+      href: '/services/software',
     },
   ];
 
@@ -60,10 +59,10 @@ export default function Services() {
         <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 text-center">
           <p className="text-orange-400/80 text-sm font-medium tracking-wide mb-6">What we do</p>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-            Three services. <span className="text-slate-500">One goal.</span>
+            Three capabilities. <span className="text-slate-500">One transformation partner.</span>
           </h1>
           <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
-            We don't sell hours. We build systems that generate revenue, cut costs, and scale.
+            We don't hand over deliverables and walk away. We build systems that keep working after we're gone.
           </p>
         </div>
       </section>
@@ -73,7 +72,7 @@ export default function Services() {
         <div className="max-w-7xl mx-auto px-6 md:px-8 space-y-12">
           {services.map((service) => {
             const Icon = service.icon;
-            const showcase = getShowcaseProject(service.category);
+            const showcase = getShowcaseProject(service.pillar);
 
             return (
               <div key={service.id} className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
@@ -86,18 +85,13 @@ export default function Services() {
                         <Icon className="w-6 h-6 text-orange-400" />
                       </div>
                       <div>
-                        <h2 className="text-2xl font-bold text-white mb-2">{service.title}</h2>
-                        <p className="text-orange-400/80 font-medium">{service.tagline}</p>
+                        <h2 className="text-2xl font-bold text-white">{service.title}</h2>
                       </div>
                     </div>
-                    <p className="text-slate-400 leading-relaxed">{service.description}</p>
-                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {service.features.map((feature, i) => (
-                        <li key={i} className="flex items-center gap-2 text-sm text-slate-300">
-                          <CheckCircle2 className="w-4 h-4 text-orange-500/70" /> {feature}
-                        </li>
-                      ))}
-                    </ul>
+                    <p className="text-slate-400 leading-relaxed">{service.body}</p>
+                    {service.subcaps && (
+                      <p className="text-sm text-orange-400/80 font-medium">{service.subcaps}</p>
+                    )}
                   </div>
                   <div className="pt-8">
                     <Link href={service.href}>
@@ -111,11 +105,13 @@ export default function Services() {
                 {/* Showcase Project Preview (Only if exists) */}
                 {showcase && (
                   <div className="lg:col-span-5 relative group overflow-hidden rounded-2xl border border-slate-800/50 bg-slate-900/60">
-                    <img 
-                      src={showcase.image} 
-                      alt={showcase.title} 
+                    <img
+                      src={showcase.image}
+                      alt={showcase.title}
+                      loading="lazy"
+                      decoding="async"
+                      onError={onImageError}
                       className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-500"
-                      onError={(e) => { (e.target as HTMLImageElement).src = 'https://placehold.co/600x400?text=No+Image' }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent p-8 flex flex-col justify-end">
                       <div className="space-y-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
@@ -145,9 +141,9 @@ export default function Services() {
               Better together
             </h2>
             <p className="text-slate-400 max-w-2xl mx-auto">
-              Each service works on its own. But when combined, they create a 
-              system that compounds—your website feeds your marketing, 
-              your marketing feeds your automation, and everything syncs.
+              Each capability works on its own. Together they compound — your
+              software captures the data, your marketing fills the pipeline, your
+              automation runs it, and your team knows how to drive all of it.
             </p>
           </div>
 
@@ -201,11 +197,11 @@ export default function Services() {
             Not sure what you need?
           </h2>
           <p className="text-xl text-slate-400 mb-10">
-            Book a free call. We'll look at your current setup and tell you 
+            Book a free call. We'll look at your current setup and tell you
             exactly what would move the needle—even if it's not something we do.
           </p>
           <Link href="/contact">
-            <Button 
+            <Button
               size="lg"
               className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-6 text-base rounded-lg transition-colors"
             >

@@ -1,3 +1,5 @@
+import sharp from "sharp";
+
 export class ObjectNotFoundError extends Error {
   constructor(public objectPath: string) {
     super(`Object not found: ${objectPath}`);
@@ -6,39 +8,44 @@ export class ObjectNotFoundError extends Error {
 }
 
 export class ObjectStorageService {
-  // No initialization needed. We are not using disk or cloud buckets anymore.
+  // No initialization needed. We are not using disk or cloud buckets.
 
   /**
-   * DATABASE MODE: Converts the image buffer to a Base64 Data URI string.
-   * This allows the image to be stored directly in the database text column.
-   * It persists across restarts because the Database persists.
+   * DATABASE MODE: Compresses the uploaded image with sharp (resize + WebP)
+   * and returns a Base64 Data URI for storage in a Postgres text column.
+   *
+   * The processing (max width 1600px, never upscaled, re-encoded to WebP @ q80)
+   * dramatically shrinks the stored payload vs. the raw upload, with no infra
+   * change — the image still lives in the database.
    */
-  async uploadImageBuffer(buffer: Buffer, mimeType: string, originalName: string): Promise<string> {
+  async uploadImageBuffer(buffer: Buffer, _mimeType: string, originalName: string): Promise<string> {
     try {
-      // 1. Convert Buffer to Base64 String
-      const base64String = buffer.toString('base64');
+      const processed = await sharp(buffer)
+        .rotate() // honor EXIF orientation before we strip metadata
+        .resize({ width: 1600, withoutEnlargement: true })
+        .webp({ quality: 80 })
+        .toBuffer();
 
-      // 2. Create the Data URI
-      // Format: data:image/png;base64,.....
-      const dataURI = `data:${mimeType};base64,${base64String}`;
+      const base64String = processed.toString("base64");
+      const dataURI = `data:image/webp;base64,${base64String}`;
 
-      console.log(`[Storage] Converted ${originalName} to Data URI (${dataURI.length} chars)`);
+      console.log(
+        `[Storage] Processed ${originalName}: ${buffer.length} → ${processed.length} bytes (webp, ${dataURI.length} chars)`,
+      );
 
-      // 3. Return the huge string to be saved in the database
       return dataURI;
-
     } catch (error) {
-      console.error("[Storage] Conversion Error:", error);
+      console.error("[Storage] Processing Error:", error);
       throw new Error("Failed to process image");
     }
   }
 
   // Not used in this mode, but kept for compatibility with routes
   async getObjectEntityFile(objectPath: string): Promise<any> {
-     return null; 
+    return null;
   }
 
   async downloadObject(file: any, res: any) {
-     // No-op
+    // No-op
   }
 }

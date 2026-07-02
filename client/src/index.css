@@ -60,7 +60,6 @@
 
     /* Font Families */
     --font-sans: 'Inter', sans-serif;
-    --font-serif: 'Playfair Display', serif;
     --font-display: 'Space Grotesk', sans-serif;
 
     /* Elevation Vars */
@@ -126,9 +125,6 @@
 }
 
 @layer utilities {
-  .font-serif {
-    font-family: var(--font-serif);
-  }
   .text-balance {
     text-wrap: balance;
   }

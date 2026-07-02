@@ -25,6 +25,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useI18n } from "@/lib/i18n";
 import { apiRequest } from "@/lib/queryClient";
 import { contactFormSchema, type ContactFormData } from "@shared/schema";
+import { PILLARS, PILLAR_LABELS, CONTACT_EMAIL } from "@shared/taxonomy";
 
 export default function Contact() {
   const { t } = useI18n();
@@ -37,7 +38,7 @@ export default function Contact() {
       email: "",
       phone: "",
       company: "",
-      service: "website",
+      service: PILLARS[2], // "software" — pillar slug from shared/taxonomy
       message: "",
     },
   });
@@ -47,15 +48,13 @@ export default function Contact() {
       apiRequest("POST", "/api/contact", data),
     onSuccess: () => {
       toast({
-        title: t("contact.success"),
-        description: "We will get back to you within 24 hours.",
+        title: "Message sent — we'll get back to you within 24 hours.",
       });
       form.reset();
     },
     onError: () => {
       toast({
-        title: t("contact.error"),
-        description: "Please try again or email us directly.",
+        title: "Something went wrong — please try again, or email us directly.",
         variant: "destructive",
       });
     },
@@ -74,10 +73,10 @@ export default function Contact() {
         <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
           <div className="max-w-3xl mx-auto text-center mb-16">
             <h1 className="text-5xl md:text-6xl font-bold font-display mb-6 text-white">
-              {t("Contact Us")}
+              Let's talk
             </h1>
             <p className="text-xl text-slate-400">
-              Tell us about your project. We'll tell you if we can help.
+              Tell us about your business and what's slowing it down. We'll tell you honestly if we can help.
             </p>
           </div>
 
@@ -95,10 +94,10 @@ export default function Contact() {
                         name="name"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-slate-300">{t("Name")}</FormLabel>
+                            <FormLabel className="text-slate-300">Name</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="Ahmed Hassan"
+                                placeholder="Your name"
                                 {...field}
                                 className="bg-slate-950 border-slate-800 text-white placeholder:text-slate-600 focus:border-orange-500/50"
                               />
@@ -113,11 +112,11 @@ export default function Contact() {
                         name="email"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-slate-300">{t("Email")}</FormLabel>
+                            <FormLabel className="text-slate-300">Email</FormLabel>
                             <FormControl>
                               <Input
                                 type="email"
-                                placeholder="ahmed@example.com"
+                                placeholder="you@company.com"
                                 {...field}
                                 className="bg-slate-950 border-slate-800 text-white placeholder:text-slate-600 focus:border-orange-500/50"
                               />
@@ -134,7 +133,7 @@ export default function Contact() {
                         name="phone"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-slate-300">{t("Phone")} <span className="text-slate-500 text-xs">(Optional)</span></FormLabel>
+                            <FormLabel className="text-slate-300">Phone <span className="text-slate-500 text-xs">(optional)</span></FormLabel>
                             <FormControl>
                               <Input
                                 type="tel"
@@ -153,7 +152,7 @@ export default function Contact() {
                         name="company"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-slate-300">{t("Company")} <span className="text-slate-500 text-xs">(Optional)</span></FormLabel>
+                            <FormLabel className="text-slate-300">Company <span className="text-slate-500 text-xs">(optional)</span></FormLabel>
                             <FormControl>
                               <Input
                                 placeholder="Your Company"
@@ -172,7 +171,7 @@ export default function Contact() {
                       name="service"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-slate-300">{t("Service")}</FormLabel>
+                          <FormLabel className="text-slate-300">What do you need?</FormLabel>
                           <Select
                             onValueChange={field.onChange}
                             defaultValue={field.value}
@@ -183,10 +182,9 @@ export default function Contact() {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent className="bg-slate-900 border-slate-800 text-white">
-                              <SelectItem value="website">Website Development</SelectItem>
-                              <SelectItem value="ai">AI Agents</SelectItem>
-                              <SelectItem value="automation">Business Automation</SelectItem>
-                              <SelectItem value="marketing">Digital Marketing</SelectItem>
+                              {PILLARS.map((p) => (
+                                <SelectItem key={p} value={p}>{PILLAR_LABELS[p]}</SelectItem>
+                              ))}
                               <SelectItem value="other">Other</SelectItem>
                             </SelectContent>
                           </Select>
@@ -200,7 +198,7 @@ export default function Contact() {
                       name="message"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-slate-300">{t("Message")}</FormLabel>
+                          <FormLabel className="text-slate-300">Message</FormLabel>
                           <FormControl>
                             <Textarea
                               placeholder="Tell us about your project goals..."
@@ -219,7 +217,7 @@ export default function Contact() {
                       className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold"
                       disabled={mutation.isPending}
                     >
-                      {mutation.isPending ? t("Submitting") : t("Submit")}
+                      {mutation.isPending ? "Sending…" : "Send message"}
                       {!mutation.isPending && <ArrowRight className="w-4 h-4 ml-2" />}
                     </Button>
                   </form>
@@ -229,7 +227,7 @@ export default function Contact() {
 
             <div className="space-y-6">
               <div className="rounded-2xl bg-slate-900/40 border border-slate-800 p-6 space-y-6">
-                <h3 className="font-bold text-lg text-white">{t("Info")}</h3>
+                <h3 className="font-bold text-lg text-white">Contact details</h3>
 
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
@@ -237,7 +235,7 @@ export default function Contact() {
                     <div>
                       <p className="font-medium text-sm text-slate-300">Email</p>
                       <p className="text-sm text-slate-500">
-                        contact@omniflowai.agency
+                        {CONTACT_EMAIL}
                       </p>
                     </div>
                   </div>
@@ -247,7 +245,7 @@ export default function Contact() {
                     <div>
                       <p className="font-medium text-sm text-slate-300">Phone</p>
                       <p className="text-sm text-slate-500">
-                        Available upon request
+                        Available on request
                       </p>
                     </div>
                   </div>
@@ -257,7 +255,7 @@ export default function Contact() {
                     <div>
                       <p className="font-medium text-sm text-slate-300">Response Time</p>
                       <p className="text-sm text-slate-500">
-                        {t("contact.info.hours")}
+                        Within 24 hours on business days
                       </p>
                     </div>
                   </div>

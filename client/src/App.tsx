@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { Switch, Route, useLocation } from "wouter";
+import { useEffect, lazy, Suspense } from "react";
+import { Switch, Route, Redirect, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -10,19 +10,29 @@ import { Footer } from "@/components/Footer";
 import { initGA } from "@/lib/analytics";
 import { useAnalytics } from "@/hooks/use-analytics";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, Loader2 } from 'lucide-react';
 
-// Pages
-import Home from "@/pages/Home";
-import About from "@/pages/About";
-import Services from "@/pages/Services";
-import ServiceDetail from "@/pages/ServiceDetail";
-import Portfolio from "@/pages/Portfolio";
-import ProjectDetail from "@/pages/ProjectDetail";
-import Contact from "@/pages/Contact";
-import NotFound from "@/pages/not-found";
-import AuthPage from "@/pages/admin/Auth";
-import Dashboard from "@/pages/admin/Dashboard";
+// Pages — route-based code-splitting (React.lazy) so each page ships in its own
+// chunk instead of one large main bundle.
+const Home = lazy(() => import("@/pages/Home"));
+const About = lazy(() => import("@/pages/About"));
+const Services = lazy(() => import("@/pages/Services"));
+const ServiceDetail = lazy(() => import("@/pages/ServiceDetail"));
+const Portfolio = lazy(() => import("@/pages/Portfolio"));
+const ProjectDetail = lazy(() => import("@/pages/ProjectDetail"));
+const Contact = lazy(() => import("@/pages/Contact"));
+const NotFound = lazy(() => import("@/pages/not-found"));
+const AuthPage = lazy(() => import("@/pages/admin/Auth"));
+const Dashboard = lazy(() => import("@/pages/admin/Dashboard"));
+
+// Lightweight fallback shown while a route chunk loads.
+function PageLoader() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-slate-950">
+      <Loader2 className="w-8 h-8 animate-spin text-orange-500" />
+    </div>
+  );
+}
 
 // Helper to scroll to top on route change
 function ScrollToTop() {
@@ -47,11 +57,25 @@ function Router() {
       <ScrollToTop />
       <Navigation />
       <main className="flex-grow">
+        <Suspense fallback={<PageLoader />}>
         <Switch>
           {/* Public Routes */}
           <Route path="/" component={Home} />
           <Route path="/about" component={About} />
           <Route path="/services" component={Services} />
+
+          {/* Legacy service-slug redirects (Layer 1 structural migration).
+              Old slugs now fold into the three pillars so no link dies. */}
+          <Route path="/services/website-development">
+            {() => <Redirect to="/services/software" />}
+          </Route>
+          <Route path="/services/automation">
+            {() => <Redirect to="/services/software" />}
+          </Route>
+          <Route path="/services/ai-agents">
+            {() => <Redirect to="/services/software" />}
+          </Route>
+
           <Route path="/services/:slug" component={ServiceDetail} />
           <Route path="/portfolio" component={Portfolio} />
           <Route path="/portfolio/:id" component={ProjectDetail} />
@@ -64,6 +88,7 @@ function Router() {
           {/* Fallback */}
           <Route component={NotFound} />
         </Switch>
+        </Suspense>
       </main>
       <Footer />
 

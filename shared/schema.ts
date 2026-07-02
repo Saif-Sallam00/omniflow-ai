@@ -1,6 +1,7 @@
 import { pgTable, text, serial, jsonb, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+import { CATEGORIES, CONTACT_SERVICES, type Category } from "./taxonomy";
 
 // --- EXISTING: Contact Form ---
 export const contactFormSchema = z.object({
@@ -8,7 +9,7 @@ export const contactFormSchema = z.object({
   email: z.string().email("Invalid email address"),
   phone: z.string().optional(),
   company: z.string().optional(),
-  service: z.enum(["website", "ai", "automation", "marketing", "other"]),
+  service: z.enum(CONTACT_SERVICES),
   message: z.string().min(10, "Message must be at least 10 characters"),
 });
 
@@ -31,7 +32,7 @@ export const projects = pgTable("projects", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
   client: text("client").notNull(),
-  category: text("category").notNull(), 
+  category: text("category").$type<Category>().notNull(), 
   description: text("description").notNull(),
   challenge: text("challenge").notNull(),
   solution: text("solution").notNull(),
@@ -45,7 +46,17 @@ export const projects = pgTable("projects", {
   showOnServicePage: boolean("show_on_service_page").default(false).notNull() // Service Detail List
 });
 
-export const insertProjectSchema = createInsertSchema(projects);
-export const selectProjectSchema = createInsertSchema(projects);
+// Category validation is sourced from shared/taxonomy.ts (single source of truth).
+export const insertProjectSchema = createInsertSchema(projects, {
+  category: z.enum(CATEGORIES),
+  results: z.array(z.string()),
+  technologies: z.array(z.string()),
+});
+export const selectProjectSchema = createInsertSchema(projects, {
+  category: z.enum(CATEGORIES),
+  results: z.array(z.string()),
+  technologies: z.array(z.string()),
+});
+// `category` is typed via projects.category.$type<Category>() — sourced from taxonomy.
 export type Project = typeof projects.$inferSelect;
 export type InsertProject = typeof projects.$inferInsert;

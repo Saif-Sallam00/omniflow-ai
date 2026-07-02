@@ -1,137 +1,102 @@
 import { Link, useRoute } from 'wouter';
-import { ArrowRight, CheckCircle2, Globe, Bot, Zap, BarChart3, ArrowUpRight } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Globe, Bot, BarChart3, ArrowUpRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useI18n } from '@/lib/i18n';
 import { useQuery } from '@tanstack/react-query';
 import { Project } from '@shared/schema';
-import { apiRequest } from '@/lib/queryClient'; // [!] Added import
+import { CATEGORY_TO_PILLAR } from '@shared/taxonomy';
+import { onImageError } from '@/lib/placeholder';
 
-// Helper to map slug to category
-const getCategoryFromSlug = (slug: string) => {
-  if (slug === 'website-development') return 'build';
-  if (slug === 'digital-marketing') return 'attract';
-  if (slug === 'automation' || slug === 'ai-agents') return 'automate';
-  return 'build';
+// The three PILLAR service pages.
+const services = {
+  software: {
+    icon: Globe,
+    title: 'Software that becomes your operational backbone',
+    subtitle: 'ERP and CRM platforms, customer-facing web, mobile apps, and the automation that connects them — designed to own, integrate, and scale.',
+    description: 'ERP and CRM platforms, customer-facing web, mobile apps, and the automation that connects them — designed to own, integrate, and scale.',
+    cta: 'Build your system',
+    features: [
+      { title: 'Business Systems (ERP / CRM)', description: 'Custom platforms that centralize your sales, operations, and customer data into one source of truth. Built on proven frameworks, shaped to how your business actually runs.' },
+      { title: 'Web Platforms', description: 'High-performance websites and web apps engineered for conversion and speed — connected to your systems from day one, not bolted on later.' },
+      { title: 'Mobile Apps', description: 'Customer-facing and internal apps built for real-world use and scale, integrated with the same backend as everything else.' },
+      { title: 'Automation & AI', description: "Workflow automation and AI integrations that remove manual work — lead routing, data sync, follow-ups, and the repetitive tasks eating your team's time." },
+    ],
+    process: [
+      { title: 'Discovery', description: 'We learn your business, goals, and technical requirements.' },
+      { title: 'Proposal', description: 'Clear scope, timeline, and a fixed price.' },
+      { title: 'Design', description: 'Wireframes and visual design — you approve before we build.' },
+      { title: 'Build', description: 'We build and integrate, with weekly reviews. No surprises.' },
+      { title: 'Launch', description: 'Tested, live, and handed over — full ownership transferred.' },
+    ],
+    faq: [
+      { q: 'Do we own the code?', a: 'Yes. Full source code and IP transfer on completion. No lock-in, no fees to access your own system.' },
+      { q: 'Can it integrate with our existing tools?', a: "That's the point. We connect to your CRM, ERP, and existing stack from day one." },
+      { q: 'How long does a build take?', a: 'Depends on scope — we give you a specific timeline in the proposal, not a vague range.' },
+      { q: 'What if we already have a system?', a: 'We rebuild or extend what you have, whichever actually makes sense for your situation.' },
+    ],
+  },
+  'digital-marketing': {
+    icon: BarChart3,
+    title: 'Marketing built as an acquisition system',
+    subtitle: 'SEO, paid campaigns, and conversion strategy wired into one measurable engine that brings in qualified buyers — not vanity traffic.',
+    description: 'SEO, paid campaigns, and conversion strategy wired into one measurable engine that brings in qualified buyers — not vanity traffic.',
+    cta: 'Scale your acquisition',
+    features: [
+      { title: 'Paid campaigns (Google / Meta / LinkedIn)', description: '' },
+      { title: 'Buyer-intent SEO', description: '' },
+      { title: 'Conversion-rate optimization', description: '' },
+      { title: 'Funnel strategy & tracking', description: '' },
+    ],
+    process: [
+      { title: 'Audit', description: 'We review your funnel, channels, and competitors.' },
+      { title: 'Strategy', description: "A clear plan — channels, offers, and what we'll test." },
+      { title: 'Setup', description: 'Tracking, campaigns, and landing pages built and launched.' },
+      { title: 'Optimize', description: 'Continuous testing against real performance data.' },
+    ],
+    faq: [
+      { q: "What's the minimum to make this work?", a: "We're honest about fit — we're upfront about whether the budget justifies the work, and we'll tell you before you commit." },
+      { q: 'How fast do results come?', a: 'Paid moves in weeks; SEO is a few months for meaningful traffic. We set realistic expectations before we start.' },
+      { q: 'Do you guarantee results?', a: "We guarantee our work and our process, not market conditions. Targets are agreed upfront and we're accountable to them." },
+    ],
+  },
+  'ai-training': {
+    icon: Bot,
+    title: 'AI training that turns tools into capability',
+    subtitle: 'Structured AI adoption programs for teams and leadership — built to leave your people using AI on real work, not just aware of it.',
+    description: 'Structured AI adoption programs for teams and leadership — built to leave your people using AI on real work, not just aware of it.',
+    cta: 'Start your AI program',
+    features: [
+      { title: 'Executive AI strategy sessions', description: '' },
+      { title: 'Department-level adoption programs', description: '' },
+      { title: 'Hands-on workflow integration workshops', description: '' },
+      { title: 'Implementation support', description: '' },
+    ],
+    process: [
+      { title: 'Assess', description: "We map your team's workflows and where AI actually helps." },
+      { title: 'Design', description: 'A program built around your tools and real tasks.' },
+      { title: 'Train', description: 'Hands-on sessions for leadership and teams.' },
+      { title: 'Embed', description: 'Documented workflows your team keeps and reuses.' },
+    ],
+    faq: [
+      { q: 'Is this generic AI training?', a: 'No. Programs are built around your actual workflows and tools, not a stock curriculum.' },
+      { q: 'Who is it for?', a: 'Leadership and teams — we run both strategy-level and hands-on tracks.' },
+      { q: 'What do we walk away with?', a: 'People who use AI on real work, plus documented workflows your team keeps.' },
+    ],
+  },
 };
 
 export default function ServiceDetail() {
   const [, params] = useRoute('/services/:slug');
   const { isRTL } = useI18n();
   const slug = params?.slug || '';
-  const category = getCategoryFromSlug(slug);
 
-  // [!] FIX: Explicitly construct the URL with query parameters
-  const { data: relatedProjects } = useQuery<Project[]>({
-    queryKey: ['/api/projects', category, 'service-page'], 
-    queryFn: async () => {
-      // Fetch projects that match the category AND have the "Show on Service Page" toggle on
-      return await apiRequest("GET", `/api/projects?category=${category}&showOnServicePage=true`);
-    }
-  });
-
-  const services = {
-    'website-development': {
-      icon: Globe,
-      title: 'Web Development',
-      subtitle: 'Your website should close deals, not just exist.',
-      description: 'We build custom platforms that convert visitors into customers. Not templates. Not WordPress themes. Real software that integrates with your tools, captures the data you need, and scales with your business.',
-      features: [
-        { title: 'Custom development', description: 'React, Next.js, or the right tool for the job. Built for performance and maintainability.' },
-        { title: 'Full code ownership', description: 'You own everything. No proprietary lock-in, no monthly fees to access your own site.' },
-        { title: 'CRM & tool integrations', description: 'Connected to your existing systems from day one. HubSpot, Salesforce, custom ERPs—we handle it.' },
-        { title: 'Conversion-focused design', description: 'Every page built to move visitors toward a specific action. Not just "looking good."' },
-        { title: 'Mobile-first approach', description: "Designed for phones first, because that's where your visitors are." },
-        { title: 'Performance optimized', description: 'Fast load times, clean code, and built for SEO from the ground up.' },
-      ],
-      process: [
-        { title: 'Discovery', description: 'We learn your business, goals, and technical requirements. 1-2 calls.' },
-        { title: 'Proposal', description: 'Clear scope, timeline, and fixed price within 48 hours.' },
-        { title: 'Design', description: 'Wireframes and visual design. You approve before we build.' },
-        { title: 'Development', description: 'We build, you review weekly. No surprises.' },
-        { title: 'Launch', description: 'Tested, optimized, and live. Training included.' },
-      ],
-      faq: [
-        { q: 'How long does a typical project take?', a: "6-12 weeks depending on scope. We'll give you a specific timeline in the proposal." },
-        { q: 'Do you do maintenance?', a: "Yes, we offer optional maintenance packages. But you're never locked in—you can maintain it yourself or hire anyone." },
-        { q: 'What if I already have a website?', a: 'We can rebuild from scratch or improve what you have. Depends on what makes sense for your situation.' },
-      ],
-    },
-    'digital-marketing': {
-      icon: BarChart3,
-      title: 'Digital Marketing',
-      subtitle: "Stop paying for traffic that doesn't convert.",
-      description: 'We run campaigns that target decision-makers in your industry—not random clicks. SEO that ranks for buyer-intent keywords. Ads that pay for themselves. Everything tracked, measured, and optimized.',
-      features: [
-        { title: 'B2B-focused campaigns', description: 'We target the people who actually make buying decisions. Job titles, company size, intent signals.' },
-        { title: 'Technical SEO', description: 'Site structure, page speed, schema markup—the foundation that makes content rank.' },
-        { title: 'Content that converts', description: 'Not blog posts for the sake of it. Content designed to capture search traffic that converts.' },
-        { title: 'Conversion tracking', description: "You'll know exactly which channels and campaigns drive actual revenue, not just clicks." },
-        { title: 'Landing page optimization', description: 'A/B testing and continuous improvement. Small changes, big impact.' },
-        { title: 'Monthly reporting', description: "Clear reports on what's working, what's not, and what we're doing about it." },
-      ],
-      process: [
-        { title: 'Audit', description: 'We analyze your current marketing, competitors, and opportunities.' },
-        { title: 'Strategy', description: 'A clear plan with channels, budgets, and expected outcomes.' },
-        { title: 'Setup', description: 'Tracking, campaigns, and content created and launched.' },
-        { title: 'Optimize', description: 'Continuous testing and improvement based on real data.' },
-      ],
-      faq: [
-        { q: "What's the minimum budget?", a: 'We typically work with clients spending $3k+/month on ads. Below that, the math rarely works.' },
-        { q: 'How long until we see results?', a: "Paid: 2-4 weeks. SEO: 3-6 months for meaningful traffic. We'll set realistic expectations upfront." },
-        { q: 'Do you guarantee results?', a: 'We guarantee our work, not market conditions. If we miss agreed targets in 90 days, we make it right.' },
-      ],
-    },
-    'automation': {
-      icon: Bot,
-      title: 'AI & Automation',
-      subtitle: 'Your team is too expensive for repetitive tasks.',
-      description: 'We build intelligent workflows that handle the boring stuff—lead qualification, appointment booking, data entry, follow-ups. Custom AI agents that work 24/7. Your team focuses on closing deals while the system runs.',
-      features: [
-        { title: 'Workflow automation', description: 'n8n, Make, Zapier—whatever fits. Automated processes that connect all your tools.' },
-        { title: 'AI chatbots', description: 'Qualify leads, answer FAQs, and book meetings automatically. WhatsApp, web, or wherever.', },
-        { title: 'CRM automation', description: 'Leads automatically scored, tagged, and routed to the right person.' },
-        { title: 'Email & SMS sequences', description: 'Automated follow-ups that feel personal. Triggered by behavior, not just time.' },
-        { title: 'Data sync', description: 'No more manual copying between systems. Everything connected and up to date.' },
-        { title: 'Custom AI agents', description: 'Trained on your data. Handles your specific use cases, not generic responses.' },
-      ],
-      process: [
-        { title: 'Map', description: 'We document your current workflows and identify automation opportunities.' },
-        { title: 'Prioritize', description: 'Focus on highest-impact automations first. Quick wins that prove value.' },
-        { title: 'Build', description: 'We develop and test the automation. You review and approve.' },
-        { title: 'Train', description: 'Your team learns how it works. Documentation included.' },
-      ],
-      faq: [
-        { q: 'Will this replace my team?', a: "No. It handles the tasks they shouldn't be doing manually, so they can focus on higher-value work." },
-        { q: 'What if something breaks?', a: "We include monitoring and alerts. You'll know before your customers do. Support packages available." },
-        { q: 'How do you price this?', a: 'Project-based for builds, optional retainer for ongoing support. No surprises.' },
-      ],
-    },
-    'ai-agents': {
-      icon: Bot,
-      title: 'AI Agents',
-      subtitle: 'Intelligent automation that works 24/7.',
-      description: 'Custom AI agents trained on your data. Handle customer inquiries, qualify leads, and automate repetitive tasks around the clock.',
-      features: [
-        { title: '24/7 availability', description: 'Your AI agent never sleeps, never takes breaks, never has a bad day.' },
-        { title: 'Trained on your data', description: 'Not generic responses. Answers based on your products, services, and processes.' },
-        { title: 'Multi-channel', description: 'WhatsApp, web chat, email—wherever your customers are.' },
-        { title: 'Seamless handoff', description: 'Complex issues get routed to humans with full context. No starting over.' },
-        { title: 'Continuous learning', description: 'Gets smarter over time based on real interactions.' },
-        { title: 'Analytics dashboard', description: 'See what people ask, how the bot performs, and where to improve.' },
-      ],
-      process: [
-        { title: 'Scope', description: "Define what the agent should handle and what it shouldn't." },
-        { title: 'Train', description: 'Feed it your knowledge base, FAQs, and example conversations.' },
-        { title: 'Test', description: 'Internal testing before any customer sees it.' },
-        { title: 'Launch', description: 'Gradual rollout with monitoring and refinement.' },
-      ],
-      faq: [
-        { q: 'How accurate is it?', a: 'Depends on training quality. We aim for 90%+ first-response accuracy.' },
-        { q: 'What about edge cases?', a: "Graceful handoff to humans. The bot knows what it doesn't know." },
-        { q: 'Can it integrate with our CRM?', a: 'Yes. HubSpot, Salesforce, Pipedrive, or custom systems.' },
-      ],
-    },
-  };
+  // slug is a PILLAR slug. A project belongs on this pillar's page when its
+  // category rolls up to the pillar (CATEGORY_TO_PILLAR) and it is flagged
+  // showOnServicePage. Uses the default JSON query fn so the data parses properly.
+  const { data: allProjects } = useQuery<Project[]>({ queryKey: ['/api/projects'] });
+  const relatedProjects = (allProjects || []).filter(
+    (p) => p.showOnServicePage && CATEGORY_TO_PILLAR[p.category] === slug
+  );
 
   const service = params?.slug ? services[params.slug as keyof typeof services] : null;
 
@@ -190,7 +155,7 @@ export default function ServiceDetail() {
                 size="lg"
                 className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-6 rounded-lg"
               >
-                Get started
+                {service.cta}
                 <ArrowRight className={`w-4 h-4 ${isRTL ? 'mr-2' : 'ml-2'}`} />
               </Button>
             </Link>
@@ -226,11 +191,13 @@ export default function ServiceDetail() {
                 <Link key={project.id} href={`/portfolio/${project.id}`}>
                   <div className="group cursor-pointer bg-slate-950 border border-slate-800 rounded-xl overflow-hidden hover:border-orange-500/30 transition-all">
                     <div className="aspect-video overflow-hidden">
-                      <img 
-                        src={project.image} 
-                        alt={project.title} 
+                      <img
+                        src={project.image}
+                        alt={project.title}
+                        loading="lazy"
+                        decoding="async"
+                        onError={onImageError}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        onError={(e) => { (e.target as HTMLImageElement).src = 'https://placehold.co/600x400?text=No+Image' }}
                       />
                     </div>
                     <div className="p-6">
@@ -262,9 +229,11 @@ export default function ServiceDetail() {
                   <CheckCircle2 className="w-5 h-5 text-orange-500 flex-shrink-0" />
                   <h3 className="font-semibold text-white">{feature.title}</h3>
                 </div>
-                <p className="text-sm text-slate-400 leading-relaxed pl-8">
-                  {feature.description}
-                </p>
+                {feature.description && (
+                  <p className="text-sm text-slate-400 leading-relaxed pl-8">
+                    {feature.description}
+                  </p>
+                )}
               </div>
             ))}
           </div>
@@ -283,8 +252,8 @@ export default function ServiceDetail() {
 
           <div className="space-y-6">
             {service.process.map((step, index) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className="flex gap-6 p-6 rounded-xl bg-slate-900/40 border border-slate-800/50"
               >
                 <div className="text-3xl font-bold text-slate-700 w-12 flex-shrink-0">
@@ -327,15 +296,15 @@ export default function ServiceDetail() {
             Ready to get started?
           </h2>
           <p className="text-lg text-slate-400 mb-10">
-            Book a free call. We'll discuss your needs and tell you honestly 
-            if we're the right fit—no pressure, no sales pitch.
+            Book a strategy call. We'll discuss your needs and tell you honestly
+            if we're the right fit — no pressure, no sales pitch.
           </p>
           <Link href="/contact">
             <Button
               size="lg"
               className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-6 text-base rounded-lg"
             >
-              Book a free strategy call
+              {service.cta}
               <ArrowRight className={`w-4 h-4 ${isRTL ? 'mr-2' : 'ml-2'}`} />
             </Button>
           </Link>

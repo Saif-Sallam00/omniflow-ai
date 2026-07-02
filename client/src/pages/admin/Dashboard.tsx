@@ -9,6 +9,8 @@ import { z } from "zod";
 import { Project } from "@shared/schema";
 import { useLocation } from "wouter";
 import { ObjectUploader } from "@/components/ObjectUploader";
+import { CATEGORIES, CATEGORY_LABELS } from "@shared/taxonomy";
+import { onImageError } from "@/lib/placeholder";
 
 // UI Components
 import { Button } from "@/components/ui/button";
@@ -29,7 +31,7 @@ import { Plus, Edit, Trash2, LogOut, LayoutGrid, CheckCircle2, Star, Zap, Eye, C
 const projectFormSchema = z.object({
   title: z.string().min(3, "Title is required"),
   client: z.string().min(2, "Client name is required"),
-  category: z.enum(["build", "attract", "automate"]),
+  category: z.enum(CATEGORIES),
   description: z.string().min(10, "Short description is required"),
   challenge: z.string().min(10, "Challenge details are required"),
   solution: z.string().min(10, "Solution details are required"),
@@ -62,7 +64,7 @@ export default function Dashboard() {
     defaultValues: {
       title: "",
       client: "",
-      category: "build",
+      category: CATEGORIES[0],
       description: "",
       challenge: "",
       solution: "",
@@ -132,7 +134,7 @@ export default function Dashboard() {
       form.reset({
         title: project.title,
         client: project.client,
-        category: project.category as "build" | "attract" | "automate",
+        category: project.category,
         description: project.description,
         challenge: project.challenge,
         solution: project.solution,
@@ -148,7 +150,7 @@ export default function Dashboard() {
       form.reset({
         title: "",
         client: "",
-        category: "build",
+        category: CATEGORIES[0],
         description: "",
         challenge: "",
         solution: "",
@@ -199,11 +201,13 @@ export default function Dashboard() {
             {projects?.map((project) => (
               <Card key={project.id} className="group overflow-hidden">
                 <div className="aspect-video relative bg-slate-100 overflow-hidden">
-                   <img 
-                     src={project.image} 
-                     alt={project.title} 
-                     className="w-full h-full object-cover group-hover:scale-105 transition-transform" 
-                     onError={(e) => { (e.target as HTMLImageElement).src = 'https://placehold.co/600x400?text=No+Image' }}
+                   <img
+                     src={project.image}
+                     alt={project.title}
+                     loading="lazy"
+                     decoding="async"
+                     className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                     onError={onImageError}
                    />
                    <div className="absolute top-2 right-2 flex flex-col gap-1 items-end">
                      {project.isFeatured && <Badge className="bg-amber-500 text-white"><Star className="w-3 h-3 mr-1" /> Featured</Badge>}
@@ -288,9 +292,9 @@ export default function Dashboard() {
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl><SelectTrigger><SelectValue placeholder="Select category" /></SelectTrigger></FormControl>
                       <SelectContent>
-                        <SelectItem value="build">Build (Web Dev)</SelectItem>
-                        <SelectItem value="attract">Attract (Marketing)</SelectItem>
-                        <SelectItem value="automate">Automate (AI)</SelectItem>
+                        {CATEGORIES.map((c) => (
+                          <SelectItem key={c} value={c}>{CATEGORY_LABELS[c]}</SelectItem>
+                        ))}
                       </SelectContent>
                     </Select><FormMessage />
                   </FormItem>

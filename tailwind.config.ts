@@ -75,7 +75,6 @@ export default {
       fontFamily: {
         sans: ["Inter", "var(--font-sans)"],
         display: ["Space Grotesk", "Inter", "sans-serif"],
-        serif: ["var(--font-serif)"],
         mono: ["var(--font-mono)"],
       },
       keyframes: {
