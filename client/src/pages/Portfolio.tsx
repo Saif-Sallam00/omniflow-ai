@@ -90,7 +90,7 @@ export default function Portfolio() {
 
           {filteredProjects.length === 0 ? (
             <div className="text-center py-20">
-              <p className="text-slate-500">{t('portfolio.empty')}</p>
+              <p className="text-slate-400">{t('portfolio.empty')}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
@@ -99,13 +99,13 @@ export default function Portfolio() {
                   <div className="group cursor-pointer flex flex-col gap-4" data-testid={`card-project-${project.id}`}>
 
                     {/* Image Card */}
-                    <div className="relative overflow-hidden rounded-2xl bg-slate-900 aspect-[4/3] shadow-sm border border-slate-800 group-hover:border-orange-500/30 transition-all duration-500">
+                    <div className="relative overflow-hidden rounded-xl bg-slate-900 aspect-[4/3] shadow-card border border-slate-800 group-hover:border-slate-700 transition-all duration-500">
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60 z-10" />
-                      <div className="absolute inset-0 bg-orange-500/0 group-hover:bg-orange-500/5 z-10 transition-colors duration-500" />
+                      <div className="absolute inset-0 bg-white/0 group-hover:bg-white/5 z-10 transition-colors duration-500" />
 
                       {/* Hover Overlay Button */}
                       <div className="absolute top-4 right-4 z-20 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                        <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center shadow-lg">
+                        <div className="w-10 h-10 bg-brand-500 rounded-full flex items-center justify-center shadow-sm">
                           <ArrowUpRight className="w-5 h-5 text-white" />
                         </div>
                       </div>
@@ -123,14 +123,14 @@ export default function Portfolio() {
                     {/* Minimal Text Info */}
                     <div className="space-y-1 px-1">
                       <div className="flex items-center justify-between">
-                        <h3 className="text-xl font-bold text-white group-hover:text-orange-400 transition-colors">
+                        <h3 className="text-xl font-bold text-white group-hover:text-brand-400 transition-colors">
                           {project.title}
                         </h3>
-                        <Badge variant="outline" className="border-slate-800 text-slate-500 text-[10px] uppercase tracking-wider bg-slate-900">
+                        <Badge variant="outline" className="border-slate-800 text-slate-400 text-[10px] uppercase tracking-wider bg-slate-900">
                           {t(`category.${project.category}`)}
                         </Badge>
                       </div>
-                      <p className="text-sm text-slate-500 font-medium">
+                      <p className="text-sm text-slate-400 font-medium">
                         {project.client}
                       </p>
                     </div>
@@ -157,7 +157,7 @@ const PortfolioSkeleton = () => (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {[1, 2, 3, 4, 5, 6].map(i => (
           <div key={i} className="space-y-4">
-            <div className="w-full aspect-[4/3] bg-slate-900 rounded-2xl animate-pulse"></div>
+            <div className="w-full aspect-[4/3] bg-slate-900 rounded-xl animate-pulse"></div>
             <div className="h-6 w-3/4 bg-slate-900 rounded animate-pulse"></div>
             <div className="h-4 w-1/4 bg-slate-900 rounded animate-pulse"></div>
           </div>

@@ -45,9 +45,9 @@ export function Navigation() {
             <span className="flex items-center gap-3 cursor-pointer group">
               {/* Code-based Logo with Hexagon */}
               <span className="text-4xl font-bold font-display tracking-tight transition-colors flex items-center">
-                <Hexagon className="w-9 h-9 text-orange-500 group-hover:text-orange-400 transition-colors stroke-[3] mr-1" />
-                <span className="text-white group-hover:text-orange-400 transition-colors">mniflow</span>
-                <span className="text-orange-500 group-hover:text-orange-400 transition-colors">AI</span>
+                <Hexagon className="w-9 h-9 text-brand-500 group-hover:text-brand-400 transition-colors stroke-[3] mr-1" />
+                <span className="text-white group-hover:text-brand-400 transition-colors">mniflow</span>
+                <span className="text-brand-500 group-hover:text-brand-400 transition-colors">AI</span>
               </span>
             </span>
           </Link>
@@ -55,7 +55,7 @@ export function Navigation() {
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href}>
-                <span className={`text-sm font-medium transition-colors cursor-pointer ${location === link.href ? 'text-orange-400' : 'text-slate-300 hover:text-white'}`}>
+                <span className={`text-sm font-medium transition-colors cursor-pointer ${location === link.href ? 'text-brand-400' : 'text-slate-300 hover:text-white'}`}>
                   {link.label}
                 </span>
               </Link>
@@ -63,11 +63,17 @@ export function Navigation() {
           </div>
 
           <div className="hidden md:flex items-center gap-4">
-            <Button variant="ghost" size="icon" onClick={toggleLanguage} className="rounded-full text-slate-400 hover:text-white hover:bg-white/10">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleLanguage}
+              aria-label={language === 'en' ? 'التبديل إلى العربية' : 'Switch to English'}
+              className="rounded-full text-slate-400 hover:text-white hover:bg-white/10"
+            >
               <Globe className="w-5 h-5" />
             </Button>
             <Link href="/contact">
-              <Button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-full px-6">
+              <Button className="bg-primary text-primary-foreground font-semibold rounded-full px-6">
                 {t('nav.cta')}
                 <ArrowRight className={`w-4 h-4 ${isRTL ? 'mr-2' : 'ml-2'}`} />
               </Button>
@@ -90,7 +96,7 @@ export function Navigation() {
               <Link key={link.href} href={link.href}>
                 <span
                   className={`block px-4 py-4 rounded-xl text-lg font-medium transition-colors cursor-pointer ${
-                    location === link.href ? 'text-orange-400 bg-orange-500/10' : 'text-slate-300 hover:text-white hover:bg-white/5'
+                    location === link.href ? 'text-brand-400 bg-brand-500/10' : 'text-slate-300 hover:text-white hover:bg-white/5'
                   }`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
@@ -103,7 +109,7 @@ export function Navigation() {
                 <Globe className="w-4 h-4 mr-2" /> {language === 'en' ? 'العربية' : 'English'}
               </Button>
               <Link href="/contact" className="flex-1">
-                <Button className="w-full bg-orange-500 text-white font-bold h-12" onClick={() => setIsMobileMenuOpen(false)}>
+                <Button className="w-full bg-primary text-primary-foreground font-bold h-12 rounded-full" onClick={() => setIsMobileMenuOpen(false)}>
                   {t('nav.cta')}
                 </Button>
               </Link>

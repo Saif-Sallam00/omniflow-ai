@@ -45,7 +45,7 @@ export default function Services() {
       <section className="py-24 relative">
         <div className="absolute top-0 right-0 w-[50%] h-[60%] bg-gradient-to-bl from-orange-950/30 via-transparent to-transparent" />
         <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 text-center">
-          <p className="text-orange-400/80 text-sm font-medium tracking-wide mb-6">{t('services.eyebrow')}</p>
+          <p className="text-brand-400/80 text-sm font-medium tracking-wide mb-6">{t('services.eyebrow')}</p>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
             {t('services.title.lead')} <span className="text-slate-500">{t('services.title.highlight')}</span>
           </h1>
@@ -66,11 +66,11 @@ export default function Services() {
               <div key={service.id} className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
 
                 {/* Service Info Card */}
-                <div className={`p-8 md:p-10 rounded-2xl bg-slate-900/40 border border-slate-800/50 backdrop-blur-sm flex flex-col justify-between ${showcase ? 'lg:col-span-7' : 'lg:col-span-12'}`}>
+                <div className={`p-8 md:p-10 rounded-xl bg-slate-900/50 border border-slate-800 backdrop-blur-sm flex flex-col justify-between shadow-card ${showcase ? 'lg:col-span-7' : 'lg:col-span-12'}`}>
                   <div className="space-y-6">
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center flex-shrink-0">
-                        <Icon className="w-6 h-6 text-orange-400" />
+                      <div className="w-12 h-12 rounded-xl bg-brand-500/10 flex items-center justify-center flex-shrink-0">
+                        <Icon className="w-6 h-6 text-brand-400" />
                       </div>
                       <div>
                         <h2 className="text-2xl font-bold text-white">{t(service.titleKey)}</h2>
@@ -78,7 +78,7 @@ export default function Services() {
                     </div>
                     <p className="text-slate-400 leading-relaxed">{t(service.bodyKey)}</p>
                     {service.subcapsKey && (
-                      <p className="text-sm text-orange-400/80 font-medium">{t(service.subcapsKey)}</p>
+                      <p className="text-sm text-brand-400/80 font-medium">{t(service.subcapsKey)}</p>
                     )}
                   </div>
                   <div className="pt-8">
@@ -92,7 +92,7 @@ export default function Services() {
 
                 {/* Showcase Project Preview (Only if exists) */}
                 {showcase && (
-                  <div className="lg:col-span-5 relative group overflow-hidden rounded-2xl border border-slate-800/50 bg-slate-900/60">
+                  <div className="lg:col-span-5 relative group overflow-hidden rounded-xl border border-slate-800 bg-slate-900/60">
                     <img
                       src={showcase.image}
                       alt={showcase.title}
@@ -103,7 +103,7 @@ export default function Services() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent p-8 flex flex-col justify-end">
                       <div className="space-y-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                        <p className="text-xs font-bold text-orange-400 uppercase tracking-widest mb-2">{t('services.featuredProject')}</p>
+                        <p className="text-xs font-bold text-brand-400 uppercase tracking-widest mb-2">{t('services.featuredProject')}</p>
                         <h3 className="text-xl font-bold text-white">{showcase.title}</h3>
                         <p className="text-sm text-slate-300 line-clamp-2 mb-4">{showcase.description}</p>
                         <Link href={`/portfolio/${showcase.id}`}>
@@ -135,7 +135,7 @@ export default function Services() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {together.map((item, index) => (
-              <div key={index} className="relative p-6 rounded-xl bg-slate-950/50 border border-slate-800/50">
+              <div key={index} className="relative p-6 rounded-xl bg-slate-950/50 border border-slate-800 shadow-card">
                 <div className="text-4xl font-bold text-slate-800 mb-4">
                   {item.step}
                 </div>
@@ -172,7 +172,7 @@ export default function Services() {
           <Link href="/contact">
             <Button
               size="lg"
-              className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-6 text-base rounded-lg transition-colors"
+              className="bg-primary text-primary-foreground font-semibold px-8 py-6 text-base rounded-full transition-colors"
             >
               {t('services.cta.button')}
               <ArrowRight className="w-4 h-4 ms-2" />

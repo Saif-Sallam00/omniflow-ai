@@ -31,8 +31,8 @@ export function Footer() {
   return (
     <footer className="bg-slate-950 text-slate-300 border-t border-slate-800 relative overflow-hidden">
       {/* Background Glow Effects */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-[60px] pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-amber-500/5 rounded-full blur-[60px] pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-brand-500/5 rounded-full blur-[60px] pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-brand-700/5 rounded-full blur-[60px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-6 md:px-8 pt-12 md:pt-24 pb-10 relative z-10">
         <div className="grid grid-cols-3 md:grid-cols-2 lg:grid-cols-4 gap-y-8 gap-x-4 md:gap-12 mb-12 md:mb-16">
@@ -86,7 +86,7 @@ export function Footer() {
             </h3>
 
             {/* Newsletter - Hidden on mobile to save space */}
-            <div className="hidden md:block bg-slate-900/50 p-6 rounded-2xl border border-slate-800 space-y-4">
+            <div className="hidden md:block bg-slate-900/50 p-6 rounded-xl border border-slate-800 space-y-4">
               <p className="text-xs text-slate-400">
                 {t("footer.newsletter.text")}
               </p>
@@ -96,11 +96,11 @@ export function Footer() {
             {/* Contact Links - Simplified for mobile */}
             <div className="space-y-3 pt-0 md:pt-2">
               <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3 text-xs md:text-sm text-slate-400">
-                <Mail className="w-4 h-4 text-amber-500 hidden md:block" />
+                <Mail className="w-4 h-4 text-brand-500 hidden md:block" />
                 <span className="break-all">{CONTACT_EMAIL}</span>
               </div>
               <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3 text-xs md:text-sm text-slate-400">
-                <MapPin className="w-4 h-4 text-amber-500 hidden md:block" />
+                <MapPin className="w-4 h-4 text-brand-500 hidden md:block" />
                 <span>{t("footer.location")}</span>
               </div>
             </div>
@@ -109,7 +109,7 @@ export function Footer() {
 
         <Separator className="bg-slate-800 mb-8" />
 
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-500 text-center md:text-start">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-400 text-center md:text-start">
           <p>© {currentYear} {t("footer.copyright")}</p>
           {/* TODO(legal-final): add real privacy/terms/sitemap pages, then link them here */}
         </div>
@@ -147,13 +147,14 @@ function NewsletterForm() {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder={t("footer.newsletter.placeholder")}
-        className="bg-slate-950 border-slate-800 text-white text-xs h-10 focus-visible:ring-amber-500"
+        className="bg-slate-950 border-slate-800 text-white text-xs h-10 focus-visible:ring-brand-500"
       />
       <Button
         type="submit"
         size="icon"
         disabled={submitting}
-        className="h-10 w-10 bg-amber-500 hover:bg-amber-600 text-slate-900"
+        aria-label={t("footer.newsletter.placeholder")}
+        className="h-10 w-10 bg-primary text-primary-foreground"
       >
         <Send className="w-4 h-4" />
       </Button>
@@ -165,7 +166,7 @@ function FooterLink({ href, children }: { href: string; children: React.ReactNod
   return (
     <li>
       <Link href={href}>
-        <span className="text-slate-400 hover:text-amber-500 transition-colors cursor-pointer flex items-center gap-2 group">
+        <span className="text-slate-400 hover:text-brand-400 transition-colors cursor-pointer flex items-center gap-2 group">
           <ArrowRight className="w-3 h-3 opacity-0 -ms-5 group-hover:opacity-100 group-hover:ms-0 transition-all duration-300 hidden md:block" />
           {children}
         </span>
@@ -180,7 +181,7 @@ function SocialIcon({ href, icon: Icon }: { href: string; icon: any }) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-amber-500 hover:text-slate-900 transition-all duration-300 hover:scale-110"
+      className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-brand-500 hover:text-slate-900 transition-all duration-300"
     >
       <Icon className="w-5 h-5" />
     </a>

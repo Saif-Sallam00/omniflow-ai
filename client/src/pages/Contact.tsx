@@ -84,7 +84,7 @@ export default function Contact() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
-              <div className="rounded-2xl bg-slate-900/40 border border-slate-800 p-8">
+              <div className="rounded-xl bg-slate-900/50 border border-slate-800 p-8 shadow-card">
                 <Form {...form}>
                   <form
                     onSubmit={form.handleSubmit(onSubmit)}
@@ -101,7 +101,7 @@ export default function Contact() {
                               <Input
                                 placeholder={t("contact.ph.name")}
                                 {...field}
-                                className="bg-slate-950 border-slate-800 text-white placeholder:text-slate-600 focus:border-orange-500/50"
+                                className="bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus:border-brand-500/50"
                               />
                             </FormControl>
                             <FormMessage />
@@ -120,7 +120,7 @@ export default function Contact() {
                                 type="email"
                                 placeholder={t("contact.ph.email")}
                                 {...field}
-                                className="bg-slate-950 border-slate-800 text-white placeholder:text-slate-600 focus:border-orange-500/50"
+                                className="bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus:border-brand-500/50"
                               />
                             </FormControl>
                             <FormMessage />
@@ -141,7 +141,7 @@ export default function Contact() {
                                 type="tel"
                                 placeholder={t("contact.ph.phone")}
                                 {...field}
-                                className="bg-slate-950 border-slate-800 text-white placeholder:text-slate-600 focus:border-orange-500/50"
+                                className="bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus:border-brand-500/50"
                               />
                             </FormControl>
                             <FormMessage />
@@ -159,7 +159,7 @@ export default function Contact() {
                               <Input
                                 placeholder={t("contact.ph.company")}
                                 {...field}
-                                className="bg-slate-950 border-slate-800 text-white placeholder:text-slate-600 focus:border-orange-500/50"
+                                className="bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus:border-brand-500/50"
                               />
                             </FormControl>
                             <FormMessage />
@@ -179,7 +179,7 @@ export default function Contact() {
                             defaultValue={field.value}
                           >
                             <FormControl>
-                              <SelectTrigger className="bg-slate-950 border-slate-800 text-white focus:border-orange-500/50">
+                              <SelectTrigger className="bg-slate-950 border-slate-800 text-white focus:border-brand-500/50">
                                 <SelectValue placeholder={t("contact.ph.service")} />
                               </SelectTrigger>
                             </FormControl>
@@ -204,7 +204,7 @@ export default function Contact() {
                           <FormControl>
                             <Textarea
                               placeholder={t("contact.ph.message")}
-                              className="min-h-32 resize-none bg-slate-950 border-slate-800 text-white placeholder:text-slate-600 focus:border-orange-500/50"
+                              className="min-h-32 resize-none bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus:border-brand-500/50"
                               {...field}
                             />
                           </FormControl>
@@ -216,7 +216,7 @@ export default function Contact() {
                     <Button
                       type="submit"
                       size="lg"
-                      className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold"
+                      className="w-full bg-primary text-primary-foreground font-semibold"
                       disabled={mutation.isPending}
                     >
                       {mutation.isPending ? t("contact.submitting") : t("contact.submit")}
@@ -228,35 +228,35 @@ export default function Contact() {
             </div>
 
             <div className="space-y-6">
-              <div className="rounded-2xl bg-slate-900/40 border border-slate-800 p-6 space-y-6">
+              <div className="rounded-xl bg-slate-900/50 border border-slate-800 p-6 space-y-6 shadow-card">
                 <h3 className="font-bold text-lg text-white">{t("contact.info")}</h3>
 
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
-                    <Mail className="w-5 h-5 text-orange-400 mt-0.5" />
+                    <Mail className="w-5 h-5 text-brand-400 mt-0.5" />
                     <div>
                       <p className="font-medium text-sm text-slate-300">{t("contact.emailLabel")}</p>
-                      <p className="text-sm text-slate-500">
+                      <p className="text-sm text-slate-400">
                         {CONTACT_EMAIL}
                       </p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <Phone className="w-5 h-5 text-orange-400 mt-0.5" />
+                    <Phone className="w-5 h-5 text-brand-400 mt-0.5" />
                     <div>
                       <p className="font-medium text-sm text-slate-300">{t("contact.phoneLabel")}</p>
-                      <p className="text-sm text-slate-500">
+                      <p className="text-sm text-slate-400">
                         {t("contact.phoneVal")}
                       </p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <Clock className="w-5 h-5 text-orange-400 mt-0.5" />
+                    <Clock className="w-5 h-5 text-brand-400 mt-0.5" />
                     <div>
                       <p className="font-medium text-sm text-slate-300">{t("contact.responseLabel")}</p>
-                      <p className="text-sm text-slate-500">
+                      <p className="text-sm text-slate-400">
                         {t("contact.responseVal")}
                       </p>
                     </div>
@@ -264,7 +264,7 @@ export default function Contact() {
                 </div>
               </div>
 
-              <div className="rounded-2xl bg-gradient-to-br from-orange-500/10 to-slate-900 border border-orange-500/20 p-6 space-y-4">
+              <div className="rounded-xl bg-gradient-to-br from-brand-500/10 to-slate-900 border border-brand-500/20 p-6 space-y-4 shadow-card">
                 <h3 className="font-bold text-lg text-white">
                   {t("contact.quick.title")}
                 </h3>

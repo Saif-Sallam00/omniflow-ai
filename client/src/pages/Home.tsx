@@ -105,7 +105,7 @@ export default function Home() {
         <div className="relative z-10 max-w-4xl mx-auto px-6 md:px-8 text-center">
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.1] tracking-tight">
             {t("home.hero.h1.lead")}{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500">
+            <span className="text-brand-400">
               {t("home.hero.h1.highlight")}
             </span>
           </h1>
@@ -116,7 +116,7 @@ export default function Home() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-10">
             <Link href="/contact">
-              <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold h-12 md:h-14 px-8 rounded-full shadow-lg hover:scale-105 transition-transform">
+              <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-brand-light to-brand-600 text-white font-bold h-12 md:h-14 px-8 rounded-full shadow-sm hover:brightness-110 transition">
                 {t("common.cta.bookCall")} <ArrowRight className="ms-2 w-5 h-5" />
               </Button>
             </Link>
@@ -132,7 +132,7 @@ export default function Home() {
       {/* === 2. TRUST STRIP + CLIENT LOGOS === */}
       <section className="py-20 md:py-24 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 overflow-hidden">
         <div className="max-w-6xl mx-auto px-6 md:px-8">
-          <p className="text-sm text-slate-500 uppercase tracking-widest text-center mb-16">
+          <p className="text-sm text-slate-400 uppercase tracking-widest text-center mb-16">
             {t("home.trust")}
           </p>
         </div>
@@ -162,7 +162,7 @@ export default function Home() {
             100% { transform: translateX(-50%); }
           }
           .animate-marquee {
-            animation: marquee 10s linear infinite;
+            animation: marquee 45s linear infinite;
           }
         `}</style>
       </section>
@@ -172,7 +172,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto px-6 md:px-8 text-center">
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 leading-tight">
             {t("home.valueProp.title.lead")}{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500">
+            <span className="text-brand-400">
               {t("home.valueProp.title.highlight")}
             </span>
           </h2>
@@ -194,9 +194,9 @@ export default function Home() {
               const Icon = pillar.icon;
               return (
                 <Link key={index} href={pillar.href}>
-                  <div className="group h-full flex flex-col p-6 md:p-8 rounded-2xl bg-slate-900/40 border border-slate-800/50 hover:border-orange-500/30 transition-colors backdrop-blur-sm cursor-pointer">
-                    <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center mb-6">
-                      <Icon className="w-6 h-6 text-orange-400" />
+                  <div className="group h-full flex flex-col p-6 md:p-8 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-slate-700 transition-colors backdrop-blur-sm cursor-pointer shadow-card">
+                    <div className="w-12 h-12 rounded-xl bg-brand-500/10 flex items-center justify-center mb-6">
+                      <Icon className="w-6 h-6 text-brand-400" />
                     </div>
                     <h3 className="text-xl font-semibold text-white mb-3 leading-snug">
                       {t(pillar.titleKey)}
@@ -205,7 +205,7 @@ export default function Home() {
                       {t(pillar.bodyKey)}
                     </p>
                     {pillar.subcapsKey && (
-                      <p className="text-xs text-orange-400/80 font-medium mt-6 pt-6 border-t border-slate-800/50">
+                      <p className="text-xs text-brand-400/80 font-medium mt-6 pt-6 border-t border-slate-800">
                         {t(pillar.subcapsKey)}
                       </p>
                     )}
@@ -226,8 +226,8 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {/* Before */}
-            <div className="p-6 md:p-8 rounded-2xl bg-slate-950/50 border border-slate-800/50">
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-6">{t("home.transform.before.label")}</p>
+            <div className="p-6 md:p-8 rounded-xl bg-slate-950/50 border border-slate-800 shadow-card">
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">{t("home.transform.before.label")}</p>
               <ul className="space-y-4">
                 {transformBefore.map((key, i) => (
                   <li key={i} className="flex items-start gap-3 text-slate-400">
@@ -239,8 +239,8 @@ export default function Home() {
             </div>
 
             {/* After */}
-            <div className="p-6 md:p-8 rounded-2xl bg-gradient-to-br from-orange-950/20 to-slate-900/50 border border-orange-500/20">
-              <p className="text-xs font-bold text-orange-400 uppercase tracking-widest mb-6">{t("home.transform.after.label")}</p>
+            <div className="p-6 md:p-8 rounded-xl bg-gradient-to-br from-brand-700/15 to-slate-900/50 border border-brand-500/20 shadow-card">
+              <p className="text-xs font-bold text-brand-400 uppercase tracking-widest mb-6">{t("home.transform.after.label")}</p>
               <ul className="space-y-4">
                 {transformAfter.map((key, i) => (
                   <li key={i} className="flex items-start gap-3 text-slate-200">
@@ -276,7 +276,7 @@ export default function Home() {
               {featured.map((project) => (
                 <Link key={project.id} href={`/portfolio/${project.id}`}>
                   <div className="group cursor-pointer">
-                    <div className="relative overflow-hidden rounded-xl bg-slate-950 aspect-[4/3] border border-slate-800/50 group-hover:border-orange-500/30 transition-colors mb-4">
+                    <div className="relative overflow-hidden rounded-xl bg-slate-950 aspect-[4/3] border border-slate-800 group-hover:border-slate-700 transition-colors mb-4">
                       <img
                         src={project.image}
                         alt={project.title}
@@ -286,13 +286,13 @@ export default function Home() {
                         className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                       />
                     </div>
-                    <h3 className="text-lg font-semibold text-white group-hover:text-orange-400 transition-colors mb-1">
+                    <h3 className="text-lg font-semibold text-white group-hover:text-brand-400 transition-colors mb-1">
                       {project.title}
                     </h3>
-                    <p className="text-sm text-slate-500">{t(`category.${project.category}`)}</p>
+                    <p className="text-sm text-slate-400">{t(`category.${project.category}`)}</p>
                     {/* Real per-project result (CMS-entered). Renders nothing when absent — never fabricated. */}
                     {project.results?.[0] && (
-                      <p className="text-sm font-semibold text-orange-400 mt-2">{project.results[0]}</p>
+                      <p className="text-sm font-semibold text-brand-400 mt-2">{project.results[0]}</p>
                     )}
                   </div>
                 </Link>
@@ -339,13 +339,13 @@ export default function Home() {
                             className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                           />
                         </div>
-                        <h3 className="text-lg font-semibold text-white group-hover:text-orange-400 transition-colors mb-1">
+                        <h3 className="text-lg font-semibold text-white group-hover:text-brand-400 transition-colors mb-1">
                           {project.title}
                         </h3>
-                        <p className="text-sm text-slate-500">{t(`category.${project.category}`)}</p>
+                        <p className="text-sm text-slate-400">{t(`category.${project.category}`)}</p>
                         {/* Real per-project result (CMS-entered). Renders nothing when absent — never fabricated. */}
                         {project.results?.[0] && (
-                          <p className="text-sm font-semibold text-orange-400 mt-2">{project.results[0]}</p>
+                          <p className="text-sm font-semibold text-brand-400 mt-2">{project.results[0]}</p>
                         )}
                       </div>
                     </Link>
@@ -370,7 +370,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
             {howWeWork.map((item, index) => (
-              <div key={index} className="relative p-4 md:p-6 rounded-2xl bg-slate-950/50 border border-slate-800/50">
+              <div key={index} className="relative p-4 md:p-6 rounded-xl bg-slate-950/50 border border-slate-800 shadow-card">
                 <div className="text-4xl md:text-6xl font-bold text-slate-800/50 mb-3 md:mb-4">
                   {item.step}
                 </div>
@@ -387,19 +387,19 @@ export default function Home() {
       </section>
 
       {/* === 9. GLOBAL BRAND LINE === */}
-      <section className="py-20 md:py-24 bg-gradient-to-r from-orange-950/20 via-slate-900/50 to-red-950/20 border-y border-orange-500/10">
+      <section className="py-20 md:py-24 bg-gradient-to-r from-brand-700/10 via-slate-900/50 to-brand-700/10 border-y border-brand-500/10">
         <div className="max-w-6xl mx-auto px-6 md:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500/10 to-red-500/10 flex items-center justify-center flex-shrink-0 border border-orange-500/20">
-                <Shield className="w-6 h-6 text-orange-400" />
+              <div className="w-12 h-12 rounded-full bg-brand-500/10 flex items-center justify-center flex-shrink-0 border border-brand-500/20">
+                <Shield className="w-6 h-6 text-brand-400" />
               </div>
               <p className="text-lg md:text-xl font-semibold text-white max-w-2xl">
                 {t("common.brandLine")}
               </p>
             </div>
             <Link href="/contact">
-              <Button className="bg-gradient-to-r from-orange-500 to-red-600 text-white font-semibold px-6 rounded-lg hover:from-orange-600 hover:to-red-700 transition-all whitespace-nowrap">
+              <Button className="bg-primary text-primary-foreground font-semibold px-6 rounded-full transition-colors whitespace-nowrap">
                 {t("common.cta.bookCall")}
                 <ArrowRight className="w-4 h-4 ms-2" />
               </Button>
@@ -423,14 +423,14 @@ export default function Home() {
           <Link href="/contact">
             <Button
               size="lg"
-              className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-semibold px-10 py-7 text-lg rounded-lg transition-all"
+              className="bg-primary text-primary-foreground font-semibold px-10 py-7 text-lg rounded-full transition-colors"
             >
               {t("home.finalCta.button")}
               <ArrowRight className="w-5 h-5 ms-2" />
             </Button>
           </Link>
 
-          <p className="text-sm text-slate-600 mt-6">
+          <p className="text-sm text-slate-400 mt-6">
             {t("home.finalCta.sub")}
           </p>
         </div>

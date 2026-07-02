@@ -23,13 +23,13 @@ export default function About() {
           <div className="max-w-4xl mx-auto">
             <Badge
               variant="outline"
-              className="mb-6 px-4 py-1 border-orange-500/30 text-orange-400 tracking-widest uppercase text-xs font-semibold bg-orange-500/10"
+              className="mb-6 px-4 py-1 border-brand-500/30 text-brand-400 tracking-widest uppercase text-xs font-semibold bg-brand-500/10"
             >
               {t("about.badge")}
             </Badge>
             <h1 className="text-4xl md:text-6xl font-display font-bold text-white mb-8 leading-tight">
               {t("about.headline.lead")}{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">
+              <span className="text-brand-400">
                 {t("about.headline.highlight")}
               </span>
             </h1>
@@ -46,13 +46,13 @@ export default function About() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Image Side */}
             <div className="relative group">
-              <div className="absolute inset-0 bg-orange-500 rounded-2xl transform rotate-2 translate-x-2 translate-y-2 opacity-20 group-hover:opacity-30 transition-opacity"></div>
+              <div className="absolute inset-0 bg-brand-500 rounded-xl transform rotate-2 translate-x-2 translate-y-2 opacity-20 group-hover:opacity-30 transition-opacity"></div>
               <img
                 src={FounderImage}
                 alt="Founder of OmniflowAI"
                 loading="lazy"
                 decoding="async"
-                className="relative rounded-2xl shadow-2xl w-full object-cover aspect-[4/5] grayscale group-hover:grayscale-0 transition-all duration-700 border border-slate-800"
+                className="relative rounded-xl shadow-elevated w-full object-cover aspect-[4/5] grayscale group-hover:grayscale-0 transition-all duration-700 border border-slate-800"
               />
             </div>
 
@@ -146,7 +146,7 @@ export default function About() {
           <a href="/contact">
             <Button
               size="lg"
-              className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white text-lg px-8 py-6 rounded-full font-bold shadow-lg shadow-orange-900/20"
+              className="bg-primary text-primary-foreground text-lg px-8 py-6 rounded-full font-bold shadow-sm"
             >
               {t("common.cta.bookCall")}
             </Button>
@@ -171,7 +171,7 @@ function TeamCard({
   bio: string;
 }) {
   return (
-    <div className="group relative overflow-hidden rounded-2xl bg-slate-900/50 border border-slate-800 hover:border-orange-500/30 transition-all duration-300">
+    <div className="group relative overflow-hidden rounded-xl bg-slate-900/50 border border-slate-800 hover:border-slate-700 transition-all duration-300 shadow-card">
       <div className="aspect-[4/3] overflow-hidden bg-slate-800">
         <img
           src={image}
@@ -186,8 +186,8 @@ function TeamCard({
         <p className="text-orange-400 text-sm font-medium mb-4">{role}</p>
         <p className="text-slate-400 text-sm leading-relaxed">{bio}</p>
         <div className="mt-6 flex gap-4 opacity-50 group-hover:opacity-100 transition-opacity">
-          <Linkedin className="w-5 h-5 text-slate-300 cursor-pointer hover:text-orange-400 transition-colors" />
-          <Mail className="w-5 h-5 text-slate-300 cursor-pointer hover:text-orange-400 transition-colors" />
+          <Linkedin className="w-5 h-5 text-slate-300 cursor-pointer hover:text-brand-400 transition-colors" />
+          <Mail className="w-5 h-5 text-slate-300 cursor-pointer hover:text-brand-400 transition-colors" />
         </div>
       </div>
     </div>
@@ -204,8 +204,8 @@ function ValueCard({
   desc: string;
 }) {
   return (
-    <div className="p-6 rounded-2xl bg-slate-900/40 border border-slate-800 hover:bg-slate-900/60 hover:border-slate-700 transition-all duration-300">
-      <div className="w-12 h-12 rounded-lg bg-orange-500/10 text-orange-400 flex items-center justify-center mb-4">
+    <div className="p-6 rounded-xl bg-slate-900/50 border border-slate-800 hover:bg-slate-900/60 hover:border-slate-700 transition-all duration-300 shadow-card">
+      <div className="w-12 h-12 rounded-xl bg-brand-500/10 text-brand-400 flex items-center justify-center mb-4">
         <Icon className="w-6 h-6" />
       </div>
       <h3 className="text-lg font-bold text-white mb-2">{title}</h3>

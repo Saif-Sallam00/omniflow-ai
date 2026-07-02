@@ -4,15 +4,19 @@
 
 @layer base {
   :root {
-    /* --- UNIFIED "GROWTH ENGINE" PALETTE --- */
-    
-    /* Primary: Gunmetal/Midnight (Premium Tech Feel) */
+    /* --- "EMBER ON GUNMETAL" BRAND TOKENS --- */
+
+    /* Neutral ground (premium tech dark) */
     --gunmetal: 222 47% 11%;
     --midnight: 222 47% 7%;
-    
-    /* Accent: Electric Gold (CTAs & Highlights) */
-    --gold: 38 92% 50%;
-    --gold-hover: 38 92% 45%;
+
+    /* Brand accent — orange family only (NO red). amber = light "signal" step.
+       Consumed via the Tailwind `brand` color + the shadcn --primary/--ring below. */
+    --brand-400: 27 96% 61%;   /* orange-400 — accent text on dark */
+    --brand-500: 25 95% 53%;   /* orange-500 — core brand */
+    --brand-600: 21 90% 48%;   /* orange-600 — solid CTA fill (default) */
+    --brand-700: 17 88% 40%;   /* orange-700 — hover / pressed / on-light text */
+    --brand-light: 38 92% 50%; /* amber-500 — highlight word & footer signal dot */
     
     /* --- CORE SHADCN THEME --- */
     --background: 0 0% 100%;
@@ -26,9 +30,10 @@
     --popover-foreground: 222 47% 11%;
     --popover-border: 214 32% 91%;
 
-    --primary: 38 92% 50%;
-    --primary-foreground: 222 47% 11%;
-    --primary-border: 38 92% 45%;
+    /* Primary = brand orange-600 solid, white text (the one canonical fill). */
+    --primary: 21 90% 48%;
+    --primary-foreground: 0 0% 100%;
+    --primary-border: 17 88% 40%;
 
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222 47% 11%;
@@ -48,7 +53,7 @@
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 38 92% 50%;
+    --ring: 25 95% 53%; /* focus ring = brand orange-500 */
     --radius: 0.5rem;
 
     /* Chart Colors */
@@ -68,6 +73,18 @@
     --opaque-button-border-intensity: -8;
     --elevate-1: rgba(0,0,0, .03);
     --elevate-2: rgba(0,0,0, .08);
+
+    /* Shadow scale — extremely subtle (Linear / Vercel / Stripe). Depth is
+       carried mostly by borders; these only whisper. */
+    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.30);
+    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.35);
+    --shadow-md: 0 4px 16px -6px rgb(0 0 0 / 0.45);
+
+    /* Motion tokens */
+    --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+    --duration-fast: 150ms;
+    --duration-base: 250ms;
+    --duration-slow: 400ms;
   }
 
   .dark {
@@ -178,4 +195,20 @@
 [dir="rtl"] .lucide-chevron-right,
 [dir="rtl"] .lucide-chevron-left {
   transform: scaleX(-1);
+}
+
+/* =========================================================================
+   Reduced motion. Respect the OS/browser setting for everyone: neutralise the
+   client-logo marquee, hover transitions, and any scroll behaviour. Unlayered
+   so it wins. (Accessibility — foundation pass.)
+   ========================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

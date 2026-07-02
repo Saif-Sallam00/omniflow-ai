@@ -49,6 +49,16 @@ export default {
           foreground: "hsl(var(--destructive-foreground) / <alpha-value>)",
           border: "var(--destructive-border)",
         },
+        // Brand accent — "Ember on gunmetal" (orange family, no red).
+        // Prefer these tokens over hardcoded orange-* utilities.
+        brand: {
+          DEFAULT: "hsl(var(--brand-500) / <alpha-value>)",
+          400: "hsl(var(--brand-400) / <alpha-value>)",
+          500: "hsl(var(--brand-500) / <alpha-value>)",
+          600: "hsl(var(--brand-600) / <alpha-value>)",
+          700: "hsl(var(--brand-700) / <alpha-value>)",
+          light: "hsl(var(--brand-light) / <alpha-value>)",
+        },
         border: "hsl(var(--border) / <alpha-value>)",
         input: "hsl(var(--input) / <alpha-value>)",
         ring: "hsl(var(--ring) / <alpha-value>)",
@@ -101,6 +111,15 @@ export default {
         float: "float 6s ease-in-out infinite",
         // Scroll takes 40s to loop - adjust for speed
         scroll: "scroll 40s linear infinite",
+      },
+      // Extremely subtle elevation (Linear / Vercel / Stripe). Named tokens so
+      // components opt in; Tailwind's default shadow-* are left untouched.
+      boxShadow: {
+        card: "var(--shadow-xs)",
+        elevated: "var(--shadow-md)",
+      },
+      transitionTimingFunction: {
+        standard: "var(--ease-standard)",
       },
     },
   },

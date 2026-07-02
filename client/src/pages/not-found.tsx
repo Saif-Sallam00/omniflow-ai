@@ -10,8 +10,8 @@ export default function NotFound() {
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-slate-950 text-white px-6">
       <div className="text-center max-w-md">
-        <div className="w-14 h-14 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center mx-auto mb-6">
-          <AlertCircle className="h-7 w-7 text-orange-400" />
+        <div className="w-14 h-14 rounded-xl bg-brand-500/10 border border-brand-500/20 flex items-center justify-center mx-auto mb-6">
+          <AlertCircle className="h-7 w-7 text-brand-400" />
         </div>
         <h1 className="text-3xl md:text-4xl font-display font-bold mb-3">
           {t("notFound.title")}
@@ -20,7 +20,7 @@ export default function NotFound() {
           {t("notFound.body")}
         </p>
         <Link href="/">
-          <Button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg px-6">
+          <Button className="bg-primary text-primary-foreground font-semibold rounded-lg px-6">
             {t("notFound.button")}
           </Button>
         </Link>

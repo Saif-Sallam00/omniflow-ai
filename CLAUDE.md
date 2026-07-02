@@ -101,7 +101,11 @@ React 18 + Vite, routing via **wouter** (not React Router), data via **TanStack 
 ---
 
 ## Reference docs in the repo
-- `replit.md` — original project overview and setup notes.
-- `design_guidelines.md` — design system / visual direction.
-- `LAYER1-STRUCTURE.md` … `LAYER6A-POLISH.md` — staged build logs (structure, copy, system, leads, bilingual, polish). Each records what a given layer changed and what it deliberately left for later. `OMNIFLOW-AUDIT.md` is an earlier full audit; treat as historical, not current truth.
-- When you complete a scoped task/layer, add or update the corresponding `LAYER*.md` log rather than editing the historical ones.
+**All project markdown docs live in `docs/`.** This file (`CLAUDE.md`) is the only
+markdown intentionally kept at the repo root (Claude Code auto-loads it as project
+instructions). **Any new markdown doc — audits, layer logs, design notes, etc. — must be
+created inside `docs/`, not at the root.**
+- `docs/replit.md` — original project overview and setup notes.
+- `docs/design_guidelines.md` — design system / visual direction (see also the `docs/DESIGN_*.md` set: audit, direction refinement, and the "Ember on gunmetal" foundation implementation/sweep).
+- `docs/LAYER1-STRUCTURE.md` … `docs/LAYER6A-POLISH.md` — staged build logs (structure, copy, system, leads, bilingual, polish). Each records what a given layer changed and what it deliberately left for later. `docs/OMNIFLOW-AUDIT.md` and `docs/CRO-Audit.md` are earlier full audits; treat as historical, not current truth.
+- When you complete a scoped task/layer, add or update the corresponding `docs/LAYER*.md` log rather than editing the historical ones.
