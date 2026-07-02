@@ -23,6 +23,7 @@ import {
 import { Shield, User, KeyRound, ArrowRight } from "lucide-react";
 import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 
 const formSchema = z.object({
   username: z.string().min(1, "Username is required"),
@@ -30,6 +31,7 @@ const formSchema = z.object({
 });
 
 export default function AuthPage() {
+  useDocumentTitle("Admin Login");
   const { login, user } = useUser();
   const [, setLocation] = useLocation();
   const { toast } = useToast();

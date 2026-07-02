@@ -13,6 +13,7 @@ import { Project } from '@shared/schema';
 import { type Category } from '@shared/taxonomy';
 import { onImageError } from '@/lib/placeholder';
 import { useI18n } from '@/lib/i18n';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 import {
   Carousel,
   CarouselContent,
@@ -70,6 +71,7 @@ const proofRank = (c: Category) => {
 
 export default function Home() {
   const { t } = useI18n();
+  useDocumentTitle();
   const { data: projects } = useQuery<Project[]>({ queryKey: ['/api/projects'] });
   const all = projects || [];
 

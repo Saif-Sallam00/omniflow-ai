@@ -11,6 +11,7 @@ import { useLocation, Link } from "wouter";
 import { ObjectUploader } from "@/components/ObjectUploader";
 import { CATEGORIES, CATEGORY_LABELS } from "@shared/taxonomy";
 import { onImageError } from "@/lib/placeholder";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 
 // UI Components
 import { Button } from "@/components/ui/button";
@@ -46,6 +47,7 @@ const projectFormSchema = z.object({
 type ProjectFormValues = z.infer<typeof projectFormSchema>;
 
 export default function Dashboard() {
+  useDocumentTitle("Admin — Portfolio");
   const { user, logout } = useUser();
   const { toast } = useToast();
 

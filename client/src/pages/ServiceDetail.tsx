@@ -2,15 +2,19 @@ import { Link, useRoute } from 'wouter';
 import { ArrowRight, CheckCircle2, Globe, Bot, BarChart3, ArrowUpRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useI18n } from '@/lib/i18n';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 import { useQuery } from '@tanstack/react-query';
 import { Project } from '@shared/schema';
-import { CATEGORY_TO_PILLAR } from '@shared/taxonomy';
+import { CATEGORY_TO_PILLAR, PILLAR_LABELS, type Pillar } from '@shared/taxonomy';
 import { onImageError } from '@/lib/placeholder';
 
 export default function ServiceDetail() {
   const [, params] = useRoute('/services/:slug');
   const { t } = useI18n();
   const slug = params?.slug || '';
+  // PILLAR_LABELS[slug] is undefined for an unknown slug → falls back to the
+  // site-wide title.
+  useDocumentTitle(PILLAR_LABELS[slug as Pillar]);
 
   // slug is a PILLAR slug. A project belongs on this pillar's page when its
   // category rolls up to the pillar (CATEGORY_TO_PILLAR) and it is flagged

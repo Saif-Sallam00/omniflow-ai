@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, CheckCircle2, TrendingUp, Layers, Calendar, ArrowRight, Shield } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useI18n } from '@/lib/i18n';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 import { onImageError } from '@/lib/placeholder';
 
 export default function ProjectDetail() {
@@ -17,6 +18,8 @@ export default function ProjectDetail() {
     queryKey: [`/api/projects/${id}`],
     enabled: !!id,
   });
+
+  useDocumentTitle(project?.title);
 
   if (isLoading) return <ProjectSkeleton />;
   if (error || !project) return <div className="min-h-screen pt-32 bg-slate-950 text-white text-center">{t('projectDetail.notFound')}</div>;

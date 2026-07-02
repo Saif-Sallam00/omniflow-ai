@@ -2,9 +2,11 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { AlertCircle } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 
 export default function NotFound() {
   const { t } = useI18n();
+  useDocumentTitle("Page not found");
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-slate-950 text-white px-6">
       <div className="text-center max-w-md">

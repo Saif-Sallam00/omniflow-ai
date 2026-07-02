@@ -2,6 +2,7 @@ import { Shield, Users, Target, Award, Linkedin, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useI18n } from "@/lib/i18n";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 import FounderImage from "@/assets/team_images/founder.jpeg";
 import DesignHeadImage from "@/assets/team_images/headofdesign.jpeg";
 import SoftwareHeadImage from "@/assets/team_images/headofsoftware.jpeg";
@@ -9,6 +10,7 @@ import MarketingImage from "@/assets/team_images/headofmarketing.jpeg";
 
 export default function About() {
   const { t } = useI18n();
+  useDocumentTitle("About");
 
   return (
     <div className="min-h-screen pt-20 bg-slate-950 text-white">

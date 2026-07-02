@@ -6,9 +6,11 @@ import { Project } from '@shared/schema';
 import { CATEGORY_TO_PILLAR, type Pillar } from '@shared/taxonomy';
 import { onImageError } from '@/lib/placeholder';
 import { useI18n } from '@/lib/i18n';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 
 export default function Services() {
   const { t } = useI18n();
+  useDocumentTitle("Services");
 
   // Fetch Showcase Projects
   const { data: showcaseProjects } = useQuery<Project[]>({

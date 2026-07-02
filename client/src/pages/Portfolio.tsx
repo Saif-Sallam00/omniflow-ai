@@ -8,9 +8,11 @@ import { Project } from '@shared/schema';
 import { PORTFOLIO_TAB_ORDER, type Category } from '@shared/taxonomy';
 import { onImageError } from '@/lib/placeholder';
 import { useI18n } from '@/lib/i18n';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 
 export default function Portfolio() {
   const { t } = useI18n();
+  useDocumentTitle("Portfolio");
   const [activeFilter, setActiveFilter] = useState<string>('all');
 
   // Base query: ALL projects — used to decide which category tabs to show.

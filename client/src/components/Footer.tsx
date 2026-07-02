@@ -61,10 +61,9 @@ export function Footer() {
           <div className="col-span-1">
             <h3 className="font-bold text-white mb-4 md:mb-6 text-xs md:text-base uppercase md:normal-case">{t("footer.services")}</h3>
             <ul className="space-y-3 md:space-y-4 text-xs md:text-sm">
-              <FooterLink href="/services">{t("footer.link.webdev")}</FooterLink>
-              <FooterLink href="/services">{t("footer.link.automation")}</FooterLink>
-              <FooterLink href="/services">{t("footer.link.aiagents")}</FooterLink>
-              <FooterLink href="/services">{t("footer.link.marketing")}</FooterLink>
+              <FooterLink href="/services/ai-training">{t("footer.link.aiTraining")}</FooterLink>
+              <FooterLink href="/services/digital-marketing">{t("footer.link.digitalMarketing")}</FooterLink>
+              <FooterLink href="/services/software">{t("footer.link.software")}</FooterLink>
             </ul>
           </div>
 

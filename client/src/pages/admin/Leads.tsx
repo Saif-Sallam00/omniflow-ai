@@ -4,6 +4,7 @@ import { useUser } from "@/hooks/use-user";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 import { Lead, LeadStatus } from "@shared/schema";
 
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,7 @@ function AdminNav({ active }: { active: "portfolio" | "leads" }) {
 }
 
 export default function Leads() {
+  useDocumentTitle("Admin — Leads");
   const { logout } = useUser();
   const { toast } = useToast();
   const [deletingId, setDeletingId] = useState<number | null>(null);

@@ -26,9 +26,11 @@ import { useI18n } from "@/lib/i18n";
 import { apiRequest } from "@/lib/queryClient";
 import { contactFormSchema, type ContactFormData } from "@shared/schema";
 import { PILLARS, CONTACT_EMAIL } from "@shared/taxonomy";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 
 export default function Contact() {
   const { t } = useI18n();
+  useDocumentTitle("Contact");
   const { toast } = useToast();
 
   const form = useForm<ContactFormData>({
