@@ -68,7 +68,7 @@ export function Navigation() {
             </Button>
             <Link href="/contact">
               <Button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-full px-6">
-                {t('hero.cta.secondary') || "Let's Talk"}
+                {t('nav.cta')}
                 <ArrowRight className={`w-4 h-4 ${isRTL ? 'mr-2' : 'ml-2'}`} />
               </Button>
             </Link>
@@ -104,7 +104,7 @@ export function Navigation() {
               </Button>
               <Link href="/contact" className="flex-1">
                 <Button className="w-full bg-orange-500 text-white font-bold h-12" onClick={() => setIsMobileMenuOpen(false)}>
-                  Let's Talk
+                  {t('nav.cta')}
                 </Button>
               </Link>
             </div>

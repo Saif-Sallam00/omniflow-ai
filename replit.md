@@ -94,7 +94,10 @@ Runs Express server (backend) and Vite dev server (frontend) on port 5000.
 
 ## Admin Access
 - **Login URL**: /admin/auth
-- **Credentials**: username="admin", password="Admin@admin1234"
+- **Username**: `admin`
+- **Password**: set via the `ADMIN_PASSWORD` environment variable. A built-in
+  development default is used only when `ADMIN_PASSWORD` is unset (a warning is
+  logged). Set `ADMIN_PASSWORD` (and `SESSION_SECRET`) before production.
 
 ## Recent Changes
 - January 27, 2026: UI Compliance and Accessibility Updates

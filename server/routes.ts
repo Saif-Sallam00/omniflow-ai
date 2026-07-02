@@ -1,22 +1,26 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { pool } from "./db";
 import {
   contactFormSchema,
-  insertUserSchema,
   insertProjectSchema,
+  LEAD_STATUSES,
+  type Lead,
 } from "@shared/schema";
+import { CONTACT_EMAIL } from "@shared/taxonomy";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import session from "express-session";
-import MemoryStore from "memorystore";
+import connectPgSimple from "connect-pg-simple";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
+import { z } from "zod";
+import { Resend } from "resend";
 import { ObjectStorageService } from "./objectStorage";
 import multer from "multer";
 
 const scryptAsync = promisify(scrypt);
-const SessionStore = MemoryStore(session);
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -38,14 +42,48 @@ async function comparePasswords(supplied: string, stored: string) {
 
 async function seedAdminUser() {
   const adminUsername = "admin";
-  const adminPassword = "Admin@admin1234";
+  const adminPassword = process.env.ADMIN_PASSWORD || "Admin@admin1234";
+  if (!process.env.ADMIN_PASSWORD) {
+    console.warn(
+      "[auth] ADMIN_PASSWORD not set — seeding the admin user with the built-in default. Set ADMIN_PASSWORD before production.",
+    );
+  }
   const existing = await storage.getUserByUsername(adminUsername);
   if (!existing) {
     const hashedPassword = await hashPassword(adminPassword);
-    await storage.createUser({
-      username: adminUsername,
-      password: hashedPassword,
+    await storage.createUser({ username: adminUsername, password: hashedPassword });
+  }
+}
+
+// Fire-and-forget lead notification. NEVER blocks or fails the API response.
+// Skipped silently when RESEND_API_KEY is not configured.
+async function notifyNewLead(lead: Lead) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.log("[leads] RESEND_API_KEY not set — skipping email notification (lead saved to DB).");
+    return;
+  }
+  try {
+    const resend = new Resend(apiKey);
+    const to = process.env.NOTIFY_EMAIL || CONTACT_EMAIL;
+    await resend.emails.send({
+      from: "OmniflowAI Leads <onboarding@resend.dev>",
+      to,
+      subject: `New lead: ${lead.name} (${lead.service})`,
+      text: [
+        `Name: ${lead.name}`,
+        `Email: ${lead.email}`,
+        `Phone: ${lead.phone || "-"}`,
+        `Company: ${lead.company || "-"}`,
+        `Service: ${lead.service}`,
+        "",
+        "Message:",
+        lead.message,
+      ].join("\n"),
     });
+    console.log(`[leads] Notification email sent to ${to}.`);
+  } catch (err) {
+    console.error("[leads] Email notification failed (lead already saved):", err);
   }
 }
 
@@ -80,13 +118,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Session secret from env, with a clearly-warned fallback for local dev.
+  const sessionSecret = process.env.SESSION_SECRET || "omniflow-secret-key";
+  if (!process.env.SESSION_SECRET) {
+    console.warn(
+      "[auth] SESSION_SECRET not set — using the built-in default. Set SESSION_SECRET before production.",
+    );
+  }
+
+  // Postgres-backed session store (survives restarts, unlike the old in-memory store).
+  const PgSession = connectPgSimple(session);
+
   app.use(
     session({
-      store: new SessionStore({ checkPeriod: 86400000 }),
-      secret: "omniflow-secret-key",
+      store: new PgSession({
+        pool: pool as any,
+        tableName: "session",
+        createTableIfMissing: true,
+      }),
+      secret: sessionSecret,
       resave: false,
       saveUninitialized: false,
-      cookie: { maxAge: 86400000 },
+      cookie: {
+        maxAge: 86400000,
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+      },
     }),
   );
 
@@ -201,12 +259,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
     },
   );
 
+  // --- CONTACT / LEADS ---
+
+  // Public: persist a lead, then (optionally) notify by email.
   app.post("/api/contact", async (req, res) => {
+    let validated;
     try {
-      const validatedData = contactFormSchema.parse(req.body);
+      validated = contactFormSchema.parse(req.body);
+    } catch (error) {
+      return res.status(400).json({ success: false, message: "Invalid form data." });
+    }
+
+    try {
+      const lead = await storage.createLead(validated);
+      // Fire-and-forget — the lead is already saved; email must never fail the request.
+      void notifyNewLead(lead);
       res.json({ success: true, message: "Thank you for your inquiry." });
     } catch (error) {
-      res.status(400).json({ success: false, message: "Invalid form data." });
+      console.error("[contact] Failed to save lead:", error);
+      res.status(500).json({ success: false, message: "Could not submit right now. Please try again." });
+    }
+  });
+
+  // Admin: list leads (newest first)
+  app.get("/api/leads", isAuthenticated, async (_req, res) => {
+    const list = await storage.listLeads();
+    res.json(list);
+  });
+
+  // Admin: change lead status
+  app.patch("/api/leads/:id", isAuthenticated, async (req, res) => {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ message: "Invalid ID" });
+    const status = req.body?.status;
+    if (!(LEAD_STATUSES as readonly string[]).includes(status)) {
+      return res.status(400).json({ message: "Invalid status" });
+    }
+    const updated = await storage.updateLeadStatus(id, status);
+    if (!updated) return res.status(404).json({ message: "Lead not found" });
+    res.json(updated);
+  });
+
+  // Admin: delete lead
+  app.delete("/api/leads/:id", isAuthenticated, async (req, res) => {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ message: "Invalid ID" });
+    const ok = await storage.deleteLead(id);
+    if (!ok) return res.status(404).json({ message: "Lead not found" });
+    res.sendStatus(204);
+  });
+
+  // --- NEWSLETTER ---
+
+  // Public: capture a subscriber email (duplicates are ignored, still return success).
+  app.post("/api/subscribe", async (req, res) => {
+    const parsed = z.object({ email: z.string().email() }).safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ success: false, message: "Invalid email." });
+    }
+    try {
+      await storage.createSubscriber(parsed.data.email);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("[subscribe] Failed to save subscriber:", error);
+      res.status(500).json({ success: false, message: "Could not subscribe right now." });
     }
   });
 

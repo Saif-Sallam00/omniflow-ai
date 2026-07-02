@@ -1,7 +1,7 @@
-import { pgTable, text, serial, jsonb, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, jsonb, boolean, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
-import { CATEGORIES, CONTACT_SERVICES, type Category } from "./taxonomy";
+import { CATEGORIES, CONTACT_SERVICES, type Category, type ContactService } from "./taxonomy";
 
 // --- EXISTING: Contact Form ---
 export const contactFormSchema = z.object({
@@ -60,3 +60,34 @@ export const selectProjectSchema = createInsertSchema(projects, {
 // `category` is typed via projects.category.$type<Category>() — sourced from taxonomy.
 export type Project = typeof projects.$inferSelect;
 export type InsertProject = typeof projects.$inferInsert;
+
+// --- LEADS (contact form submissions) ---
+export const LEAD_STATUSES = ["new", "read", "archived"] as const;
+export type LeadStatus = (typeof LEAD_STATUSES)[number];
+
+export const leads = pgTable("leads", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone"),
+  company: text("company"),
+  service: text("service").$type<ContactService>().notNull(),
+  message: text("message").notNull(),
+  status: text("status").$type<LeadStatus>().default("new").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertLeadSchema = createInsertSchema(leads);
+export type Lead = typeof leads.$inferSelect;
+export type InsertLead = typeof leads.$inferInsert;
+
+// --- NEWSLETTER SUBSCRIBERS (capture only; no emails are sent to them) ---
+export const subscribers = pgTable("subscribers", {
+  id: serial("id").primaryKey(),
+  email: text("email").notNull().unique(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertSubscriberSchema = createInsertSchema(subscribers);
+export type Subscriber = typeof subscribers.$inferSelect;
+export type InsertSubscriber = typeof subscribers.$inferInsert;

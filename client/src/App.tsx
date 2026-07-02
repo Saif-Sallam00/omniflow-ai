@@ -10,6 +10,7 @@ import { Footer } from "@/components/Footer";
 import { initGA } from "@/lib/analytics";
 import { useAnalytics } from "@/hooks/use-analytics";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { useI18n } from "@/lib/i18n";
 import { MessageCircle, Loader2 } from 'lucide-react';
 
 // Pages — route-based code-splitting (React.lazy) so each page ships in its own
@@ -24,6 +25,7 @@ const Contact = lazy(() => import("@/pages/Contact"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 const AuthPage = lazy(() => import("@/pages/admin/Auth"));
 const Dashboard = lazy(() => import("@/pages/admin/Dashboard"));
+const Leads = lazy(() => import("@/pages/admin/Leads"));
 
 // Lightweight fallback shown while a route chunk loads.
 function PageLoader() {
@@ -45,6 +47,7 @@ function ScrollToTop() {
 
 // Router Component
 function Router() {
+  const { t } = useI18n();
   // Safe Analytics Hook
   try {
     useAnalytics();
@@ -84,6 +87,7 @@ function Router() {
           {/* Admin Routes */}
           <Route path="/admin/auth" component={AuthPage} />
           <ProtectedRoute path="/admin/dashboard" component={Dashboard} />
+          <ProtectedRoute path="/admin/leads" component={Leads} />
 
           {/* Fallback */}
           <Route component={NotFound} />
@@ -103,7 +107,7 @@ function Router() {
         <div className="relative bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center gap-2">
           <MessageCircle className="w-8 h-8" />
           <span className="hidden group-hover:block font-bold pr-2 whitespace-nowrap transition-all">
-            Chat on WhatsApp
+            {t("whatsapp.chat")}
           </span>
         </div>
       </a>

@@ -7,87 +7,9 @@ import { Project } from '@shared/schema';
 import { CATEGORY_TO_PILLAR } from '@shared/taxonomy';
 import { onImageError } from '@/lib/placeholder';
 
-// The three PILLAR service pages.
-const services = {
-  software: {
-    icon: Globe,
-    title: 'Software that becomes your operational backbone',
-    subtitle: 'ERP and CRM platforms, customer-facing web, mobile apps, and the automation that connects them — designed to own, integrate, and scale.',
-    description: 'ERP and CRM platforms, customer-facing web, mobile apps, and the automation that connects them — designed to own, integrate, and scale.',
-    cta: 'Build your system',
-    features: [
-      { title: 'Business Systems (ERP / CRM)', description: 'Custom platforms that centralize your sales, operations, and customer data into one source of truth. Built on proven frameworks, shaped to how your business actually runs.' },
-      { title: 'Web Platforms', description: 'High-performance websites and web apps engineered for conversion and speed — connected to your systems from day one, not bolted on later.' },
-      { title: 'Mobile Apps', description: 'Customer-facing and internal apps built for real-world use and scale, integrated with the same backend as everything else.' },
-      { title: 'Automation & AI', description: "Workflow automation and AI integrations that remove manual work — lead routing, data sync, follow-ups, and the repetitive tasks eating your team's time." },
-    ],
-    process: [
-      { title: 'Discovery', description: 'We learn your business, goals, and technical requirements.' },
-      { title: 'Proposal', description: 'Clear scope, timeline, and a fixed price.' },
-      { title: 'Design', description: 'Wireframes and visual design — you approve before we build.' },
-      { title: 'Build', description: 'We build and integrate, with weekly reviews. No surprises.' },
-      { title: 'Launch', description: 'Tested, live, and handed over — full ownership transferred.' },
-    ],
-    faq: [
-      { q: 'Do we own the code?', a: 'Yes. Full source code and IP transfer on completion. No lock-in, no fees to access your own system.' },
-      { q: 'Can it integrate with our existing tools?', a: "That's the point. We connect to your CRM, ERP, and existing stack from day one." },
-      { q: 'How long does a build take?', a: 'Depends on scope — we give you a specific timeline in the proposal, not a vague range.' },
-      { q: 'What if we already have a system?', a: 'We rebuild or extend what you have, whichever actually makes sense for your situation.' },
-    ],
-  },
-  'digital-marketing': {
-    icon: BarChart3,
-    title: 'Marketing built as an acquisition system',
-    subtitle: 'SEO, paid campaigns, and conversion strategy wired into one measurable engine that brings in qualified buyers — not vanity traffic.',
-    description: 'SEO, paid campaigns, and conversion strategy wired into one measurable engine that brings in qualified buyers — not vanity traffic.',
-    cta: 'Scale your acquisition',
-    features: [
-      { title: 'Paid campaigns (Google / Meta / LinkedIn)', description: '' },
-      { title: 'Buyer-intent SEO', description: '' },
-      { title: 'Conversion-rate optimization', description: '' },
-      { title: 'Funnel strategy & tracking', description: '' },
-    ],
-    process: [
-      { title: 'Audit', description: 'We review your funnel, channels, and competitors.' },
-      { title: 'Strategy', description: "A clear plan — channels, offers, and what we'll test." },
-      { title: 'Setup', description: 'Tracking, campaigns, and landing pages built and launched.' },
-      { title: 'Optimize', description: 'Continuous testing against real performance data.' },
-    ],
-    faq: [
-      { q: "What's the minimum to make this work?", a: "We're honest about fit — we're upfront about whether the budget justifies the work, and we'll tell you before you commit." },
-      { q: 'How fast do results come?', a: 'Paid moves in weeks; SEO is a few months for meaningful traffic. We set realistic expectations before we start.' },
-      { q: 'Do you guarantee results?', a: "We guarantee our work and our process, not market conditions. Targets are agreed upfront and we're accountable to them." },
-    ],
-  },
-  'ai-training': {
-    icon: Bot,
-    title: 'AI training that turns tools into capability',
-    subtitle: 'Structured AI adoption programs for teams and leadership — built to leave your people using AI on real work, not just aware of it.',
-    description: 'Structured AI adoption programs for teams and leadership — built to leave your people using AI on real work, not just aware of it.',
-    cta: 'Start your AI program',
-    features: [
-      { title: 'Executive AI strategy sessions', description: '' },
-      { title: 'Department-level adoption programs', description: '' },
-      { title: 'Hands-on workflow integration workshops', description: '' },
-      { title: 'Implementation support', description: '' },
-    ],
-    process: [
-      { title: 'Assess', description: "We map your team's workflows and where AI actually helps." },
-      { title: 'Design', description: 'A program built around your tools and real tasks.' },
-      { title: 'Train', description: 'Hands-on sessions for leadership and teams.' },
-      { title: 'Embed', description: 'Documented workflows your team keeps and reuses.' },
-    ],
-    faq: [
-      { q: 'Is this generic AI training?', a: 'No. Programs are built around your actual workflows and tools, not a stock curriculum.' },
-      { q: 'Who is it for?', a: 'Leadership and teams — we run both strategy-level and hands-on tracks.' },
-      { q: 'What do we walk away with?', a: 'People who use AI on real work, plus documented workflows your team keeps.' },
-    ],
-  },
-};
-
 export default function ServiceDetail() {
   const [, params] = useRoute('/services/:slug');
-  const { isRTL } = useI18n();
+  const { t } = useI18n();
   const slug = params?.slug || '';
 
   // slug is a PILLAR slug. A project belongs on this pillar's page when its
@@ -98,16 +20,94 @@ export default function ServiceDetail() {
     (p) => p.showOnServicePage && CATEGORY_TO_PILLAR[p.category] === slug
   );
 
+  // The three PILLAR service pages, built from the i18n dictionary.
+  const services = {
+    software: {
+      icon: Globe,
+      title: t('serviceDetail.software.title'),
+      subtitle: t('serviceDetail.software.desc'),
+      description: t('serviceDetail.software.desc'),
+      cta: t('serviceDetail.software.cta'),
+      features: [
+        { title: t('serviceDetail.software.feat.1.title'), description: t('serviceDetail.software.feat.1.desc') },
+        { title: t('serviceDetail.software.feat.2.title'), description: t('serviceDetail.software.feat.2.desc') },
+        { title: t('serviceDetail.software.feat.3.title'), description: t('serviceDetail.software.feat.3.desc') },
+        { title: t('serviceDetail.software.feat.4.title'), description: t('serviceDetail.software.feat.4.desc') },
+      ],
+      process: [
+        { title: t('serviceDetail.software.proc.1.title'), description: t('serviceDetail.software.proc.1.desc') },
+        { title: t('serviceDetail.software.proc.2.title'), description: t('serviceDetail.software.proc.2.desc') },
+        { title: t('serviceDetail.software.proc.3.title'), description: t('serviceDetail.software.proc.3.desc') },
+        { title: t('serviceDetail.software.proc.4.title'), description: t('serviceDetail.software.proc.4.desc') },
+        { title: t('serviceDetail.software.proc.5.title'), description: t('serviceDetail.software.proc.5.desc') },
+      ],
+      faq: [
+        { q: t('serviceDetail.software.faq.1.q'), a: t('serviceDetail.software.faq.1.a') },
+        { q: t('serviceDetail.software.faq.2.q'), a: t('serviceDetail.software.faq.2.a') },
+        { q: t('serviceDetail.software.faq.3.q'), a: t('serviceDetail.software.faq.3.a') },
+        { q: t('serviceDetail.software.faq.4.q'), a: t('serviceDetail.software.faq.4.a') },
+      ],
+    },
+    'digital-marketing': {
+      icon: BarChart3,
+      title: t('serviceDetail.dm.title'),
+      subtitle: t('serviceDetail.dm.desc'),
+      description: t('serviceDetail.dm.desc'),
+      cta: t('serviceDetail.dm.cta'),
+      features: [
+        { title: t('serviceDetail.dm.feat.1.title'), description: '' },
+        { title: t('serviceDetail.dm.feat.2.title'), description: '' },
+        { title: t('serviceDetail.dm.feat.3.title'), description: '' },
+        { title: t('serviceDetail.dm.feat.4.title'), description: '' },
+      ],
+      process: [
+        { title: t('serviceDetail.dm.proc.1.title'), description: t('serviceDetail.dm.proc.1.desc') },
+        { title: t('serviceDetail.dm.proc.2.title'), description: t('serviceDetail.dm.proc.2.desc') },
+        { title: t('serviceDetail.dm.proc.3.title'), description: t('serviceDetail.dm.proc.3.desc') },
+        { title: t('serviceDetail.dm.proc.4.title'), description: t('serviceDetail.dm.proc.4.desc') },
+      ],
+      faq: [
+        { q: t('serviceDetail.dm.faq.1.q'), a: t('serviceDetail.dm.faq.1.a') },
+        { q: t('serviceDetail.dm.faq.2.q'), a: t('serviceDetail.dm.faq.2.a') },
+        { q: t('serviceDetail.dm.faq.3.q'), a: t('serviceDetail.dm.faq.3.a') },
+      ],
+    },
+    'ai-training': {
+      icon: Bot,
+      title: t('serviceDetail.ai.title'),
+      subtitle: t('serviceDetail.ai.desc'),
+      description: t('serviceDetail.ai.desc'),
+      cta: t('serviceDetail.ai.cta'),
+      features: [
+        { title: t('serviceDetail.ai.feat.1.title'), description: '' },
+        { title: t('serviceDetail.ai.feat.2.title'), description: '' },
+        { title: t('serviceDetail.ai.feat.3.title'), description: '' },
+        { title: t('serviceDetail.ai.feat.4.title'), description: '' },
+      ],
+      process: [
+        { title: t('serviceDetail.ai.proc.1.title'), description: t('serviceDetail.ai.proc.1.desc') },
+        { title: t('serviceDetail.ai.proc.2.title'), description: t('serviceDetail.ai.proc.2.desc') },
+        { title: t('serviceDetail.ai.proc.3.title'), description: t('serviceDetail.ai.proc.3.desc') },
+        { title: t('serviceDetail.ai.proc.4.title'), description: t('serviceDetail.ai.proc.4.desc') },
+      ],
+      faq: [
+        { q: t('serviceDetail.ai.faq.1.q'), a: t('serviceDetail.ai.faq.1.a') },
+        { q: t('serviceDetail.ai.faq.2.q'), a: t('serviceDetail.ai.faq.2.a') },
+        { q: t('serviceDetail.ai.faq.3.q'), a: t('serviceDetail.ai.faq.3.a') },
+      ],
+    },
+  };
+
   const service = params?.slug ? services[params.slug as keyof typeof services] : null;
 
   if (!service) {
     return (
       <div className="min-h-screen pt-20 bg-[#0a0a0b] flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-white mb-4">Service not found</h1>
+          <h1 className="text-3xl font-bold text-white mb-4">{t('serviceDetail.notFound.title')}</h1>
           <Link href="/services">
             <Button className="bg-orange-500 hover:bg-orange-600 text-white rounded-lg">
-              View all services
+              {t('serviceDetail.notFound.button')}
             </Button>
           </Link>
         </div>
@@ -126,8 +126,8 @@ export default function ServiceDetail() {
 
         <div className="relative z-10 max-w-4xl mx-auto px-6 md:px-8">
           <Link href="/services">
-            <Button variant="ghost" className="text-slate-500 hover:text-white mb-8 -ml-4">
-              ← All services
+            <Button variant="ghost" className="text-slate-500 hover:text-white mb-8 -ms-4">
+              {t('serviceDetail.backAll')}
             </Button>
           </Link>
 
@@ -156,7 +156,7 @@ export default function ServiceDetail() {
                 className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-6 rounded-lg"
               >
                 {service.cta}
-                <ArrowRight className={`w-4 h-4 ${isRTL ? 'mr-2' : 'ml-2'}`} />
+                <ArrowRight className="w-4 h-4 ms-2" />
               </Button>
             </Link>
             <Link href="/portfolio">
@@ -165,7 +165,7 @@ export default function ServiceDetail() {
                 variant="ghost"
                 className="text-slate-400 hover:text-white hover:bg-white/5 px-8 py-6 rounded-lg"
               >
-                See examples
+                {t('serviceDetail.seeExamples')}
               </Button>
             </Link>
           </div>
@@ -178,11 +178,11 @@ export default function ServiceDetail() {
           <div className="max-w-7xl mx-auto px-6 md:px-8">
             <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
               <div>
-                <h2 className="text-2xl font-bold text-white mb-2">Proven Results</h2>
-                <p className="text-slate-400">See how we've helped companies like yours.</p>
+                <h2 className="text-2xl font-bold text-white mb-2">{t('serviceDetail.related.title')}</h2>
+                <p className="text-slate-400">{t('serviceDetail.related.sub')}</p>
               </div>
               <Link href="/portfolio">
-                <Button variant="ghost" className="text-slate-400 hover:text-white">View Full Portfolio <ArrowRight className="ml-2 w-4 h-4"/></Button>
+                <Button variant="ghost" className="text-slate-400 hover:text-white">{t('serviceDetail.related.viewPortfolio')} <ArrowRight className="ms-2 w-4 h-4"/></Button>
               </Link>
             </div>
 
@@ -219,7 +219,7 @@ export default function ServiceDetail() {
       <section className="py-24 bg-slate-900/30 border-y border-slate-800/30">
         <div className="max-w-4xl mx-auto px-6 md:px-8">
           <h2 className="text-2xl font-bold text-white mb-12">
-            What's included
+            {t('serviceDetail.included')}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -230,7 +230,7 @@ export default function ServiceDetail() {
                   <h3 className="font-semibold text-white">{feature.title}</h3>
                 </div>
                 {feature.description && (
-                  <p className="text-sm text-slate-400 leading-relaxed pl-8">
+                  <p className="text-sm text-slate-400 leading-relaxed ps-8">
                     {feature.description}
                   </p>
                 )}
@@ -244,10 +244,10 @@ export default function ServiceDetail() {
       <section className="py-24">
         <div className="max-w-4xl mx-auto px-6 md:px-8">
           <h2 className="text-2xl font-bold text-white mb-4">
-            How it works
+            {t('serviceDetail.how.title')}
           </h2>
           <p className="text-slate-400 mb-12">
-            No mystery. No endless meetings. Here's the process.
+            {t('serviceDetail.how.sub')}
           </p>
 
           <div className="space-y-6">
@@ -273,7 +273,7 @@ export default function ServiceDetail() {
       <section className="py-24 bg-slate-900/30 border-y border-slate-800/30">
         <div className="max-w-4xl mx-auto px-6 md:px-8">
           <h2 className="text-2xl font-bold text-white mb-12">
-            Common questions
+            {t('serviceDetail.faqTitle')}
           </h2>
 
           <div className="space-y-8">
@@ -293,11 +293,10 @@ export default function ServiceDetail() {
 
         <div className="relative z-10 max-w-3xl mx-auto px-6 md:px-8 text-center">
           <h2 className="text-3xl font-bold text-white mb-6">
-            Ready to get started?
+            {t('serviceDetail.cta.title')}
           </h2>
           <p className="text-lg text-slate-400 mb-10">
-            Book a strategy call. We'll discuss your needs and tell you honestly
-            if we're the right fit — no pressure, no sales pitch.
+            {t('serviceDetail.cta.body')}
           </p>
           <Link href="/contact">
             <Button
@@ -305,7 +304,7 @@ export default function ServiceDetail() {
               className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-6 text-base rounded-lg"
             >
               {service.cta}
-              <ArrowRight className={`w-4 h-4 ${isRTL ? 'mr-2' : 'ml-2'}`} />
+              <ArrowRight className="w-4 h-4 ms-2" />
             </Button>
           </Link>
         </div>

@@ -1,5 +1,4 @@
-import { Shield, Users, Target, Award, Linkedin, Mail, CheckCircle2 } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Shield, Users, Target, Award, Linkedin, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useI18n } from "@/lib/i18n";
@@ -16,7 +15,6 @@ export default function About() {
 
       {/* 1. HERO: Who we are */}
       <section className="py-20 md:py-24 relative overflow-hidden">
-        {/* Background Gradients */}
         <div className="absolute top-0 right-0 w-[50%] h-[60%] bg-gradient-to-bl from-orange-950/30 via-transparent to-transparent pointer-events-none" />
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 text-center">
@@ -25,18 +23,16 @@ export default function About() {
               variant="outline"
               className="mb-6 px-4 py-1 border-orange-500/30 text-orange-400 tracking-widest uppercase text-xs font-semibold bg-orange-500/10"
             >
-              Who we are
+              {t("about.badge")}
             </Badge>
             <h1 className="text-4xl md:text-6xl font-display font-bold text-white mb-8 leading-tight">
-              Engineers who understand{" "}
+              {t("about.headline.lead")}{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">
-                business.
+                {t("about.headline.highlight")}
               </span>
             </h1>
             <p className="text-xl text-slate-400 leading-relaxed max-w-2xl mx-auto">
-              OmniflowAI is a digital transformation partner built around one belief:
-              most companies don't need more tools — they need the right systems,
-              built well and connected properly.
+              {t("about.sub")}
             </p>
           </div>
         </div>
@@ -61,30 +57,15 @@ export default function About() {
             {/* Text Side */}
             <div className="space-y-8">
               <h2 className="text-3xl md:text-4xl font-display font-bold text-white">
-                We started OmniflowAI to close a gap.
+                {t("about.story.heading")}
               </h2>
               <div className="prose prose-lg text-slate-400 space-y-6">
-                <p>
-                  Too many businesses are sold disconnected pieces — a website here,
-                  an ad campaign there, a tool nobody integrates — and left to stitch
-                  them together themselves. The result is expensive fragmentation:
-                  software that doesn't talk, marketing that doesn't convert, and no
-                  clear view of what's working.
-                </p>
-                <p>
-                  We do the opposite. We start from how your business actually
-                  operates, then design and build the systems that fit it — software,
-                  marketing, and automation that work as one. You own everything we
-                  build. No lock-in, no dependency, no black boxes.
-                </p>
-                <p>
-                  We work like engineers, not order-takers: we care about outcomes you
-                  can measure, systems that outlast the engagement, and giving you the
-                  keys at the end.
-                </p>
+                <p>{t("about.story.p1")}</p>
+                <p>{t("about.story.p2")}</p>
+                <p>{t("about.story.p3")}</p>
               </div>
 
-              {/* Founder info — FROZEN */}
+              {/* Founder info — FROZEN (not translated) */}
               {/* TODO(team-final) */}
               <div className="pt-6 border-t border-slate-800">
                 <div className="flex items-center gap-4">
@@ -101,17 +82,16 @@ export default function About() {
         </div>
       </section>
 
-      {/* 3. THE TEAM GRID — FROZEN */}
+      {/* 3. THE TEAM GRID — cards FROZEN (not translated) */}
       {/* TODO(team-final) */}
       <section className="py-20 md:py-24">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 text-white">
-              Meet the Builders
+              {t("about.team.heading")}
             </h2>
             <p className="text-slate-400 max-w-2xl mx-auto">
-              No outsourcing. No juniors learning on your dime. Just senior
-              talent dedicated to your growth.
+              {t("about.team.sub")}
             </p>
           </div>
 
@@ -142,26 +122,10 @@ export default function About() {
       <section className="py-20 md:py-24 bg-slate-900/30 border-y border-slate-800/30">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <ValueCard
-              icon={Shield}
-              title="Systems over services"
-              desc="We don't sell isolated deliverables. Everything we build is designed to connect and compound."
-            />
-            <ValueCard
-              icon={Target}
-              title="You own it"
-              desc="Full source code and IP transfer on every build. What you pay for is yours."
-            />
-            <ValueCard
-              icon={Users}
-              title="Engineering-led"
-              desc="You work directly with the people building your systems, not an account manager relaying messages."
-            />
-            <ValueCard
-              icon={Award}
-              title="Measured by outcomes"
-              desc="We tie our work to business results — revenue, efficiency, acquisition — not hours logged or assets shipped."
-            />
+            <ValueCard icon={Shield} title={t("about.values.1.title")} desc={t("about.values.1.desc")} />
+            <ValueCard icon={Target} title={t("about.values.2.title")} desc={t("about.values.2.desc")} />
+            <ValueCard icon={Users} title={t("about.values.3.title")} desc={t("about.values.3.desc")} />
+            <ValueCard icon={Award} title={t("about.values.4.title")} desc={t("about.values.4.desc")} />
           </div>
         </div>
       </section>
@@ -172,18 +136,17 @@ export default function About() {
 
         <div className="relative z-10 max-w-3xl mx-auto px-6 md:px-8">
           <h2 className="text-3xl font-display font-bold text-white mb-6">
-            Let's map your systems
+            {t("about.cta.title")}
           </h2>
           <p className="text-lg text-slate-400 mb-8">
-            We don't hand over deliverables and walk away. We build systems that
-            keep working after we're gone.
+            {t("common.brandLine")}
           </p>
           <a href="/contact">
             <Button
               size="lg"
               className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white text-lg px-8 py-6 rounded-full font-bold shadow-lg shadow-orange-900/20"
             >
-              Book a strategy call
+              {t("common.cta.bookCall")}
             </Button>
           </a>
         </div>

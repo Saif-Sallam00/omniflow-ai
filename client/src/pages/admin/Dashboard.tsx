@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Project } from "@shared/schema";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { ObjectUploader } from "@/components/ObjectUploader";
 import { CATEGORIES, CATEGORY_LABELS } from "@shared/taxonomy";
 import { onImageError } from "@/lib/placeholder";
@@ -177,6 +177,14 @@ export default function Dashboard() {
     <div className="min-h-screen bg-slate-50">
       <header className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-white/80 backdrop-blur-sm px-6 shadow-sm">
         <h1 className="text-xl font-bold font-display">Omniflow<span className="text-amber-500">CMS</span></h1>
+        <nav className="hidden sm:flex items-center gap-1 ml-4">
+          <Link href="/admin/dashboard">
+            <span className="px-3 py-1.5 rounded-md text-sm font-medium bg-slate-100 text-slate-900 cursor-pointer">Portfolio</span>
+          </Link>
+          <Link href="/admin/leads">
+            <span className="px-3 py-1.5 rounded-md text-sm font-medium text-slate-500 hover:text-slate-900 cursor-pointer">Leads</span>
+          </Link>
+        </nav>
         <div className="ml-auto flex items-center gap-4">
           <Button variant="outline" size="sm" onClick={() => logout()}>
             <LogOut className="w-4 h-4 mr-2" /> Logout

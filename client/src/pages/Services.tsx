@@ -5,8 +5,10 @@ import { useQuery } from '@tanstack/react-query';
 import { Project } from '@shared/schema';
 import { CATEGORY_TO_PILLAR, type Pillar } from '@shared/taxonomy';
 import { onImageError } from '@/lib/placeholder';
+import { useI18n } from '@/lib/i18n';
 
 export default function Services() {
+  const { t } = useI18n();
 
   // Fetch Showcase Projects
   const { data: showcaseProjects } = useQuery<Project[]>({
@@ -23,31 +25,15 @@ export default function Services() {
   };
 
   const services = [
-    {
-      id: 'ai-training',
-      pillar: 'ai-training' as Pillar,
-      icon: Bot,
-      title: 'AI training that turns tools into capability',
-      body: "We run structured AI adoption programs for teams and leadership — from executive strategy sessions to hands-on workflow integration. The goal isn't awareness, it's operational capability: your people using AI on real work, not watching a demo.",
-      href: '/services/ai-training',
-    },
-    {
-      id: 'digital-marketing',
-      pillar: 'digital-marketing' as Pillar,
-      icon: BarChart3,
-      title: 'Marketing built as an acquisition system',
-      body: 'SEO, paid campaigns, and conversion strategy wired into one engine that targets qualified buyers — not vanity traffic. Every stage is tracked, so you know what a lead actually costs and where revenue comes from.',
-      href: '/services/digital-marketing',
-    },
-    {
-      id: 'software',
-      pillar: 'software' as Pillar,
-      icon: Globe,
-      title: 'Software that becomes your operational backbone',
-      body: 'The systems your business runs on — ERP and CRM platforms, customer-facing web, mobile apps, and the automation that connects them. Built to own, integrate, and scale, not to rent.',
-      subcaps: 'Business Systems (ERP/CRM) · Web Platforms · Mobile Apps · Automation & AI',
-      href: '/services/software',
-    },
+    { id: 'ai-training', pillar: 'ai-training' as Pillar, icon: Bot, titleKey: 'pillars.aiTraining.title', bodyKey: 'pillars.aiTraining.body', href: '/services/ai-training' },
+    { id: 'digital-marketing', pillar: 'digital-marketing' as Pillar, icon: BarChart3, titleKey: 'pillars.digitalMarketing.title', bodyKey: 'pillars.digitalMarketing.body', href: '/services/digital-marketing' },
+    { id: 'software', pillar: 'software' as Pillar, icon: Globe, titleKey: 'pillars.software.title', bodyKey: 'pillars.software.body', subcapsKey: 'pillars.software.subcaps', href: '/services/software' },
+  ];
+
+  const together = [
+    { step: '01', titleKey: 'services.together.capture.title', descKey: 'services.together.capture.desc' },
+    { step: '02', titleKey: 'services.together.attract.title', descKey: 'services.together.attract.desc' },
+    { step: '03', titleKey: 'services.together.automate.title', descKey: 'services.together.automate.desc' },
   ];
 
   return (
@@ -57,12 +43,12 @@ export default function Services() {
       <section className="py-24 relative">
         <div className="absolute top-0 right-0 w-[50%] h-[60%] bg-gradient-to-bl from-orange-950/30 via-transparent to-transparent" />
         <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 text-center">
-          <p className="text-orange-400/80 text-sm font-medium tracking-wide mb-6">What we do</p>
+          <p className="text-orange-400/80 text-sm font-medium tracking-wide mb-6">{t('services.eyebrow')}</p>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-            Three capabilities. <span className="text-slate-500">One transformation partner.</span>
+            {t('services.title.lead')} <span className="text-slate-500">{t('services.title.highlight')}</span>
           </h1>
           <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
-            We don't hand over deliverables and walk away. We build systems that keep working after we're gone.
+            {t('common.brandLine')}
           </p>
         </div>
       </section>
@@ -85,18 +71,18 @@ export default function Services() {
                         <Icon className="w-6 h-6 text-orange-400" />
                       </div>
                       <div>
-                        <h2 className="text-2xl font-bold text-white">{service.title}</h2>
+                        <h2 className="text-2xl font-bold text-white">{t(service.titleKey)}</h2>
                       </div>
                     </div>
-                    <p className="text-slate-400 leading-relaxed">{service.body}</p>
-                    {service.subcaps && (
-                      <p className="text-sm text-orange-400/80 font-medium">{service.subcaps}</p>
+                    <p className="text-slate-400 leading-relaxed">{t(service.bodyKey)}</p>
+                    {service.subcapsKey && (
+                      <p className="text-sm text-orange-400/80 font-medium">{t(service.subcapsKey)}</p>
                     )}
                   </div>
                   <div className="pt-8">
                     <Link href={service.href}>
-                      <Button variant="ghost" className="text-slate-400 hover:text-white hover:bg-white/5 pl-0">
-                        Learn more <ArrowRight className="w-4 h-4 ml-2" />
+                      <Button variant="ghost" className="text-slate-400 hover:text-white hover:bg-white/5 ps-0">
+                        {t('services.learnMore')} <ArrowRight className="w-4 h-4 ms-2" />
                       </Button>
                     </Link>
                   </div>
@@ -115,12 +101,12 @@ export default function Services() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent p-8 flex flex-col justify-end">
                       <div className="space-y-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                        <p className="text-xs font-bold text-orange-400 uppercase tracking-widest mb-2">Featured Project</p>
+                        <p className="text-xs font-bold text-orange-400 uppercase tracking-widest mb-2">{t('services.featuredProject')}</p>
                         <h3 className="text-xl font-bold text-white">{showcase.title}</h3>
                         <p className="text-sm text-slate-300 line-clamp-2 mb-4">{showcase.description}</p>
                         <Link href={`/portfolio/${showcase.id}`}>
                           <Button size="sm" className="bg-white/10 hover:bg-white/20 text-white border border-white/10 backdrop-blur-md rounded-full">
-                            View Case Study <ArrowUpRight className="w-3 h-3 ml-2" />
+                            {t('services.viewCaseStudy')} <ArrowUpRight className="w-3 h-3 ms-2" />
                           </Button>
                         </Link>
                       </div>
@@ -138,47 +124,29 @@ export default function Services() {
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-white mb-4">
-              Better together
+              {t('services.together.title')}
             </h2>
             <p className="text-slate-400 max-w-2xl mx-auto">
-              Each capability works on its own. Together they compound — your
-              software captures the data, your marketing fills the pipeline, your
-              automation runs it, and your team knows how to drive all of it.
+              {t('services.together.sub')}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              {
-                step: '01',
-                title: 'Capture',
-                description: 'Your website captures leads and collects the data you need to qualify them.',
-              },
-              {
-                step: '02',
-                title: 'Attract',
-                description: 'Marketing drives the right people to your site—decision-makers, not tire-kickers.',
-              },
-              {
-                step: '03',
-                title: 'Automate',
-                description: 'Automation qualifies leads, books meetings, and syncs everything to your CRM.',
-              },
-            ].map((item, index) => (
+            {together.map((item, index) => (
               <div key={index} className="relative p-6 rounded-xl bg-slate-950/50 border border-slate-800/50">
                 <div className="text-4xl font-bold text-slate-800 mb-4">
                   {item.step}
                 </div>
                 <h3 className="text-lg font-semibold text-white mb-2">
-                  {item.title}
+                  {t(item.titleKey)}
                 </h3>
                 <p className="text-sm text-slate-400 leading-relaxed">
-                  {item.description}
+                  {t(item.descKey)}
                 </p>
 
-                {/* Connector arrow */}
+                {/* Connector arrow (inline-end so it mirrors in RTL) */}
                 {index < 2 && (
-                  <div className="hidden md:block absolute top-1/2 -right-3 w-6 h-6 -translate-y-1/2 z-10">
+                  <div className="hidden md:block absolute top-1/2 -end-3 w-6 h-6 -translate-y-1/2 z-10">
                     <ArrowRight className="w-6 h-6 text-slate-700" />
                   </div>
                 )}
@@ -194,19 +162,18 @@ export default function Services() {
 
         <div className="relative z-10 max-w-3xl mx-auto px-6 md:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-            Not sure what you need?
+            {t('services.cta.title')}
           </h2>
           <p className="text-xl text-slate-400 mb-10">
-            Book a free call. We'll look at your current setup and tell you
-            exactly what would move the needle—even if it's not something we do.
+            {t('services.cta.body')}
           </p>
           <Link href="/contact">
             <Button
               size="lg"
               className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-6 text-base rounded-lg transition-colors"
             >
-              Book a free strategy call
-              <ArrowRight className="w-4 h-4 ml-2" />
+              {t('services.cta.button')}
+              <ArrowRight className="w-4 h-4 ms-2" />
             </Button>
           </Link>
         </div>

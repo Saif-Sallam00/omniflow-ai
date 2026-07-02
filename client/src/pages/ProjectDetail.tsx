@@ -11,7 +11,7 @@ import { onImageError } from '@/lib/placeholder';
 export default function ProjectDetail() {
   const [, params] = useRoute("/portfolio/:id");
   const id = params?.id;
-  const { isRTL } = useI18n();
+  const { isRTL, t } = useI18n();
 
   const { data: project, isLoading, error } = useQuery<Project>({
     queryKey: [`/api/projects/${id}`],
@@ -19,7 +19,7 @@ export default function ProjectDetail() {
   });
 
   if (isLoading) return <ProjectSkeleton />;
-  if (error || !project) return <div className="min-h-screen pt-32 bg-slate-950 text-white text-center">Project not found</div>;
+  if (error || !project) return <div className="min-h-screen pt-32 bg-slate-950 text-white text-center">{t('projectDetail.notFound')}</div>;
 
   return (
     <div className="min-h-screen bg-slate-950 text-white pt-20">
@@ -29,7 +29,7 @@ export default function ProjectDetail() {
         <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
           <Link href="/portfolio">
             <Button variant="ghost" className="mb-6 pl-0 hover:bg-transparent hover:text-orange-400 text-slate-500 transition-colors">
-              <ArrowLeft className="w-4 h-4 mr-2" /> Back to Portfolio
+              <ArrowLeft className="w-4 h-4 me-2" /> {t('projectDetail.back')}
             </Button>
           </Link>
 
@@ -37,7 +37,7 @@ export default function ProjectDetail() {
             <div className="space-y-6">
               <div className="flex items-center gap-4">
                 <Badge variant="outline" className="border-orange-500/30 text-orange-400 bg-orange-500/10">
-                  {project.category}
+                  {t(`category.${project.category}`)}
                 </Badge>
                 <span className="text-slate-400 font-medium border-l border-slate-800 pl-4">{project.client}</span>
               </div>
@@ -53,7 +53,7 @@ export default function ProjectDetail() {
               <div className="block lg:hidden pt-4">
                 <Link href="/contact">
                   <Button className="w-full bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold h-12 rounded-full">
-                    Start a Project Like This
+                    {t('projectDetail.mobileCta')}
                   </Button>
                 </Link>
               </div>
@@ -87,11 +87,11 @@ export default function ProjectDetail() {
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-12 md:space-y-16">
               <div className="pl-6 border-l-2 border-orange-500">
-                <h2 className="text-2xl font-bold text-white mb-4">The Challenge</h2>
+                <h2 className="text-2xl font-bold text-white mb-4">{t('projectDetail.challenge')}</h2>
                 <div className="prose prose-invert text-slate-400"><p>{project.challenge}</p></div>
               </div>
               <div className="pl-6 border-l-2 border-emerald-500">
-                <h2 className="text-2xl font-bold text-white mb-4">The Solution</h2>
+                <h2 className="text-2xl font-bold text-white mb-4">{t('projectDetail.solution')}</h2>
                 <div className="prose prose-invert text-slate-400"><p>{project.solution}</p></div>
               </div>
             </div>
@@ -99,7 +99,7 @@ export default function ProjectDetail() {
             {/* Sidebar */}
             <div className="lg:col-span-1">
               <div className="bg-slate-900/50 p-6 rounded-2xl border border-slate-800">
-                <h3 className="font-bold text-white mb-6 text-sm uppercase tracking-wider">Tech Stack</h3>
+                <h3 className="font-bold text-white mb-6 text-sm uppercase tracking-wider">{t('projectDetail.techStack')}</h3>
                 <div className="flex flex-wrap gap-2 mb-8">
                   {project.technologies.map(tech => (
                     <Badge key={tech} variant="secondary" className="bg-slate-800 text-slate-300">
@@ -109,7 +109,7 @@ export default function ProjectDetail() {
                 </div>
                 <Link href="/contact">
                   <Button className="w-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold h-12 rounded-full">
-                    Start Your Project
+                    {t('projectDetail.startProject')}
                   </Button>
                 </Link>
               </div>

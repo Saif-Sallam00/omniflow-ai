@@ -10,8 +10,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { useQuery } from '@tanstack/react-query';
 import { Project } from '@shared/schema';
-import { CATEGORY_LABELS, type Category } from '@shared/taxonomy';
+import { type Category } from '@shared/taxonomy';
 import { onImageError } from '@/lib/placeholder';
+import { useI18n } from '@/lib/i18n';
 import {
   Carousel,
   CarouselContent,
@@ -44,47 +45,19 @@ import darat from '@/assets/clients/darat.png';
 import rafeek from '@/assets/clients/rafeek.png';
 
 const pillars = [
-  {
-    icon: Bot,
-    title: "AI training that turns tools into capability",
-    body: "We run structured AI adoption programs for teams and leadership — from executive strategy sessions to hands-on workflow integration. The goal isn't awareness, it's operational capability: your people using AI on real work, not watching a demo.",
-    href: "/services/ai-training",
-  },
-  {
-    icon: Target,
-    title: "Marketing built as an acquisition system",
-    body: "SEO, paid campaigns, and conversion strategy wired into one engine that targets qualified buyers — not vanity traffic. Every stage is tracked, so you know what a lead actually costs and where revenue comes from.",
-    href: "/services/digital-marketing",
-  },
-  {
-    icon: Layers,
-    title: "Software that becomes your operational backbone",
-    body: "The systems your business runs on — ERP and CRM platforms, customer-facing web, mobile apps, and the automation that connects them. Built to own, integrate, and scale, not to rent.",
-    subcaps: "Business Systems (ERP/CRM) · Web Platforms · Mobile Apps · Automation & AI",
-    href: "/services/software",
-  },
+  { icon: Bot, titleKey: "pillars.aiTraining.title", bodyKey: "pillars.aiTraining.body", href: "/services/ai-training" },
+  { icon: Target, titleKey: "pillars.digitalMarketing.title", bodyKey: "pillars.digitalMarketing.body", href: "/services/digital-marketing" },
+  { icon: Layers, titleKey: "pillars.software.title", bodyKey: "pillars.software.body", subcapsKey: "pillars.software.subcaps", href: "/services/software" },
 ];
 
-const transformation = {
-  before: [
-    "Tools that don't talk to each other",
-    "Marketing disconnected from operations",
-    "Manual work slowing everything down",
-    "No clear view of what's actually working",
-  ],
-  after: [
-    "One integrated business system",
-    "Acquisition, conversion, and operations connected",
-    "Automated workflows across the business",
-    "Real-time visibility into performance",
-  ],
-};
+const transformBefore = ["home.transform.before.1", "home.transform.before.2", "home.transform.before.3", "home.transform.before.4"];
+const transformAfter = ["home.transform.after.1", "home.transform.after.2", "home.transform.after.3", "home.transform.after.4"];
 
 const howWeWork = [
-  { step: "01", title: "Diagnose", description: "We map your business model, systems, and the bottlenecks slowing growth." },
-  { step: "02", title: "Design", description: "We design the right mix of software, marketing, and automation for how you actually operate." },
-  { step: "03", title: "Build", description: "We develop and integrate the system, and hand you full ownership." },
-  { step: "04", title: "Optimize", description: "We keep improving it against real business data." },
+  { step: "01", titleKey: "home.how.diagnose.title", descKey: "home.how.diagnose.desc" },
+  { step: "02", titleKey: "home.how.design.title", descKey: "home.how.design.desc" },
+  { step: "03", titleKey: "home.how.build.title", descKey: "home.how.build.desc" },
+  { step: "04", titleKey: "home.how.optimize.title", descKey: "home.how.optimize.desc" },
 ];
 
 // Ordering for the (DB-driven) proof section: Business Systems → Automation →
@@ -96,6 +69,7 @@ const proofRank = (c: Category) => {
 };
 
 export default function Home() {
+  const { t } = useI18n();
   const { data: projects } = useQuery<Project[]>({ queryKey: ['/api/projects'] });
   const all = projects || [];
 
@@ -128,25 +102,25 @@ export default function Home() {
 
         <div className="relative z-10 max-w-4xl mx-auto px-6 md:px-8 text-center">
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.1] tracking-tight">
-            We build the systems behind{" "}
+            {t("home.hero.h1.lead")}{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500">
-              business growth.
+              {t("home.hero.h1.highlight")}
             </span>
           </h1>
 
           <p className="text-lg md:text-xl text-slate-400 leading-relaxed max-w-2xl mx-auto mt-8">
-            Your digital transformation partner for AI training, digital marketing, and business software — engineered as one integrated system, not four disconnected services.
+            {t("home.hero.sub")}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-10">
             <Link href="/contact">
               <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold h-12 md:h-14 px-8 rounded-full shadow-lg hover:scale-105 transition-transform">
-                Book a strategy call <ArrowRight className="ml-2 w-5 h-5" />
+                {t("common.cta.bookCall")} <ArrowRight className="ms-2 w-5 h-5" />
               </Button>
             </Link>
             <Link href="/portfolio">
               <Button size="lg" variant="outline" className="w-full sm:w-auto border-slate-700 text-slate-300 hover:text-white hover:bg-white/10 h-12 md:h-14 px-8 rounded-full">
-                See our work
+                {t("home.hero.cta2")}
               </Button>
             </Link>
           </div>
@@ -157,17 +131,15 @@ export default function Home() {
       <section className="py-20 md:py-24 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 overflow-hidden">
         <div className="max-w-6xl mx-auto px-6 md:px-8">
           <p className="text-sm text-slate-500 uppercase tracking-widest text-center mb-16">
-            Trusted by teams building the future of their industries.
+            {t("home.trust")}
           </p>
         </div>
 
         {/* Single-row infinite marquee - no containers */}
         <div className="relative">
-          {/* Gradient fade edges */}
           <div className="absolute left-0 top-0 bottom-0 w-32 md:w-48 bg-gradient-to-r from-slate-950 to-transparent z-10 pointer-events-none" />
           <div className="absolute right-0 top-0 bottom-0 w-32 md:w-48 bg-gradient-to-l from-slate-950 to-transparent z-10 pointer-events-none" />
 
-          {/* Single row - all clients, duplicated for seamless loop */}
           <div className="flex items-center animate-marquee">
             {[...allClients, ...allClients].map((client, index) => (
               <img
@@ -182,7 +154,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Inline keyframes for marquee animation */}
         <style>{`
           @keyframes marquee {
             0% { transform: translateX(0); }
@@ -198,13 +169,13 @@ export default function Home() {
       <section className="py-20 md:py-24 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
         <div className="max-w-4xl mx-auto px-6 md:px-8 text-center">
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 leading-tight">
-            Most companies don't have a marketing problem.{" "}
+            {t("home.valueProp.title.lead")}{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500">
-              They have a systems problem.
+              {t("home.valueProp.title.highlight")}
             </span>
           </h2>
           <p className="text-lg text-slate-400 leading-relaxed mt-8">
-            Disconnected tools, manual handoffs, and no clear line of sight from a lead to a closed deal. We connect the whole chain — how you acquire customers, how you convert them, and how you operate once they're in — so the parts work as one system you can actually measure.
+            {t("home.valueProp.body")}
           </p>
         </div>
       </section>
@@ -213,7 +184,7 @@ export default function Home() {
       <section className="py-20 md:py-24 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 border-t border-slate-800/30">
         <div className="max-w-6xl mx-auto px-6 md:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-12 md:mb-16 max-w-2xl">
-            Three capabilities. One transformation partner.
+            {t("home.pillars.title")}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
@@ -226,14 +197,14 @@ export default function Home() {
                       <Icon className="w-6 h-6 text-orange-400" />
                     </div>
                     <h3 className="text-xl font-semibold text-white mb-3 leading-snug">
-                      {pillar.title}
+                      {t(pillar.titleKey)}
                     </h3>
                     <p className="text-sm md:text-base text-slate-400 leading-relaxed">
-                      {pillar.body}
+                      {t(pillar.bodyKey)}
                     </p>
-                    {pillar.subcaps && (
+                    {pillar.subcapsKey && (
                       <p className="text-xs text-orange-400/80 font-medium mt-6 pt-6 border-t border-slate-800/50">
-                        {pillar.subcaps}
+                        {t(pillar.subcapsKey)}
                       </p>
                     )}
                   </div>
@@ -248,18 +219,18 @@ export default function Home() {
       <section className="py-20 md:py-24 bg-slate-900/30 border-y border-slate-800/30">
         <div className="max-w-6xl mx-auto px-6 md:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-12 md:mb-16 text-center">
-            From scattered tools to one connected system
+            {t("home.transform.title")}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {/* Before */}
             <div className="p-6 md:p-8 rounded-2xl bg-slate-950/50 border border-slate-800/50">
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-6">Before</p>
+              <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-6">{t("home.transform.before.label")}</p>
               <ul className="space-y-4">
-                {transformation.before.map((item, i) => (
+                {transformBefore.map((key, i) => (
                   <li key={i} className="flex items-start gap-3 text-slate-400">
                     <span className="w-1.5 h-1.5 rounded-full bg-slate-600 mt-2 flex-shrink-0" />
-                    {item}
+                    {t(key)}
                   </li>
                 ))}
               </ul>
@@ -267,12 +238,12 @@ export default function Home() {
 
             {/* After */}
             <div className="p-6 md:p-8 rounded-2xl bg-gradient-to-br from-orange-950/20 to-slate-900/50 border border-orange-500/20">
-              <p className="text-xs font-bold text-orange-400 uppercase tracking-widest mb-6">After</p>
+              <p className="text-xs font-bold text-orange-400 uppercase tracking-widest mb-6">{t("home.transform.after.label")}</p>
               <ul className="space-y-4">
-                {transformation.after.map((item, i) => (
+                {transformAfter.map((key, i) => (
                   <li key={i} className="flex items-start gap-3 text-slate-200">
                     <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-1 flex-shrink-0" />
-                    {item}
+                    {t(key)}
                   </li>
                 ))}
               </ul>
@@ -287,10 +258,10 @@ export default function Home() {
           <div className="max-w-6xl mx-auto px-6 md:px-8">
             <div className="max-w-2xl mb-12 md:mb-16">
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                Measured by outcomes, not deliverables
+                {t("home.proof.title")}
               </h2>
               <p className="text-slate-400 leading-relaxed">
-                Every engagement is tied to something your business can feel — revenue, efficiency, acquisition cost, scale. Here's the work behind that.
+                {t("home.proof.body")}
               </p>
             </div>
 
@@ -311,7 +282,7 @@ export default function Home() {
                     <h3 className="text-lg font-semibold text-white group-hover:text-orange-400 transition-colors mb-1">
                       {project.title}
                     </h3>
-                    <p className="text-sm text-slate-500">{CATEGORY_LABELS[project.category] ?? project.category}</p>
+                    <p className="text-sm text-slate-500">{t(`category.${project.category}`)}</p>
                   </div>
                 </Link>
               ))}
@@ -327,16 +298,16 @@ export default function Home() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4">
               <div>
                 <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
-                  Recent work
+                  {t("home.recent.title")}
                 </h2>
                 <p className="text-slate-400">
-                  A look at the systems we've built.
+                  {t("home.recent.sub")}
                 </p>
               </div>
               <Link href="/portfolio">
                 <Button variant="ghost" className="text-slate-400 hover:text-white">
-                  View all projects
-                  <ArrowRight className="w-4 h-4 ml-2" />
+                  {t("common.viewAllProjects")}
+                  <ArrowRight className="w-4 h-4 ms-2" />
                 </Button>
               </Link>
             </div>
@@ -360,7 +331,7 @@ export default function Home() {
                         <h3 className="text-lg font-semibold text-white group-hover:text-orange-400 transition-colors mb-1">
                           {project.title}
                         </h3>
-                        <p className="text-sm text-slate-500">{CATEGORY_LABELS[project.category] ?? project.category}</p>
+                        <p className="text-sm text-slate-500">{t(`category.${project.category}`)}</p>
                       </div>
                     </Link>
                   </CarouselItem>
@@ -379,7 +350,7 @@ export default function Home() {
       <section className="py-20 md:py-24 bg-slate-900/30 border-y border-slate-800/30">
         <div className="max-w-6xl mx-auto px-6 md:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-12 md:mb-16">
-            How we work
+            {t("home.how.title")}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
@@ -389,10 +360,10 @@ export default function Home() {
                   {item.step}
                 </div>
                 <h3 className="text-xl font-semibold text-white mb-2 md:mb-3">
-                  {item.title}
+                  {t(item.titleKey)}
                 </h3>
                 <p className="text-sm md:text-base text-slate-400 leading-relaxed">
-                  {item.description}
+                  {t(item.descKey)}
                 </p>
               </div>
             ))}
@@ -409,13 +380,13 @@ export default function Home() {
                 <Shield className="w-6 h-6 text-orange-400" />
               </div>
               <p className="text-lg md:text-xl font-semibold text-white max-w-2xl">
-                We don't hand over deliverables and walk away. We build systems that keep working after we're gone.
+                {t("common.brandLine")}
               </p>
             </div>
             <Link href="/contact">
               <Button className="bg-gradient-to-r from-orange-500 to-red-600 text-white font-semibold px-6 rounded-lg hover:from-orange-600 hover:to-red-700 transition-all whitespace-nowrap">
-                Book a strategy call
-                <ArrowRight className="w-4 h-4 ml-2" />
+                {t("common.cta.bookCall")}
+                <ArrowRight className="w-4 h-4 ms-2" />
               </Button>
             </Link>
           </div>
@@ -428,10 +399,10 @@ export default function Home() {
 
         <div className="relative z-10 max-w-3xl mx-auto px-6 md:px-8 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
-            Ready to transform how your business runs?
+            {t("home.finalCta.title")}
           </h2>
           <p className="text-xl text-slate-400 mb-10 leading-relaxed">
-            Book a strategy call. We'll look at your current systems and show you exactly what's blocking growth — even if you don't work with us.
+            {t("home.finalCta.body")}
           </p>
 
           <Link href="/contact">
@@ -439,13 +410,13 @@ export default function Home() {
               size="lg"
               className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-semibold px-10 py-7 text-lg rounded-lg transition-all"
             >
-              Book your strategy call
-              <ArrowRight className="w-5 h-5 ml-2" />
+              {t("home.finalCta.button")}
+              <ArrowRight className="w-5 h-5 ms-2" />
             </Button>
           </Link>
 
           <p className="text-sm text-slate-600 mt-6">
-            No sales pitch. Just clarity.
+            {t("home.finalCta.sub")}
           </p>
         </div>
       </section>

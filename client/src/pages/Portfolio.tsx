@@ -5,10 +5,12 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useQuery } from '@tanstack/react-query';
 import { Project } from '@shared/schema';
-import { CATEGORY_LABELS, PORTFOLIO_TAB_ORDER, type Category } from '@shared/taxonomy';
+import { PORTFOLIO_TAB_ORDER, type Category } from '@shared/taxonomy';
 import { onImageError } from '@/lib/placeholder';
+import { useI18n } from '@/lib/i18n';
 
 export default function Portfolio() {
+  const { t } = useI18n();
   const [activeFilter, setActiveFilter] = useState<string>('all');
 
   // Base query: ALL projects — used to decide which category tabs to show.
@@ -42,7 +44,7 @@ export default function Portfolio() {
   ];
 
   const tabLabel = (tab: string) =>
-    tab === 'all' ? 'All' : CATEGORY_LABELS[tab as Category];
+    tab === 'all' ? t('common.all') : t(`category.${tab}`);
 
   if (isLoading) return <PortfolioSkeleton />;
 
@@ -53,10 +55,10 @@ export default function Portfolio() {
       <section className="py-20 md:py-24 bg-slate-950/50 border-b border-slate-800/50">
         <div className="max-w-7xl mx-auto px-6 md:px-8 text-center">
           <h1 className="text-4xl md:text-5xl font-display font-bold text-white mb-6">
-            Selected Work
+            {t('portfolio.title')}
           </h1>
           <p className="text-xl text-slate-400 max-w-2xl mx-auto font-normal">
-            A curation of digital infrastructure and growth systems engineered for market leaders.
+            {t('portfolio.sub')}
           </p>
         </div>
       </section>
@@ -86,7 +88,7 @@ export default function Portfolio() {
 
           {filteredProjects.length === 0 ? (
             <div className="text-center py-20">
-              <p className="text-slate-500">No projects found in this category.</p>
+              <p className="text-slate-500">{t('portfolio.empty')}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
@@ -123,7 +125,7 @@ export default function Portfolio() {
                           {project.title}
                         </h3>
                         <Badge variant="outline" className="border-slate-800 text-slate-500 text-[10px] uppercase tracking-wider bg-slate-900">
-                          {CATEGORY_LABELS[project.category] ?? project.category}
+                          {t(`category.${project.category}`)}
                         </Badge>
                       </div>
                       <p className="text-sm text-slate-500 font-medium">

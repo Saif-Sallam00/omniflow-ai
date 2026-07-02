@@ -1,6 +1,10 @@
-import { users, projects, type User, type InsertUser, type Project, type InsertProject } from "@shared/schema";
+import {
+  users, projects, leads, subscribers,
+  type User, type InsertUser, type Project, type InsertProject,
+  type Lead, type LeadStatus, type ContactFormData,
+} from "@shared/schema";
 import { db } from "./db";
-import { eq, and, ne } from "drizzle-orm";
+import { eq, and, ne, desc } from "drizzle-orm";
 import type { Category } from "@shared/taxonomy";
 
 export interface IStorage {
@@ -19,6 +23,15 @@ export interface IStorage {
   // --- New Showcase Methods ---
   getShowcaseProjects(): Promise<Project[]>;
   getProjectsByCategory(category: string, showOnServicePageOnly?: boolean): Promise<Project[]>;
+
+  // --- Leads (contact form) ---
+  createLead(data: ContactFormData): Promise<Lead>;
+  listLeads(): Promise<Lead[]>;
+  updateLeadStatus(id: number, status: LeadStatus): Promise<Lead | undefined>;
+  deleteLead(id: number): Promise<boolean>;
+
+  // --- Newsletter subscribers ---
+  createSubscriber(email: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -108,6 +121,39 @@ export class DatabaseStorage implements IStorage {
       conditions.push(eq(projects.showOnServicePage, true));
     }
     return await db.select().from(projects).where(and(...conditions));
+  }
+
+  // --- Leads ---
+  async createLead(data: ContactFormData): Promise<Lead> {
+    const [lead] = await db.insert(leads).values({
+      name: data.name,
+      email: data.email,
+      phone: data.phone || null,
+      company: data.company || null,
+      service: data.service,
+      message: data.message,
+    }).returning();
+    return lead;
+  }
+
+  async listLeads(): Promise<Lead[]> {
+    return await db.select().from(leads).orderBy(desc(leads.createdAt));
+  }
+
+  async updateLeadStatus(id: number, status: LeadStatus): Promise<Lead | undefined> {
+    const [lead] = await db.update(leads).set({ status }).where(eq(leads.id, id)).returning();
+    return lead;
+  }
+
+  async deleteLead(id: number): Promise<boolean> {
+    const [deleted] = await db.delete(leads).where(eq(leads.id, id)).returning();
+    return !!deleted;
+  }
+
+  // --- Subscribers ---
+  async createSubscriber(email: string): Promise<void> {
+    // Ignore duplicates gracefully (unique email) — don't leak which emails exist.
+    await db.insert(subscribers).values({ email }).onConflictDoNothing();
   }
 }
 

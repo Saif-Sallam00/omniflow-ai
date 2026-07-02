@@ -63,6 +63,14 @@ export type ContactService = (typeof CONTACT_SERVICES)[number];
 // TODO(email-final): placeholder — replace with real address before launch
 export const CONTACT_EMAIL = "hello@omniflowai.agency";
 
+// --- SOCIAL LINKS (footer) ---
+// TODO(social-final): fill in real profile URLs. Empty entries render no icon.
+export const SOCIAL_LINKS: Record<"twitter" | "github" | "linkedin", string> = {
+  twitter: "",
+  github: "",
+  linkedin: "",
+};
+
 // --- LEGACY → NEW CATEGORY MIGRATION MAP ---
 // Used to migrate any pre-existing DB rows from the old taxonomy.
 // build → web, attract → digital-marketing, automate → automation.

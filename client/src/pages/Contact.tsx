@@ -25,7 +25,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useI18n } from "@/lib/i18n";
 import { apiRequest } from "@/lib/queryClient";
 import { contactFormSchema, type ContactFormData } from "@shared/schema";
-import { PILLARS, PILLAR_LABELS, CONTACT_EMAIL } from "@shared/taxonomy";
+import { PILLARS, CONTACT_EMAIL } from "@shared/taxonomy";
 
 export default function Contact() {
   const { t } = useI18n();
@@ -48,13 +48,13 @@ export default function Contact() {
       apiRequest("POST", "/api/contact", data),
     onSuccess: () => {
       toast({
-        title: "Message sent — we'll get back to you within 24 hours.",
+        title: t("contact.toast.success"),
       });
       form.reset();
     },
     onError: () => {
       toast({
-        title: "Something went wrong — please try again, or email us directly.",
+        title: t("contact.toast.error"),
         variant: "destructive",
       });
     },
@@ -73,10 +73,10 @@ export default function Contact() {
         <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
           <div className="max-w-3xl mx-auto text-center mb-16">
             <h1 className="text-5xl md:text-6xl font-bold font-display mb-6 text-white">
-              Let's talk
+              {t("contact.title")}
             </h1>
             <p className="text-xl text-slate-400">
-              Tell us about your business and what's slowing it down. We'll tell you honestly if we can help.
+              {t("contact.sub")}
             </p>
           </div>
 
@@ -94,10 +94,10 @@ export default function Contact() {
                         name="name"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-slate-300">Name</FormLabel>
+                            <FormLabel className="text-slate-300">{t("contact.name")}</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="Your name"
+                                placeholder={t("contact.ph.name")}
                                 {...field}
                                 className="bg-slate-950 border-slate-800 text-white placeholder:text-slate-600 focus:border-orange-500/50"
                               />
@@ -112,11 +112,11 @@ export default function Contact() {
                         name="email"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-slate-300">Email</FormLabel>
+                            <FormLabel className="text-slate-300">{t("contact.email")}</FormLabel>
                             <FormControl>
                               <Input
                                 type="email"
-                                placeholder="you@company.com"
+                                placeholder={t("contact.ph.email")}
                                 {...field}
                                 className="bg-slate-950 border-slate-800 text-white placeholder:text-slate-600 focus:border-orange-500/50"
                               />
@@ -133,11 +133,11 @@ export default function Contact() {
                         name="phone"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-slate-300">Phone <span className="text-slate-500 text-xs">(optional)</span></FormLabel>
+                            <FormLabel className="text-slate-300">{t("contact.phone")} <span className="text-slate-500 text-xs">{t("contact.optional")}</span></FormLabel>
                             <FormControl>
                               <Input
                                 type="tel"
-                                placeholder="+20 100 000 0000"
+                                placeholder={t("contact.ph.phone")}
                                 {...field}
                                 className="bg-slate-950 border-slate-800 text-white placeholder:text-slate-600 focus:border-orange-500/50"
                               />
@@ -152,10 +152,10 @@ export default function Contact() {
                         name="company"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-slate-300">Company <span className="text-slate-500 text-xs">(optional)</span></FormLabel>
+                            <FormLabel className="text-slate-300">{t("contact.company")} <span className="text-slate-500 text-xs">{t("contact.optional")}</span></FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="Your Company"
+                                placeholder={t("contact.ph.company")}
                                 {...field}
                                 className="bg-slate-950 border-slate-800 text-white placeholder:text-slate-600 focus:border-orange-500/50"
                               />
@@ -171,21 +171,21 @@ export default function Contact() {
                       name="service"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-slate-300">What do you need?</FormLabel>
+                          <FormLabel className="text-slate-300">{t("contact.service")}</FormLabel>
                           <Select
                             onValueChange={field.onChange}
                             defaultValue={field.value}
                           >
                             <FormControl>
                               <SelectTrigger className="bg-slate-950 border-slate-800 text-white focus:border-orange-500/50">
-                                <SelectValue placeholder="Select a service" />
+                                <SelectValue placeholder={t("contact.ph.service")} />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent className="bg-slate-900 border-slate-800 text-white">
                               {PILLARS.map((p) => (
-                                <SelectItem key={p} value={p}>{PILLAR_LABELS[p]}</SelectItem>
+                                <SelectItem key={p} value={p}>{t(`serviceOpt.${p}`)}</SelectItem>
                               ))}
-                              <SelectItem value="other">Other</SelectItem>
+                              <SelectItem value="other">{t("serviceOpt.other")}</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -198,10 +198,10 @@ export default function Contact() {
                       name="message"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-slate-300">Message</FormLabel>
+                          <FormLabel className="text-slate-300">{t("contact.message")}</FormLabel>
                           <FormControl>
                             <Textarea
-                              placeholder="Tell us about your project goals..."
+                              placeholder={t("contact.ph.message")}
                               className="min-h-32 resize-none bg-slate-950 border-slate-800 text-white placeholder:text-slate-600 focus:border-orange-500/50"
                               {...field}
                             />
@@ -217,7 +217,7 @@ export default function Contact() {
                       className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold"
                       disabled={mutation.isPending}
                     >
-                      {mutation.isPending ? "Sending…" : "Send message"}
+                      {mutation.isPending ? t("contact.submitting") : t("contact.submit")}
                       {!mutation.isPending && <ArrowRight className="w-4 h-4 ml-2" />}
                     </Button>
                   </form>
@@ -227,13 +227,13 @@ export default function Contact() {
 
             <div className="space-y-6">
               <div className="rounded-2xl bg-slate-900/40 border border-slate-800 p-6 space-y-6">
-                <h3 className="font-bold text-lg text-white">Contact details</h3>
+                <h3 className="font-bold text-lg text-white">{t("contact.info")}</h3>
 
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
                     <Mail className="w-5 h-5 text-orange-400 mt-0.5" />
                     <div>
-                      <p className="font-medium text-sm text-slate-300">Email</p>
+                      <p className="font-medium text-sm text-slate-300">{t("contact.emailLabel")}</p>
                       <p className="text-sm text-slate-500">
                         {CONTACT_EMAIL}
                       </p>
@@ -243,9 +243,9 @@ export default function Contact() {
                   <div className="flex items-start gap-3">
                     <Phone className="w-5 h-5 text-orange-400 mt-0.5" />
                     <div>
-                      <p className="font-medium text-sm text-slate-300">Phone</p>
+                      <p className="font-medium text-sm text-slate-300">{t("contact.phoneLabel")}</p>
                       <p className="text-sm text-slate-500">
-                        Available on request
+                        {t("contact.phoneVal")}
                       </p>
                     </div>
                   </div>
@@ -253,9 +253,9 @@ export default function Contact() {
                   <div className="flex items-start gap-3">
                     <Clock className="w-5 h-5 text-orange-400 mt-0.5" />
                     <div>
-                      <p className="font-medium text-sm text-slate-300">Response Time</p>
+                      <p className="font-medium text-sm text-slate-300">{t("contact.responseLabel")}</p>
                       <p className="text-sm text-slate-500">
-                        Within 24 hours on business days
+                        {t("contact.responseVal")}
                       </p>
                     </div>
                   </div>
@@ -264,12 +264,10 @@ export default function Contact() {
 
               <div className="rounded-2xl bg-gradient-to-br from-orange-500/10 to-slate-900 border border-orange-500/20 p-6 space-y-4">
                 <h3 className="font-bold text-lg text-white">
-                  Quick Response Guarantee
+                  {t("contact.quick.title")}
                 </h3>
                 <p className="text-sm text-slate-400 leading-relaxed">
-                  We typically respond to all inquiries within 24 hours during
-                  business days. For urgent matters, please mention it in your
-                  message.
+                  {t("contact.quick.body")}
                 </p>
               </div>
             </div>

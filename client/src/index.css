@@ -155,3 +155,27 @@
     background-color: var(--elevate-2);
   }
 }
+
+/* =========================================================================
+   RTL / Arabic (Layer 5). Unlayered so these win over Tailwind's @layer rules.
+   ========================================================================= */
+
+/* Arabic webfont (Cairo) when the document is in Arabic. Latin runs (brand,
+   ERP/CRM/AI) still render via the Inter fallback inside the stack. */
+[dir="rtl"] body {
+  font-family: "Cairo", "Inter", sans-serif;
+}
+[dir="rtl"] .font-display {
+  font-family: "Cairo", "Space Grotesk", sans-serif;
+}
+
+/* Flip directional icons in RTL (lucide adds a per-icon class). */
+[dir="rtl"] .lucide-arrow-right,
+[dir="rtl"] .lucide-arrow-left,
+[dir="rtl"] .lucide-arrow-up-right,
+[dir="rtl"] .lucide-arrow-up-left,
+[dir="rtl"] .lucide-move-right,
+[dir="rtl"] .lucide-chevron-right,
+[dir="rtl"] .lucide-chevron-left {
+  transform: scaleX(-1);
+}
