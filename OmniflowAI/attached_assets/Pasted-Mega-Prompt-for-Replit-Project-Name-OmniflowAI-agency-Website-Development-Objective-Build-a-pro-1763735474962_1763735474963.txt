@@ -1,0 +1,164 @@
+Mega Prompt for Replit:
+
+Project Name: OmniflowAI.agency Website Development
+
+Objective: Build a professional, high-converting website for OmniflowAI.agency that emphasizes custom website development as the primary service, while offering secondary services like AI agent development, automation, and digital marketing.
+
+Requirements:
+
+Homepage Design:
+
+Hero Section:
+
+Headline: "Transform Your Business with Custom Websites and AI-Powered Automation"
+
+Subheadline: "Performance-driven websites, built to drive sales and help your business grow."
+
+CTA button: "Get Your Custom Website Today" or "Start Your Project Now"
+
+Value Proposition (Why Us Section):
+
+Headline: "Websites That Drive Sales, Not Just Traffic"
+
+Content: Short paragraph highlighting that OmniflowAI builds performance-driven websites designed to drive conversions and maximize sales. Mention custom dashboards, SEO optimization, and maintenance services.
+
+Main Service Section (Website Development):
+
+Headline: "Custom Websites Built for Growth"
+
+Subheadline: "Fully customizable websites with performance-driven results."
+
+Content: Focus on how websites are custom-built for service-based businesses (real estate brokers, beauty centers, etc.) and ready to drive sales. Mention ease of use with A-to-Z dashboards and SEO.
+
+CTA button: "Start Building Your Website Today"
+
+Secondary Services Section (AI, Automation, Marketing):
+
+Headline: "Boost Your Sales with AI and Automation"
+
+Subheadline: "Take your business further with automation, AI-driven customer service, and expert digital marketing."
+
+Content: Short descriptions of AI agents, business automation, and SEO/performance marketing.
+
+CTA button: "Discover Our Full Range of Services"
+
+Portfolio Section:
+
+Showcase your best projects with results-driven case studies. Include client logos, testimonials, and before-and-after examples.
+
+Final CTA Section:
+
+Headline: "Ready to Get Started?"
+
+Content: Invite users to reach out and start their project.
+
+CTA button: "Request a Free Consultation"
+
+Service Pages:
+
+Each service (Website Development, AI Agents, Automation, and Digital Marketing) should have its own page with:
+
+Headline focused on the service
+
+Detailed description with clear benefits
+
+CTA for users to request more information or book a consultation
+
+About Page:
+
+Brief introduction to the company, your values, and your team.
+
+Emphasize your commitment to excellent post-sale service and performance-driven results.
+
+Contact Page:
+
+Include a contact form, email, phone number, and location (if applicable).
+
+A secondary CTA for users to book a consultation.
+
+Multilingual (English and Arabic) Support:
+
+Functionality: The website should support both English and Arabic content.
+
+Compliance: Ensure that the language toggle or switch is easy for users to change between English and Arabic.
+
+Contextual Adaptation: The Arabic content must be fully compliant with cultural and contextual nuances, ensuring that the text is not just translated but also culturally relevant.
+
+RTL (Right-to-Left) Support: Make sure the Arabic version of the website is fully RTL compatible, with proper alignment, text flows, and formatting.
+
+Language Switcher: Place a language toggle in a visible location, such as the header or footer, for users to switch between English and Arabic.
+
+Design and Style:
+
+Color Scheme: Use professional, modern colors with a clean, minimalist layout. Stick to shades of blue (trust and professionalism), green (growth), and white (clean and minimal).
+
+Fonts: Use modern, sans-serif fonts. Primary font should be clear and easy to read. Secondary font can be used for headings.
+
+Responsive: The website should be fully responsive, working seamlessly on desktop, tablet, and mobile devices.
+
+Functionality:
+
+Navigation:
+
+Simple, sticky top navigation bar with links to: Home, Services, About, Portfolio, Blog, Contact.
+
+Forms:
+
+All CTAs should lead to either a contact form or a booking system for consultations.
+
+Integrate with email services or CRM for lead tracking.
+
+SEO Optimization:
+
+Ensure all pages are optimized with keywords targeting high-ticket service-based clients, focusing on SEO best practices.
+
+Include alt tags, meta descriptions, and structured data (JSON-LD) where applicable.
+
+Performance Optimization:
+
+Speed is crucial — optimize images, implement lazy loading, and ensure quick load times for all pages.
+
+Implement a fast and secure SSL connection for all pages.
+
+Integrations:
+
+Integrate with Google Analytics for tracking.
+
+Integrate a form handler service like Formspree or Google Forms for lead generation.
+
+Key Features:
+
+Customizable Dashboards: Clearly display how users can manage their websites with an intuitive dashboard.
+
+Maintenance Packages: Include information about ongoing maintenance services that clients can choose based on agreements.
+
+AI Integration: Showcase AI capabilities for automating business processes, like building AI agents for customer service.
+
+Lead Generation: Ensure clear and persuasive CTAs to drive leads and consultations.
+
+Trust Elements: Display client logos, testimonials, and awards for credibility.
+
+Technologies to Use:
+
+Frontend: HTML, CSS, JavaScript (React, Vue.js, or plain JS)
+
+Backend: Node.js or Python (for custom services like AI integration)
+
+CMS: WordPress, Webflow, or a custom CMS if preferred
+
+SEO: Make sure all technical SEO aspects (meta tags, schema, etc.) are in place.
+
+Performance Tools: Use Lighthouse for performance audits.
+
+Content for Pages:
+
+Homepage: Focus on custom websites and performance-driven results.
+
+Services Page: In-depth explanation of each service, including AI agents, SEO, and automation.
+
+About Page: Who you are, your process, and your commitment to quality service.
+
+Contact Page: Simple, user-friendly contact form.
+
+Goal:
+The final website should function as a sales tool that effectively converts leads, builds authority, and demonstrates your value proposition clearly and convincingly to high-ticket clients.

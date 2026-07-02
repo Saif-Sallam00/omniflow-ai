@@ -1,0 +1,51 @@
+import { pgTable, text, serial, jsonb, boolean } from "drizzle-orm/pg-core";
+import { createInsertSchema } from "drizzle-zod";
+import { z } from "zod";
+
+// --- EXISTING: Contact Form ---
+export const contactFormSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Invalid email address"),
+  phone: z.string().optional(),
+  company: z.string().optional(),
+  service: z.enum(["website", "ai", "automation", "marketing", "other"]),
+  message: z.string().min(10, "Message must be at least 10 characters"),
+});
+
+export type ContactFormData = z.infer<typeof contactFormSchema>;
+
+// --- EXISTING: Admin Users ---
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  username: text("username").notNull().unique(),
+  password: text("password").notNull(),
+});
+
+export const insertUserSchema = createInsertSchema(users);
+export const selectUserSchema = createInsertSchema(users);
+export type User = typeof users.$inferSelect;
+export type InsertUser = typeof users.$inferInsert;
+
+// --- UPDATED: Portfolio Projects ---
+export const projects = pgTable("projects", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  client: text("client").notNull(),
+  category: text("category").notNull(), 
+  description: text("description").notNull(),
+  challenge: text("challenge").notNull(),
+  solution: text("solution").notNull(),
+  results: jsonb("results").$type<string[]>().notNull(),
+  technologies: jsonb("technologies").$type<string[]>().notNull(),
+  image: text("image").notNull(),
+
+  // Feature Flags
+  isFeatured: boolean("is_featured").default(false).notNull(),            // Home Page
+  isServiceShowcase: boolean("is_service_showcase").default(false).notNull(), // Services Page Hero
+  showOnServicePage: boolean("show_on_service_page").default(false).notNull() // Service Detail List
+});
+
+export const insertProjectSchema = createInsertSchema(projects);
+export const selectProjectSchema = createInsertSchema(projects);
+export type Project = typeof projects.$inferSelect;
+export type InsertProject = typeof projects.$inferInsert;

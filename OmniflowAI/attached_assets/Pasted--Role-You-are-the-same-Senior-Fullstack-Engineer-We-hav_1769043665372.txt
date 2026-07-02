@@ -1,0 +1,54 @@
+# Role
+You are the same Senior Fullstack Engineer. We have successfully completed **Checkpoint A** (Frontend Design). We are now moving to **Checkpoint B: Backend Activation & Admin Panel**.
+
+# Objective
+Build the "Brain" of the operation. You must implement a protected Admin Dashboard that allows me to fully manage the Portfolio section, and then connect the public `/portfolio` page to the live database.
+
+# Constraints (CRITICAL)
+1.  **NO Homepage Changes:** Do NOT touch `Home.tsx`. The homepage featured projects must remain **hardcoded** for stability.
+2.  **Use Existing Components:** You must use the existing `ObjectUploader` component for image uploads. Do not build a new uploader.
+3.  **Auth is Done:** Authentication logic (`passport`, `server/routes.ts`) already exists. Do not refactor it. Just use `ProtectedRoute` to secure the dashboard.
+4.  **Style Consistency:** The Admin Panel must use the same "Gunmetal/Gold" theme (or a clean Light/Slate business theme) consistent with the new brand.
+
+---
+
+# PHASE 1: Database & Schema Verification
+**File:** `shared/schema.ts`
+1.  **Verify `projects` table:** Ensure the `category` field can accept our new 3-pillar values: `'build'`, `'attract'`, `'automate'`.
+2.  **Output:** If you need to modify the schema to strictly enforce these enums, do so. If it's just a text field, that is acceptable, but the Admin Form must handle the validation.
+
+# PHASE 2: The Admin Dashboard
+**File:** `client/src/pages/admin/Dashboard.tsx`
+**Route:** `/admin/dashboard` (Wrapped in `ProtectedRoute`)
+
+**Requirements:**
+1.  **Layout:** A clean, professional dashboard.
+    * Header: "Portfolio Manager" + "Log Out" button.
+    * Main Action: "Add New Project" button (Electric Gold).
+2.  **Project List:** A table or grid showing existing projects.
+    * Columns: Image Thumbnail, Title, Client, Category, Actions (Edit, Delete).
+3.  **Add/Edit Form (Dialog or Modal):**
+    * **Title:** Text Input.
+    * **Client:** Text Input.
+    * **Category:** **Dropdown Select** (Options: Build, Attract, Automate).
+    * **Description:** Text Area.
+    * **Results/Metrics:** Dynamic input (allow adding multiple "bullet points" of results).
+    * **Tech Stack:** Dynamic input (allow adding multiple tags).
+    * **Image:** **MUST** use the `<ObjectUploader />` component. Save the returned URL string to the database.
+
+# PHASE 3: Connect Public Portfolio
+**File:** `client/src/pages/Portfolio.tsx`
+1.  **Refactor:** Replace the static/hardcoded content with a `useQuery` hook fetching from `/api/projects`.
+2.  **Filtering:** Implement client-side filtering tabs: "All", "Build", "Attract", "Automate".
+3.  **Cards:** Use the same high-quality Card design from `Home.tsx` but adapted for the grid.
+4.  **Loading/Error States:** Add a clean skeleton loader.
+
+---
+
+# Execution Order
+1.  **Analyze** `shared/schema.ts` and `client/src/components/ObjectUploader.tsx`.
+2.  **Build** the `Dashboard.tsx` with the CRUD form first.
+3.  **Refactor** `Portfolio.tsx` to consume the data.
+4.  **Verify** that uploading an image in Admin makes it appear on the Portfolio page.
+
+**Start by confirming you understand the "Hardcoded Homepage" constraint.**
