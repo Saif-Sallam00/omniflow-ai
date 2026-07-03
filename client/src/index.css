@@ -212,3 +212,17 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* =========================================================================
+   Connected-systems visual language — motion keyframes. Extremely subtle and
+   fully neutralised by the reduced-motion block above (components also avoid
+   mounting these under reduced motion via useReducedMotion()).
+   ========================================================================= */
+@keyframes hex-pulse {
+  0%,
+  100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+@keyframes flow-travel {
+  to { stroke-dashoffset: -246; }
+}
