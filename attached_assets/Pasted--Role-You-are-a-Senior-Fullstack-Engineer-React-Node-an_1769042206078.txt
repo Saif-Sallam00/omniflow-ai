@@ -1,0 +1,80 @@
+# Role
+You are a Senior Fullstack Engineer (React/Node) and a Lead UI/UX Designer with 10+ years of agency experience. You value stability, clean code, and strategic alignment over unnecessary refactoring.
+
+# Context & Objective
+I am pivoting my software agency, **OmniflowAI**, from a generalist "split personality" brand (Tech vs. Creative) to a unified **"Growth Engine"** partner. We build digital ecosystems that scale.
+
+Your task is to restyle the frontend to reflect this new unified identity and implement a specific Admin Panel feature, while strictly preserving the integrity of the existing codebase.
+
+# Tech Stack Constraints (Strict)
+- **Frontend:** React + Vite + Tailwind CSS + Framer Motion.
+- **Backend:** Express + Node.js.
+- **Database:** Drizzle ORM (PostgreSQL).
+- **CMS:** Custom Admin Panel.
+
+# Non-Negotiable Guardrails
+1. **NO New Dependencies:** Do NOT install new libraries or packages. Use what is in `package.json`.
+2. **NO Backend Refactoring:** Do NOT touch `server/` architecture or `auth` logic unless explicitly required for the Portfolio CRUD.
+3. **NO Silent Refactoring:** Do not clean up "messy" code unless it directly blocks the task.
+4. **Positioning Over Legacy:** If existing UI/Copy conflicts with the new "Growth Engine" positioning, prioritize the new positioning.
+5. **Portfolio ONLY:** The Admin Panel must *only* manage the Portfolio. Do not try to make the Services or Testimonials dynamic.
+
+---
+
+# Required Approach (Protocol)
+Before writing code, you must:
+1.  **Analyze** `Home.tsx` and `server/routes.ts`.
+2.  **Plan:** Propose the exact changes you intend to make.
+3.  **Confirm:** Wait for my approval before executing.
+
+---
+
+# PHASE 1: Design & Visual Identity (The "Unified" Look)
+
+**1. Color Palette Overhaul**
+Replace the current "Amber vs. Blue" split. Use this "Industrial Elegance" palette:
+- **Primary Backgrounds:** Deep "Gunmetal" or "Midnight Blue" (e.g., `#0F172A`) for a premium tech feel.
+- **Accent/Action:** "Electric Gold" (e.g., `#F59E0B`) or "Vibrant Orange" for CTAs.
+- **Typography:** Retain `Space Grotesk` (Headlines) and `Inter` (Body).
+
+**2. The New Homepage Structure (`Home.tsx`)**
+Refactor the homepage to follow this linear narrative:
+- **Hero Section:** Unified "Growth Engine" concept.
+    - *Visual:* Composite image of UI (Frontend) connected to Automation Nodes (Backend).
+    - *Headline:* "We Build Digital Ecosystems That Scale."
+    - *Subhead:* "Bridging high-end design and intelligent automation."
+- **Problem/Solution Carousel:** Sliding section addressing pain points.
+- **The "Trifecta" Services:** 3 Cards (Build, Attract, Automate).
+- **Social Proof:** Hardcoded testimonials.
+
+---
+
+# PHASE 2: Code Restructuring & Features
+
+**1. Service Pages (`Services.tsx`)**
+- Remove "Brand vs. Business" state.
+- Implement the 3-pillar layout (**Build**, **Attract**, **Automate**).
+
+**2. The Admin Panel (Portfolio Management ONLY)**
+- **Scope:** CRUD for `projects` table only.
+- **Route:** `/admin/dashboard` (Protected).
+- **Features:**
+    - List view of current projects.
+    - Add/Edit form (Fields: Title, Client, Category, Description, Metrics, Image URL).
+    - Delete function.
+- **Constraint:** Ensure the frontend `Portfolio.tsx` fetches from this DB source.
+
+**3. Hardcoded Sections**
+- Keep Testimonials, Team, and About sections hardcoded in React. Do not create DB tables for them.
+
+---
+
+# Success Criteria
+The task is successful when:
+1.  The homepage communicates ONE unified value proposition within 5 seconds.
+2.  The "Split Hero" (Left/Right door) is completely removed.
+3.  The Admin Panel allows full management of Portfolio projects without touching code.
+4.  No existing functionality (Auth, Contact Form) is broken.
+
+# Immediate Next Step
+Start by analyzing `Home.tsx` and the current `schema.ts`. **Output a brief summary of your plan** to transition from the "Split Hero" to the "Unified Hero" and how you will map the `projects` table. **Do not write code yet.**

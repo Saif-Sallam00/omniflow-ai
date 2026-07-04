@@ -1,106 +1,103 @@
 import { Link, useRoute } from 'wouter';
-import { ArrowRight, Check, Code, Bot, Zap, BarChart3 } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Globe, Bot, BarChart3, ArrowUpRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { useI18n } from '@/lib/i18n';
-import dashboardImage from '@assets/generated_images/website_dashboard_mockup_showcase.png';
-import aiImage from '@assets/generated_images/ai_automation_visual_concept.png';
+import { useDocumentTitle } from '@/hooks/use-document-title';
+import { useQuery } from '@tanstack/react-query';
+import { Project } from '@shared/schema';
+import { CATEGORY_TO_PILLAR, PILLAR_LABELS, type Pillar } from '@shared/taxonomy';
+import { onImageError } from '@/lib/placeholder';
 
 export default function ServiceDetail() {
   const [, params] = useRoute('/services/:slug');
-  const { t, isRTL } = useI18n();
+  const { t } = useI18n();
+  const slug = params?.slug || '';
+  // PILLAR_LABELS[slug] is undefined for an unknown slug → falls back to the
+  // site-wide title.
+  useDocumentTitle(PILLAR_LABELS[slug as Pillar]);
 
+  // slug is a PILLAR slug. A project belongs on this pillar's page when its
+  // category rolls up to the pillar (CATEGORY_TO_PILLAR). Uses the default JSON
+  // query fn so the data parses properly.
+  const { data: allProjects } = useQuery<Project[]>({ queryKey: ['/api/projects'] });
+  const relatedProjects = (allProjects || []).filter(
+    (p) => CATEGORY_TO_PILLAR[p.category] === slug
+  );
+
+  // The three PILLAR service pages, built from the i18n dictionary.
   const services = {
-    'website-development': {
-      icon: Code,
-      title: 'Custom Website Development',
-      subtitle: 'Performance-driven websites built to drive sales and growth',
-      description: 'We build custom websites for service-based businesses that are designed to convert visitors into customers. From real estate brokers to beauty centers, our websites combine stunning design with powerful functionality.',
-      image: dashboardImage,
+    software: {
+      icon: Globe,
+      title: t('serviceDetail.software.title'),
+      subtitle: t('serviceDetail.software.desc'),
+      description: t('serviceDetail.software.desc'),
+      cta: t('serviceDetail.software.cta'),
       features: [
-        'Custom design tailored to your brand identity',
-        'Intuitive A-to-Z dashboard for easy management',
-        'SEO optimization for maximum visibility',
-        'Mobile-first responsive design',
-        'Fast loading times for better user experience',
-        'Secure hosting and SSL certificates',
-        'Ongoing maintenance and support packages',
-        'Integration with third-party tools and APIs',
+        { title: t('serviceDetail.software.feat.1.title'), description: t('serviceDetail.software.feat.1.desc') },
+        { title: t('serviceDetail.software.feat.2.title'), description: t('serviceDetail.software.feat.2.desc') },
+        { title: t('serviceDetail.software.feat.3.title'), description: t('serviceDetail.software.feat.3.desc') },
+        { title: t('serviceDetail.software.feat.4.title'), description: t('serviceDetail.software.feat.4.desc') },
       ],
       process: [
-        { step: '1', title: 'Discovery', description: 'We learn about your business, goals, and target audience.' },
-        { step: '2', title: 'Design', description: 'Custom design mockups aligned with your brand.' },
-        { step: '3', title: 'Development', description: 'Build your website with modern technologies.' },
-        { step: '4', title: 'Launch & Support', description: 'Deploy and provide ongoing maintenance.' },
+        { title: t('serviceDetail.software.proc.1.title'), description: t('serviceDetail.software.proc.1.desc') },
+        { title: t('serviceDetail.software.proc.2.title'), description: t('serviceDetail.software.proc.2.desc') },
+        { title: t('serviceDetail.software.proc.3.title'), description: t('serviceDetail.software.proc.3.desc') },
+        { title: t('serviceDetail.software.proc.4.title'), description: t('serviceDetail.software.proc.4.desc') },
+        { title: t('serviceDetail.software.proc.5.title'), description: t('serviceDetail.software.proc.5.desc') },
       ],
-    },
-    'ai-agents': {
-      icon: Bot,
-      title: 'AI Agents Development',
-      subtitle: 'Intelligent AI-powered solutions that work 24/7',
-      description: 'Our AI agents provide intelligent customer service, automate repetitive tasks, and deliver personalized experiences to your customers around the clock.',
-      image: aiImage,
-      features: [
-        '24/7 automated customer support',
-        'Natural language processing for human-like conversations',
-        'Multi-language support for global reach',
-        'Custom training on your specific data and use cases',
-        'Seamless integration with existing systems',
-        'Analytics dashboard for performance insights',
-        'Continuous learning and improvement',
-        'Cost-effective scalability',
-      ],
-      process: [
-        { step: '1', title: 'Analysis', description: 'Understand your customer service needs and pain points.' },
-        { step: '2', title: 'Training', description: 'Train AI models on your data and use cases.' },
-        { step: '3', title: 'Integration', description: 'Integrate with your existing platforms and workflows.' },
-        { step: '4', title: 'Optimization', description: 'Monitor, analyze, and continuously improve performance.' },
-      ],
-    },
-    'automation': {
-      icon: Zap,
-      title: 'Business Automation',
-      subtitle: 'Streamline operations and save valuable time',
-      description: 'Automate repetitive business processes, sync data across platforms, and free up your team to focus on what matters most - growing your business.',
-      image: aiImage,
-      features: [
-        'Workflow automation for repetitive tasks',
-        'Data synchronization across platforms',
-        'Automated email and SMS campaigns',
-        'Payment processing automation',
-        'Inventory and order management',
-        'Custom API integrations',
-        'Scheduled reports and notifications',
-        'Error handling and monitoring',
-      ],
-      process: [
-        { step: '1', title: 'Audit', description: 'Identify manual processes that can be automated.' },
-        { step: '2', title: 'Design', description: 'Design automation workflows and integrations.' },
-        { step: '3', title: 'Implementation', description: 'Build and test automation solutions.' },
-        { step: '4', title: 'Monitor', description: 'Track performance and optimize as needed.' },
+      faq: [
+        { q: t('serviceDetail.software.faq.1.q'), a: t('serviceDetail.software.faq.1.a') },
+        { q: t('serviceDetail.software.faq.2.q'), a: t('serviceDetail.software.faq.2.a') },
+        { q: t('serviceDetail.software.faq.3.q'), a: t('serviceDetail.software.faq.3.a') },
+        { q: t('serviceDetail.software.faq.4.q'), a: t('serviceDetail.software.faq.4.a') },
       ],
     },
     'digital-marketing': {
       icon: BarChart3,
-      title: 'Digital Marketing',
-      subtitle: 'Drive traffic, engagement, and conversions',
-      description: 'Our digital marketing strategies combine SEO, performance marketing, and data-driven insights to help your business reach the right audience and achieve measurable results.',
-      image: dashboardImage,
+      title: t('serviceDetail.dm.title'),
+      subtitle: t('serviceDetail.dm.desc'),
+      description: t('serviceDetail.dm.desc'),
+      cta: t('serviceDetail.dm.cta'),
       features: [
-        'Comprehensive SEO optimization',
-        'Performance marketing campaigns',
-        'Content strategy and creation',
-        'Advanced analytics and tracking',
-        'Conversion rate optimization',
-        'Social media integration',
-        'Email marketing automation',
-        'Competitor analysis and insights',
+        { title: t('serviceDetail.dm.feat.1.title'), description: '' },
+        { title: t('serviceDetail.dm.feat.2.title'), description: '' },
+        { title: t('serviceDetail.dm.feat.3.title'), description: '' },
+        { title: t('serviceDetail.dm.feat.4.title'), description: '' },
       ],
       process: [
-        { step: '1', title: 'Research', description: 'Analyze your market, competitors, and opportunities.' },
-        { step: '2', title: 'Strategy', description: 'Develop a comprehensive marketing strategy.' },
-        { step: '3', title: 'Execute', description: 'Launch campaigns and optimize for performance.' },
-        { step: '4', title: 'Report', description: 'Track results and provide detailed analytics.' },
+        { title: t('serviceDetail.dm.proc.1.title'), description: t('serviceDetail.dm.proc.1.desc') },
+        { title: t('serviceDetail.dm.proc.2.title'), description: t('serviceDetail.dm.proc.2.desc') },
+        { title: t('serviceDetail.dm.proc.3.title'), description: t('serviceDetail.dm.proc.3.desc') },
+        { title: t('serviceDetail.dm.proc.4.title'), description: t('serviceDetail.dm.proc.4.desc') },
+      ],
+      faq: [
+        { q: t('serviceDetail.dm.faq.1.q'), a: t('serviceDetail.dm.faq.1.a') },
+        { q: t('serviceDetail.dm.faq.2.q'), a: t('serviceDetail.dm.faq.2.a') },
+        { q: t('serviceDetail.dm.faq.3.q'), a: t('serviceDetail.dm.faq.3.a') },
+      ],
+    },
+    'ai-training': {
+      icon: Bot,
+      title: t('serviceDetail.ai.title'),
+      subtitle: t('serviceDetail.ai.desc'),
+      description: t('serviceDetail.ai.desc'),
+      cta: t('serviceDetail.ai.cta'),
+      features: [
+        { title: t('serviceDetail.ai.feat.1.title'), description: '' },
+        { title: t('serviceDetail.ai.feat.2.title'), description: '' },
+        { title: t('serviceDetail.ai.feat.3.title'), description: '' },
+        { title: t('serviceDetail.ai.feat.4.title'), description: '' },
+      ],
+      process: [
+        { title: t('serviceDetail.ai.proc.1.title'), description: t('serviceDetail.ai.proc.1.desc') },
+        { title: t('serviceDetail.ai.proc.2.title'), description: t('serviceDetail.ai.proc.2.desc') },
+        { title: t('serviceDetail.ai.proc.3.title'), description: t('serviceDetail.ai.proc.3.desc') },
+        { title: t('serviceDetail.ai.proc.4.title'), description: t('serviceDetail.ai.proc.4.desc') },
+      ],
+      faq: [
+        { q: t('serviceDetail.ai.faq.1.q'), a: t('serviceDetail.ai.faq.1.a') },
+        { q: t('serviceDetail.ai.faq.2.q'), a: t('serviceDetail.ai.faq.2.a') },
+        { q: t('serviceDetail.ai.faq.3.q'), a: t('serviceDetail.ai.faq.3.a') },
       ],
     },
   };
@@ -109,11 +106,13 @@ export default function ServiceDetail() {
 
   if (!service) {
     return (
-      <div className="min-h-screen pt-20 flex items-center justify-center">
+      <div className="min-h-screen pt-20 bg-[#0a0a0b] flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Service Not Found</h1>
+          <h1 className="text-3xl font-bold text-white mb-4">{t('serviceDetail.notFound.title')}</h1>
           <Link href="/services">
-            <Button>View All Services</Button>
+            <Button className="bg-orange-500 hover:bg-orange-600 text-white rounded-lg">
+              {t('serviceDetail.notFound.button')}
+            </Button>
           </Link>
         </div>
       </div>
@@ -123,95 +122,195 @@ export default function ServiceDetail() {
   const Icon = service.icon;
 
   return (
-    <div className="min-h-screen pt-20">
-      <section className="py-24">
-        <div className="max-w-7xl mx-auto px-6 md:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-24">
-            <div className="space-y-6">
-              <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center">
-                <Icon className="w-8 h-8 text-primary" />
-              </div>
-              <h1 className="text-5xl md:text-6xl font-bold font-display">
+    <div className="min-h-screen pt-20 bg-[#0a0a0b]">
+
+      {/* === HERO === */}
+      <section className="py-24 relative">
+        <div className="absolute top-0 right-0 w-[50%] h-[60%] bg-gradient-to-bl from-orange-950/30 via-transparent to-transparent" />
+
+        <div className="relative z-10 max-w-4xl mx-auto px-6 md:px-8">
+          <Link href="/services">
+            <Button variant="ghost" className="text-slate-500 hover:text-white mb-8 -ms-4">
+              {t('serviceDetail.backAll')}
+            </Button>
+          </Link>
+
+          <div className="flex items-start gap-4 mb-6">
+            <div className="w-14 h-14 rounded-xl bg-orange-500/10 flex items-center justify-center flex-shrink-0">
+              <Icon className="w-7 h-7 text-orange-400" />
+            </div>
+            <div>
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">
                 {service.title}
               </h1>
-              <p className="text-xl md:text-2xl text-muted-foreground">
+              <p className="text-xl text-orange-400/80 font-medium">
                 {service.subtitle}
               </p>
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                {service.description}
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                <Link href="/contact">
-                  <Button size="lg" data-testid="button-get-started">
-                    Get Started
-                    <ArrowRight className={`w-5 h-5 ${isRTL ? 'mr-2' : 'ml-2'}`} />
-                  </Button>
-                </Link>
-                <Link href="/portfolio">
-                  <Button size="lg" variant="outline" data-testid="button-view-work">
-                    View Our Work
-                  </Button>
-                </Link>
-              </div>
-            </div>
-
-            <div>
-              <img
-                src={service.image}
-                alt={service.title}
-                className="rounded-xl shadow-lg w-full"
-                data-testid="img-service-detail"
-              />
             </div>
           </div>
 
-          <div className="mb-24">
-            <h2 className="text-3xl md:text-4xl font-bold font-display mb-12 text-center">
-              What's Included
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
-              {service.features.map((feature, index) => (
-                <div key={index} className="flex items-start gap-3 p-4 rounded-lg hover-elevate transition-all">
-                  <Check className="w-5 h-5 text-chart-2 flex-shrink-0 mt-0.5" />
-                  <span className="text-muted-foreground">{feature}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+          <p className="text-lg text-slate-400 leading-relaxed max-w-3xl mb-10">
+            {service.description}
+          </p>
 
-          <div className="mb-24">
-            <h2 className="text-3xl md:text-4xl font-bold font-display mb-12 text-center">
-              Our Process
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              {service.process.map((item, index) => (
-                <Card key={index} className="text-center" data-testid={`card-process-${index}`}>
-                  <CardContent className="p-6 space-y-4">
-                    <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground font-bold text-xl flex items-center justify-center mx-auto">
-                      {item.step}
-                    </div>
-                    <h3 className="font-bold text-lg">{item.title}</h3>
-                    <p className="text-sm text-muted-foreground">{item.description}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-r from-primary/10 via-chart-2/10 to-primary/10 rounded-xl p-12 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold font-display mb-6">
-              Ready to Get Started?
-            </h2>
-            <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Let's discuss your project and create a custom solution for your business.
-            </p>
+          <div className="flex flex-col sm:flex-row gap-4">
             <Link href="/contact">
-              <Button size="lg" data-testid="button-cta-bottom">
-                {t('cta.final.button')}
-                <ArrowRight className={`w-5 h-5 ${isRTL ? 'mr-2' : 'ml-2'}`} />
+              <Button
+                size="lg"
+                className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-6 rounded-lg"
+              >
+                {service.cta}
+                <ArrowRight className="w-4 h-4 ms-2" />
+              </Button>
+            </Link>
+            <Link href="/portfolio">
+              <Button
+                size="lg"
+                variant="ghost"
+                className="text-slate-400 hover:text-white hover:bg-white/5 px-8 py-6 rounded-lg"
+              >
+                {t('serviceDetail.seeExamples')}
               </Button>
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* === RELATED PROJECTS SECTION === */}
+      {relatedProjects && relatedProjects.length > 0 && (
+        <section className="py-24 bg-slate-900/30 border-y border-slate-800/30">
+          <div className="max-w-7xl mx-auto px-6 md:px-8">
+            <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+              <div>
+                <h2 className="text-2xl font-bold text-white mb-2">{t('serviceDetail.related.title')}</h2>
+                <p className="text-slate-400">{t('serviceDetail.related.sub')}</p>
+              </div>
+              <Link href="/portfolio">
+                <Button variant="ghost" className="text-slate-400 hover:text-white">{t('serviceDetail.related.viewPortfolio')} <ArrowRight className="ms-2 w-4 h-4"/></Button>
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {relatedProjects.map((project) => (
+                <Link key={project.id} href={`/portfolio/${project.id}`}>
+                  <div className="group cursor-pointer bg-slate-950 border border-slate-800 rounded-xl overflow-hidden hover:border-orange-500/30 transition-all">
+                    <div className="aspect-video overflow-hidden">
+                      <img
+                        src={project.image}
+                        alt={project.title}
+                        loading="lazy"
+                        decoding="async"
+                        onError={onImageError}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                    <div className="p-6">
+                      <div className="flex justify-between items-start mb-2">
+                        <h3 className="font-semibold text-white group-hover:text-orange-400 transition-colors">{project.title}</h3>
+                        <ArrowUpRight className="w-4 h-4 text-slate-600 group-hover:text-orange-400" />
+                      </div>
+                      <p className="text-sm text-slate-500 line-clamp-2">{project.description}</p>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* === FEATURES === */}
+      <section className="py-24 bg-slate-900/30 border-y border-slate-800/30">
+        <div className="max-w-4xl mx-auto px-6 md:px-8">
+          <h2 className="text-2xl font-bold text-white mb-12">
+            {t('serviceDetail.included')}
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {service.features.map((feature, index) => (
+              <div key={index} className="space-y-2">
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-orange-500 flex-shrink-0" />
+                  <h3 className="font-semibold text-white">{feature.title}</h3>
+                </div>
+                {feature.description && (
+                  <p className="text-sm text-slate-400 leading-relaxed ps-8">
+                    {feature.description}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* === PROCESS === */}
+      <section className="py-24">
+        <div className="max-w-4xl mx-auto px-6 md:px-8">
+          <h2 className="text-2xl font-bold text-white mb-4">
+            {t('serviceDetail.how.title')}
+          </h2>
+          <p className="text-slate-400 mb-12">
+            {t('serviceDetail.how.sub')}
+          </p>
+
+          <div className="space-y-6">
+            {service.process.map((step, index) => (
+              <div
+                key={index}
+                className="flex gap-6 p-6 rounded-xl bg-slate-900/40 border border-slate-800/50"
+              >
+                <div className="text-3xl font-bold text-slate-700 w-12 flex-shrink-0">
+                  {String(index + 1).padStart(2, '0')}
+                </div>
+                <div>
+                  <h3 className="font-semibold text-white mb-1">{step.title}</h3>
+                  <p className="text-sm text-slate-400">{step.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* === FAQ === */}
+      <section className="py-24 bg-slate-900/30 border-y border-slate-800/30">
+        <div className="max-w-4xl mx-auto px-6 md:px-8">
+          <h2 className="text-2xl font-bold text-white mb-12">
+            {t('serviceDetail.faqTitle')}
+          </h2>
+
+          <div className="space-y-8">
+            {service.faq.map((item, index) => (
+              <div key={index} className="space-y-2">
+                <h3 className="font-semibold text-white">{item.q}</h3>
+                <p className="text-slate-400 leading-relaxed">{item.a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* === CTA === */}
+      <section className="py-24 relative">
+        <div className="absolute inset-0 bg-gradient-to-t from-orange-950/20 via-transparent to-transparent" />
+
+        <div className="relative z-10 max-w-3xl mx-auto px-6 md:px-8 text-center">
+          <h2 className="text-3xl font-bold text-white mb-6">
+            {t('serviceDetail.cta.title')}
+          </h2>
+          <p className="text-lg text-slate-400 mb-10">
+            {t('serviceDetail.cta.body')}
+          </p>
+          <Link href="/contact">
+            <Button
+              size="lg"
+              className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-6 text-base rounded-lg"
+            >
+              {service.cta}
+              <ArrowRight className="w-4 h-4 ms-2" />
+            </Button>
+          </Link>
         </div>
       </section>
     </div>

@@ -2,462 +2,250 @@
 @tailwind components;
 @tailwind utilities;
 
-/* LIGHT MODE */
-:root {
-  --button-outline: rgba(0,0,0, .10);
-  --badge-outline: rgba(0,0,0, .05);
-  --opaque-button-border-intensity: -8;
-  --elevate-1: rgba(0,0,0, .03);
-  --elevate-2: rgba(0,0,0, .08);
-  --background: 0 0% 100%;
-  --foreground: 0 0% 10%;
-  --border: 0 0% 90%;
-  --card: 0 0% 98%;
-  --card-foreground: 0 0% 10%;
-  --card-border: 0 0% 94%;
-  --sidebar: 0 0% 96%;
-  --sidebar-foreground: 0 0% 10%;
-  --sidebar-border: 0 0% 92%;
-  --sidebar-primary: 217 91% 60%;
-  --sidebar-primary-foreground: 0 0% 98%;
-  --sidebar-accent: 0 0% 92%;
-  --sidebar-accent-foreground: 0 0% 10%;
-  --sidebar-ring: 217 91% 60%;
-  --popover: 0 0% 94%;
-  --popover-foreground: 0 0% 10%;
-  --popover-border: 0 0% 90%;
-  --primary: 217 91% 60%;
-  --primary-foreground: 0 0% 98%;
-  --success: 142 76% 45%;
-  --success-foreground: 0 0% 98%;
-  --secondary: 0 0% 90%;
-  --secondary-foreground: 0 0% 10%;
-  --muted: 0 0% 92%;
-  --muted-foreground: 0 0% 35%;
-  --accent: 217 15% 88%;
-  --accent-foreground: 0 0% 10%;
-  --destructive: 0 84% 60%;
-  --destructive-foreground: 0 0% 98%;
-  --input: 0 0% 75%;
-  --ring: 217 91% 60%;
-  --chart-1: 217 91% 45%;
-  --chart-2: 142 76% 36%;
-  --chart-3: 271 81% 56%;
-  --chart-4: 24 100% 50%;
-  --chart-5: 340 82% 52%;
+@layer base {
+  :root {
+    /* --- "EMBER ON GUNMETAL" BRAND TOKENS --- */
 
-  /* Modern Tech Colors */
-  --tech-cyan: 189 94% 43%;
-  --tech-purple: 271 81% 65%;
-  --tech-pink: 330 81% 60%;
-  --tech-blue: 217 91% 60%;
+    /* Neutral ground (premium tech dark) */
+    --gunmetal: 222 47% 11%;
+    --midnight: 222 47% 7%;
 
-  /* Glass Effect */
-  --glass: 0 0% 100%;
-  --glass-foreground: 0 0% 10%;
-  --glass-border: 0 0% 90%;
+    /* Brand accent — orange family only (NO red). amber = light "signal" step.
+       Consumed via the Tailwind `brand` color + the shadcn --primary/--ring below. */
+    --brand-400: 27 96% 61%;   /* orange-400 — accent text on dark */
+    --brand-500: 25 95% 53%;   /* orange-500 — core brand */
+    --brand-600: 21 90% 48%;   /* orange-600 — solid CTA fill (default) */
+    --brand-700: 17 88% 40%;   /* orange-700 — hover / pressed / on-light text */
+    --brand-light: 38 92% 50%; /* amber-500 — highlight word & footer signal dot */
 
-  --font-sans: Open Sans, sans-serif;
-  --font-serif: Georgia, serif;
-  --font-mono: Menlo, monospace;
-  --radius: .5rem;
-  --shadow-2xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.00);
-  --shadow-xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.00);
-  --shadow-sm: 0px 2px 0px 0px hsl(0 0% 0% / 0.00), 0px 1px 2px -1px hsl(0 0% 0% / 0.00);
-  --shadow: 0px 2px 0px 0px hsl(0 0% 0% / 0.00), 0px 1px 2px -1px hsl(0 0% 0% / 0.00);
-  --shadow-md: 0px 2px 0px 0px hsl(0 0% 0% / 0.00), 0px 2px 4px -1px hsl(0 0% 0% / 0.00);
-  --shadow-lg: 0px 2px 0px 0px hsl(0 0% 0% / 0.00), 0px 4px 6px -1px hsl(0 0% 0% / 0.00);
-  --shadow-xl: 0px 2px 0px 0px hsl(0 0% 0% / 0.00), 0px 8px 10px -1px hsl(0 0% 0% / 0.00);
-  --shadow-2xl: 0px 2px 0px 0px hsl(0 0% 0% / 0.00);
-  --tracking-normal: 0em;
-  --spacing: 0.25rem;
+    /* Light readability surface (BUILD_PLAN P6). #F6F7F8 = hsl(210 14% 97%).
+       Used for the trust/readability bands (logos, services, process, portfolio,
+       outcomes). Dark stays for identity/impact bands. */
+    --surface-light: 210 14% 97%;
 
-  /* Fallback for older browsers */
-  --sidebar-primary-border: hsl(var(--sidebar-primary));
-  --sidebar-primary-border: hsl(from hsl(var(--sidebar-primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+    /* --- CORE SHADCN THEME --- */
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
 
-  /* Fallback for older browsers */
-  --sidebar-accent-border: hsl(var(--sidebar-accent));
-  --sidebar-accent-border: hsl(from hsl(var(--sidebar-accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --card-border: 214 32% 91%;
 
-  /* Fallback for older browsers */
-  --primary-border: hsl(var(--primary));
-  --primary-border: hsl(from hsl(var(--primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --popover-border: 214 32% 91%;
 
-  /* Fallback for older browsers */
-  --secondary-border: hsl(var(--secondary));
-  --secondary-border: hsl(from hsl(var(--secondary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+    /* Primary = Flow Orange #FF6B1F solid, white text — the ONE canonical CTA
+       fill (BUILD_PLAN P5, Phase 2). Consumed by the shadcn Button `default`
+       variant (`bg-primary`); no gradient CTAs. Do not add a second accent. */
+    --primary: 20 100% 56%;        /* Flow Orange #FF6B1F */
+    --primary-foreground: 0 0% 100%;
+    --primary-border: 20 100% 47%; /* darker Flow Orange for the button border */
 
-  /* Fallback for older browsers */
-  --muted-border: hsl(var(--muted));
-  --muted-border: hsl(from hsl(var(--muted)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222 47% 11%;
+    --secondary-border: 214 32% 91%;
 
-  /* Fallback for older browsers */
-  --accent-border: hsl(var(--accent));
-  --accent-border: hsl(from hsl(var(--accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted-border: 214 32% 91%;
 
-  /* Fallback for older browsers */
-  --destructive-border: hsl(var(--destructive));
-  --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-}
+    --accent: 222 47% 11%;
+    --accent-foreground: 210 40% 98%;
+    --accent-border: 222 47% 15%;
 
-.dark {
-  --button-outline: rgba(255,255,255, .10);
-  --badge-outline: rgba(255,255,255, .05);
-  --opaque-button-border-intensity: 9;
-  --elevate-1: rgba(255,255,255, .04);
-  --elevate-2: rgba(255,255,255, .09);
-  --background: 0 0% 7%;
-  --foreground: 0 0% 95%;
-  --border: 0 0% 18%;
-  --card: 0 0% 9%;
-  --card-foreground: 0 0% 95%;
-  --card-border: 0 0% 12%;
-  --sidebar: 0 0% 11%;
-  --sidebar-foreground: 0 0% 95%;
-  --sidebar-border: 0 0% 14%;
-  --sidebar-primary: 217 91% 60%;
-  --sidebar-primary-foreground: 0 0% 98%;
-  --sidebar-accent: 0 0% 15%;
-  --sidebar-accent-foreground: 0 0% 95%;
-  --sidebar-ring: 217 91% 60%;
-  --popover: 0 0% 13%;
-  --popover-foreground: 0 0% 95%;
-  --popover-border: 0 0% 16%;
-  --primary: 217 91% 60%;
-  --primary-foreground: 0 0% 98%;
-  --secondary: 0 0% 17%;
-  --secondary-foreground: 0 0% 95%;
-  --muted: 0 0% 15%;
-  --muted-foreground: 0 0% 70%;
-  --accent: 217 15% 18%;
-  --accent-foreground: 0 0% 95%;
-  --destructive: 0 84% 60%;
-  --destructive-foreground: 0 0% 98%;
-  --input: 0 0% 30%;
-  --ring: 217 91% 60%;
-  --chart-1: 217 91% 70%;
-  --chart-2: 142 76% 65%;
-  --chart-3: 271 81% 75%;
-  --chart-4: 24 100% 65%;
-  --chart-5: 340 82% 70%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --destructive-border: 0 84.2% 60.2%;
 
-  /* Modern Tech Colors - brighter in dark mode */
-  --tech-cyan: 189 94% 53%;
-  --tech-purple: 271 81% 70%;
-  --tech-pink: 330 81% 65%;
-  --tech-blue: 217 91% 65%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 25 95% 53%; /* focus ring = brand orange-500 */
+    --radius: 0.5rem;
 
-  /* Glass Effect - darker in dark mode */
-  --glass: 0 0% 10%;
-  --glass-foreground: 0 0% 95%;
-  --glass-border: 0 0% 20%;
+    /* Chart Colors */
+    --chart-1: 38 92% 50%;
+    --chart-2: 173 58% 39%; 
+    --chart-3: 222 47% 11%; 
+    --chart-4: 43 74% 66%;  
+    --chart-5: 27 87% 67%;  
 
-  --shadow-2xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.00);
-  --shadow-xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.00);
-  --shadow-sm: 0px 2px 0px 0px hsl(0 0% 0% / 0.00), 0px 1px 2px -1px hsl(0 0% 0% / 0.00);
-  --shadow: 0px 2px 0px 0px hsl(0 0% 0% / 0.00), 0px 1px 2px -1px hsl(0 0% 0% / 0.00);
-  --shadow-md: 0px 2px 0px 0px hsl(0 0% 0% / 0.00), 0px 2px 4px -1px hsl(0 0% 0% / 0.00);
-  --shadow-lg: 0px 2px 0px 0px hsl(0 0% 0% / 0.00), 0px 4px 6px -1px hsl(0 0% 0% / 0.00);
-  --shadow-xl: 0px 2px 0px 0px hsl(0 0% 0% / 0.00), 0px 8px 10px -1px hsl(0 0% 0% / 0.00);
-  --shadow-2xl: 0px 2px 0px 0px hsl(0 0% 0% / 0.00);
+    /* Font Families */
+    --font-sans: 'Inter', sans-serif;
+    --font-display: 'Space Grotesk', sans-serif;
 
-  /* Fallback for older browsers */
-  --sidebar-primary-border: hsl(var(--sidebar-primary));
-  --sidebar-primary-border: hsl(from hsl(var(--sidebar-primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+    /* Elevation Vars */
+    --button-outline: rgba(0,0,0, .10);
+    --badge-outline: rgba(0,0,0, .05);
+    --opaque-button-border-intensity: -8;
+    --elevate-1: rgba(0,0,0, .03);
+    --elevate-2: rgba(0,0,0, .08);
 
-  /* Fallback for older browsers */
-  --sidebar-accent-border: hsl(var(--sidebar-accent));
-  --sidebar-accent-border: hsl(from hsl(var(--sidebar-accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+    /* Shadow scale — extremely subtle (Linear / Vercel / Stripe). Depth is
+       carried mostly by borders; these only whisper. */
+    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.30);
+    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.35);
+    --shadow-md: 0 4px 16px -6px rgb(0 0 0 / 0.45);
 
-  /* Fallback for older browsers */
-  --primary-border: hsl(var(--primary));
-  --primary-border: hsl(from hsl(var(--primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+    /* Motion tokens */
+    --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+    --duration-fast: 150ms;
+    --duration-base: 250ms;
+    --duration-slow: 400ms;
+  }
 
-  /* Fallback for older browsers */
-  --secondary-border: hsl(var(--secondary));
-  --secondary-border: hsl(from hsl(var(--secondary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  .dark {
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
 
-  /* Fallback for older browsers */
-  --muted-border: hsl(var(--muted));
-  --muted-border: hsl(from hsl(var(--muted)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+    --card: 217 33% 17%;
+    --card-foreground: 210 40% 98%;
+    --card-border: 217 33% 20%;
 
-  /* Fallback for older browsers */
-  --accent-border: hsl(var(--accent));
-  --accent-border: hsl(from hsl(var(--accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
+    --popover-border: 217 33% 20%;
 
-  /* Fallback for older browsers */
-  --destructive-border: hsl(var(--destructive));
-  --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+    --primary: 210 40% 98%;
+    --primary-foreground: 222 47% 11%;
+    --primary-border: 210 40% 98%;
+
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --secondary-border: 217 33% 20%;
+
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --muted-border: 217 33% 20%;
+
+    --accent: 217 33% 17%;
+    --accent-foreground: 210 40% 98%;
+    --accent-border: 217 33% 20%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --destructive-border: 0 62.8% 30.6%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 210 40% 98%;
+
+    /* Dark Mode Elevation */
+    --button-outline: rgba(255,255,255, .10);
+    --badge-outline: rgba(255,255,255, .05);
+    --opaque-button-border-intensity: 9;
+    --elevate-1: rgba(255,255,255, .04);
+    --elevate-2: rgba(255,255,255, .09);
+  }
 }
 
 @layer base {
   * {
     @apply border-border;
   }
-
   body {
-    @apply font-sans antialiased bg-background text-foreground;
-  }
-
-  /* Smooth scrolling */
-  html {
-    scroll-behavior: smooth;
+    @apply bg-background text-foreground font-sans antialiased;
   }
 }
 
-/**
- * Using the elevate system.
- * Automatic contrast adjustment.
- *
- * <element className="hover-elevate" />
- * <element className="active-elevate-2" />
- *
- * // Using the tailwind utility when a data attribute is "on"
- * <element className="toggle-elevate data-[state=on]:toggle-elevated" />
- * // Or manually controlling the toggle state
- * <element className="toggle-elevate toggle-elevated" />
- *
- * Elevation systems have to handle many states.
- * - not-hovered, vs. hovered vs. active  (three mutually exclusive states)
- * - toggled or not
- * - focused or not (this is not handled with these utilities)
- *
- * Even without handling focused or not, this is six possible combinations that
- * need to be distinguished from eachother visually.
- */
 @layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
 
-  /* Hide ugly search cancel button in Chrome until we can style it properly */
   input[type="search"]::-webkit-search-cancel-button {
     @apply hidden;
   }
 
-  /* Placeholder styling for contentEditable div */
   [contenteditable][data-placeholder]:empty::before {
     content: attr(data-placeholder);
     color: hsl(var(--muted-foreground));
     pointer-events: none;
   }
 
-  /* .no-default-hover-elevate/no-default-active-elevate is an escape hatch so consumers of
-   * buttons/badges can remove the automatic brightness adjustment on interactions
-   * and program their own. */
-  .no-default-hover-elevate {}
-
-  .no-default-active-elevate {}
-
-
-  /**
-   * Toggleable backgrounds go behind the content. Hoverable/active goes on top.
-   * This way they can stack/compound. Both will overlap the parent's borders!
-   * So borders will be automatically adjusted both on toggle, and hover/active,
-   * and they will be compounded.
-   */
-  .toggle-elevate::before,
-  .toggle-elevate-2::before {
-    content: "";
-    pointer-events: none;
-    position: absolute;
-    inset: 0px;
-    /*border-radius: inherit;   match rounded corners */
-    border-radius: inherit;
-    z-index: -1;
-    /* sits behind content but above backdrop */
-  }
-
-  .toggle-elevate.toggle-elevated::before {
-    background-color: var(--elevate-2);
-  }
-
-  /* If there's a 1px border, adjust the inset so that it covers that parent's border */
-  .border.toggle-elevate::before {
-    inset: -1px;
-  }
-
-  /* Does not work on elements with overflow:hidden! */
-  .hover-elevate:not(.no-default-hover-elevate),
-  .active-elevate:not(.no-default-active-elevate),
-  .hover-elevate-2:not(.no-default-hover-elevate),
-  .active-elevate-2:not(.no-default-active-elevate) {
-    position: relative;
-    z-index: 0;
-  }
-
   .hover-elevate:not(.no-default-hover-elevate)::after,
-  .active-elevate:not(.no-default-active-elevate)::after,
-  .hover-elevate-2:not(.no-default-hover-elevate)::after,
-  .active-elevate-2:not(.no-default-active-elevate)::after {
+  .active-elevate:active:not(.no-default-active-elevate)::after {
     content: "";
     pointer-events: none;
     position: absolute;
     inset: 0px;
-    /*border-radius: inherit;   match rounded corners */
     border-radius: inherit;
     z-index: 999;
-    /* sits in front of content */
   }
-
-  .hover-elevate:hover:not(.no-default-hover-elevate)::after,
-  .active-elevate:active:not(.no-default-active-elevate)::after {
+  .hover-elevate:hover:not(.no-default-hover-elevate)::after {
     background-color: var(--elevate-1);
   }
-
-  .hover-elevate-2:hover:not(.no-default-hover-elevate)::after,
-  .active-elevate-2:active:not(.no-default-active-elevate)::after {
+  .active-elevate:active:not(.no-default-active-elevate)::after {
     background-color: var(--elevate-2);
   }
 
-  /* If there's a 1px border, adjust the inset so that it covers that parent's border */
-  .border.hover-elevate:not(.no-hover-interaction-elevate)::after,
-  .border.active-elevate:not(.no-active-interaction-elevate)::after,
-  .border.hover-elevate-2:not(.no-hover-interaction-elevate)::after,
-  .border.active-elevate-2:not(.no-active-interaction-elevate)::after,
-  .border.hover-elevate:not(.no-hover-interaction-elevate)::after {
-    inset: -1px;
+  /* Card hover-lift with a faint Flow Orange glow (Phase 5, P5 single accent).
+     Hover/focus only — touch users get the fully-functional static card (the card
+     is a link; nothing is hidden behind hover). The global reduced-motion block
+     zeroes the transition; the lift is then a discrete hover state, not motion. */
+  .card-lift {
+    transition:
+      transform var(--duration-base) var(--ease-standard),
+      box-shadow var(--duration-base) var(--ease-standard),
+      border-color var(--duration-base) var(--ease-standard);
   }
-
-  /* ============================================ */
-  /* MODERN TECH UTILITIES */
-  /* ============================================ */
-
-  /* Glassmorphism effect */
-  .glass {
-    background: hsl(var(--glass) / 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid hsl(var(--glass-border) / 0.5);
-  }
-
-  .glass-strong {
-    background: hsl(var(--glass) / 0.85);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid hsl(var(--glass-border) / 0.7);
-  }
-
-  /* Gradient text */
-  .gradient-text {
-    background: linear-gradient(135deg, hsl(var(--tech-cyan)), hsl(var(--tech-purple)));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .gradient-text-alt {
-    background: linear-gradient(135deg, hsl(var(--tech-blue)), hsl(var(--tech-pink)));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  /* Animated gradient backgrounds */
-  .gradient-animated {
-    background: linear-gradient(135deg, hsl(var(--tech-cyan)), hsl(var(--tech-purple)), hsl(var(--tech-pink)));
-    background-size: 200% 200%;
-    animation: gradient-shift 3s ease infinite;
-  }
-
-  /* Glow effects */
-  .glow-cyan {
-    box-shadow: 0 0 20px hsl(var(--tech-cyan) / 0.5);
-  }
-
-  .glow-purple {
-    box-shadow: 0 0 20px hsl(var(--tech-purple) / 0.5);
-  }
-
-  .glow-blue {
-    box-shadow: 0 0 20px hsl(var(--tech-blue) / 0.5);
-  }
-
-  /* Hover glow */
-  .hover-glow-cyan {
-    transition: box-shadow 0.3s ease;
-  }
-
-  .hover-glow-cyan:hover {
-    box-shadow: 0 0 30px hsl(var(--tech-cyan) / 0.6);
-  }
-
-  .hover-glow-purple:hover {
-    box-shadow: 0 0 30px hsl(var(--tech-purple) / 0.6);
-  }
-
-  /* Card hover effects */
-  .card-hover {
-    transition: all 0.3s ease;
-  }
-
-  .card-hover:hover {
+  .card-lift:hover,
+  .card-lift:focus-within {
     transform: translateY(-4px);
+    box-shadow: 0 10px 30px -10px hsl(var(--primary) / 0.28);
   }
+}
 
-  /* Mesh gradient background */
-  .mesh-bg {
-    background: 
-      radial-gradient(at 40% 20%, hsl(var(--tech-cyan) / 0.3) 0px, transparent 50%),
-      radial-gradient(at 80% 0%, hsl(var(--tech-purple) / 0.3) 0px, transparent 50%),
-      radial-gradient(at 0% 50%, hsl(var(--tech-blue) / 0.3) 0px, transparent 50%),
-      radial-gradient(at 80% 50%, hsl(var(--tech-pink) / 0.2) 0px, transparent 50%);
-  }
+/* =========================================================================
+   RTL / Arabic (Layer 5). Unlayered so these win over Tailwind's @layer rules.
+   ========================================================================= */
 
-  /* Border gradient */
-  .border-gradient {
-    border: 2px solid transparent;
-    background: linear-gradient(hsl(var(--background)), hsl(var(--background))) padding-box,
-                linear-gradient(135deg, hsl(var(--tech-cyan)), hsl(var(--tech-purple))) border-box;
-  }
+/* Arabic webfont (Cairo) when the document is in Arabic. Latin runs (brand,
+   ERP/CRM/AI) still render via the Inter fallback inside the stack. */
+[dir="rtl"] body {
+  font-family: "Cairo", "Inter", sans-serif;
+}
+[dir="rtl"] .font-display {
+  font-family: "Cairo", "Space Grotesk", sans-serif;
+}
 
-  /* Smooth transitions */
-  .transition-smooth {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
+/* Flip directional icons in RTL (lucide adds a per-icon class). */
+[dir="rtl"] .lucide-arrow-right,
+[dir="rtl"] .lucide-arrow-left,
+[dir="rtl"] .lucide-arrow-up-right,
+[dir="rtl"] .lucide-arrow-up-left,
+[dir="rtl"] .lucide-move-right,
+[dir="rtl"] .lucide-chevron-right,
+[dir="rtl"] .lucide-chevron-left {
+  transform: scaleX(-1);
+}
 
-  /* Code block styling */
-  .code-block {
-    @apply bg-muted/50 border border-border rounded-lg p-4 font-mono text-sm;
-    overflow-x: auto;
+/* =========================================================================
+   Reduced motion. Respect the OS/browser setting for everyone: neutralise the
+   client-logo marquee, hover transitions, and any scroll behaviour. Unlayered
+   so it wins. (Accessibility — foundation pass.)
+   ========================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
+}
 
-  /* Service card style */
-  .service-card {
-    @apply glass rounded-xl p-6 card-hover border-gradient;
-  }
-
-  /* CTA button with gradient */
-  .cta-gradient {
-    @apply bg-gradient-to-r from-tech-cyan to-tech-purple text-white font-semibold;
-    @apply hover:shadow-neon-cyan transition-all duration-300;
-  }
-
-  /* Subtle animation on scroll */
-  .animate-on-scroll {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-
-  .animate-on-scroll.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* Tech grid pattern */
-  .tech-grid {
-    background-image: 
-      linear-gradient(hsl(var(--border) / 0.1) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(var(--border) / 0.1) 1px, transparent 1px);
-    background-size: 50px 50px;
-  }
-
-  /* Floating animation helper */
-  .float {
-    animation: float 3s ease-in-out infinite;
-  }
-
-  /* Pulse glow */
-  .pulse-glow {
-    animation: glow 2s ease-in-out infinite;
-  }
+/* =========================================================================
+   Connected-systems visual language — motion keyframes. Extremely subtle and
+   fully neutralised by the reduced-motion block above (components also avoid
+   mounting these under reduced motion via useReducedMotion()).
+   ========================================================================= */
+@keyframes hex-pulse {
+  0%,
+  100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+@keyframes flow-travel {
+  to { stroke-dashoffset: -246; }
 }

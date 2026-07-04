@@ -1,48 +1,63 @@
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
-import { Mail, Phone, Clock } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { useToast } from '@/hooks/use-toast';
-import { useI18n } from '@/lib/i18n';
-import { apiRequest } from '@/lib/queryClient';
-import { contactFormSchema, type ContactFormData } from '@shared/schema';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import { Mail, Phone, Clock, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/lib/i18n";
+import { apiRequest } from "@/lib/queryClient";
+import { contactFormSchema, type ContactFormData } from "@shared/schema";
+import { PILLARS, CONTACT_EMAIL } from "@shared/taxonomy";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 
 export default function Contact() {
   const { t } = useI18n();
+  useDocumentTitle("Contact");
   const { toast } = useToast();
 
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema),
     defaultValues: {
-      name: '',
-      email: '',
-      phone: '',
-      company: '',
-      service: 'website',
-      message: '',
+      name: "",
+      email: "",
+      phone: "",
+      company: "",
+      service: PILLARS[2], // "software" — pillar slug from shared/taxonomy
+      message: "",
     },
   });
 
   const mutation = useMutation({
-    mutationFn: (data: ContactFormData) => apiRequest('POST', '/api/contact', data),
+    mutationFn: (data: ContactFormData) =>
+      apiRequest("POST", "/api/contact", data),
     onSuccess: () => {
       toast({
-        title: t('contact.success'),
-        description: 'We will get back to you within 24 hours.',
+        title: t("contact.toast.success"),
       });
       form.reset();
     },
     onError: () => {
       toast({
-        title: t('contact.error'),
-        description: 'Please try again or email us directly.',
-        variant: 'destructive',
+        title: t("contact.toast.error"),
+        variant: "destructive",
       });
     },
   });
@@ -52,139 +67,41 @@ export default function Contact() {
   };
 
   return (
-    <div className="min-h-screen pt-20">
-      <section className="py-24">
-        <div className="max-w-7xl mx-auto px-6 md:px-8">
+    <div className="min-h-screen pt-20 bg-slate-950 text-white">
+      <section className="py-20 md:py-24 relative">
+        {/* Background Effect */}
+        <div className="absolute top-0 left-0 w-[50%] h-[50%] bg-gradient-to-br from-orange-950/20 via-transparent to-transparent pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
           <div className="max-w-3xl mx-auto text-center mb-16">
-            <h1 className="text-5xl md:text-6xl font-bold font-display mb-6">
-              {t('contact.title')}
+            <h1 className="text-5xl md:text-6xl font-bold font-display mb-6 text-white">
+              {t("contact.title")}
             </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground">
-              {t('contact.subtitle')}
+            <p className="text-xl text-slate-400">
+              {t("contact.sub")}
             </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
-              <Card>
-                <CardContent className="p-8">
-                  <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <FormField
-                          control={form.control}
-                          name="name"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>{t('contact.form.name')}</FormLabel>
-                              <FormControl>
-                                <Input
-                                  placeholder="John Doe"
-                                  {...field}
-                                  data-testid="input-name"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name="email"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>{t('contact.form.email')}</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="email"
-                                  placeholder="john@example.com"
-                                  {...field}
-                                  data-testid="input-email"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <FormField
-                          control={form.control}
-                          name="phone"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>{t('contact.form.phone')} (Optional)</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="tel"
-                                  placeholder="+1 (555) 000-0000"
-                                  {...field}
-                                  data-testid="input-phone"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name="company"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>{t('contact.form.company')} (Optional)</FormLabel>
-                              <FormControl>
-                                <Input
-                                  placeholder="Your Company"
-                                  {...field}
-                                  data-testid="input-company"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
+              <div className="rounded-xl bg-slate-900/50 border border-slate-800 p-8 shadow-card">
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-6"
+                  >
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <FormField
                         control={form.control}
-                        name="service"
+                        name="name"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>{t('contact.form.service')}</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger data-testid="select-service">
-                                  <SelectValue placeholder="Select a service" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="website">Website Development</SelectItem>
-                                <SelectItem value="ai">AI Agents</SelectItem>
-                                <SelectItem value="automation">Business Automation</SelectItem>
-                                <SelectItem value="marketing">Digital Marketing</SelectItem>
-                                <SelectItem value="other">Other</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="message"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>{t('contact.form.message')}</FormLabel>
+                            <FormLabel className="text-slate-300">{t("contact.name")}</FormLabel>
                             <FormControl>
-                              <Textarea
-                                placeholder="Tell us about your project..."
-                                className="min-h-32 resize-none"
+                              <Input
+                                placeholder={t("contact.ph.name")}
                                 {...field}
-                                data-testid="textarea-message"
+                                className="bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus:border-brand-500/50"
                               />
                             </FormControl>
                             <FormMessage />
@@ -192,62 +109,169 @@ export default function Contact() {
                         )}
                       />
 
-                      <Button
-                        type="submit"
-                        size="lg"
-                        className="w-full"
-                        disabled={mutation.isPending}
-                        data-testid="button-submit"
-                      >
-                        {mutation.isPending ? t('contact.form.submitting') : t('contact.form.submit')}
-                      </Button>
-                    </form>
-                  </Form>
-                </CardContent>
-              </Card>
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-slate-300">{t("contact.email")}</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="email"
+                                placeholder={t("contact.ph.email")}
+                                {...field}
+                                className="bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus:border-brand-500/50"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="phone"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-slate-300">{t("contact.phone")} <span className="text-slate-500 text-xs">{t("contact.optional")}</span></FormLabel>
+                            <FormControl>
+                              <Input
+                                type="tel"
+                                placeholder={t("contact.ph.phone")}
+                                {...field}
+                                className="bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus:border-brand-500/50"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="company"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-slate-300">{t("contact.company")} <span className="text-slate-500 text-xs">{t("contact.optional")}</span></FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder={t("contact.ph.company")}
+                                {...field}
+                                className="bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus:border-brand-500/50"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <FormField
+                      control={form.control}
+                      name="service"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-slate-300">{t("contact.service")}</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="bg-slate-950 border-slate-800 text-white focus:border-brand-500/50">
+                                <SelectValue placeholder={t("contact.ph.service")} />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent className="bg-slate-900 border-slate-800 text-white">
+                              {PILLARS.map((p) => (
+                                <SelectItem key={p} value={p}>{t(`serviceOpt.${p}`)}</SelectItem>
+                              ))}
+                              <SelectItem value="other">{t("serviceOpt.other")}</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="message"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-slate-300">{t("contact.message")}</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder={t("contact.ph.message")}
+                              className="min-h-32 resize-none bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus:border-brand-500/50"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <Button
+                      type="submit"
+                      size="lg"
+                      className="w-full bg-primary text-primary-foreground font-semibold"
+                      disabled={mutation.isPending}
+                    >
+                      {mutation.isPending ? t("contact.submitting") : t("contact.submit")}
+                      {!mutation.isPending && <ArrowRight className="w-4 h-4 ml-2" />}
+                    </Button>
+                  </form>
+                </Form>
+              </div>
             </div>
 
             <div className="space-y-6">
-              <Card>
-                <CardContent className="p-6 space-y-6">
-                  <h3 className="font-bold text-lg">{t('contact.info.title')}</h3>
-                  
-                  <div className="space-y-4">
-                    <div className="flex items-start gap-3">
-                      <Mail className="w-5 h-5 text-primary mt-0.5" />
-                      <div>
-                        <p className="font-medium text-sm">Email</p>
-                        <p className="text-sm text-muted-foreground">contact@omniflowai.agency</p>
-                      </div>
-                    </div>
+              <div className="rounded-xl bg-slate-900/50 border border-slate-800 p-6 space-y-6 shadow-card">
+                <h3 className="font-bold text-lg text-white">{t("contact.info")}</h3>
 
-                    <div className="flex items-start gap-3">
-                      <Phone className="w-5 h-5 text-primary mt-0.5" />
-                      <div>
-                        <p className="font-medium text-sm">Phone</p>
-                        <p className="text-sm text-muted-foreground">Available upon request</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start gap-3">
-                      <Clock className="w-5 h-5 text-primary mt-0.5" />
-                      <div>
-                        <p className="font-medium text-sm">Response Time</p>
-                        <p className="text-sm text-muted-foreground">{t('contact.info.hours')}</p>
-                      </div>
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <Mail className="w-5 h-5 text-brand-400 mt-0.5" />
+                    <div>
+                      <p className="font-medium text-sm text-slate-300">{t("contact.emailLabel")}</p>
+                      <p className="text-sm text-slate-400">
+                        {CONTACT_EMAIL}
+                      </p>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
 
-              <Card className="bg-gradient-to-br from-primary/10 to-chart-2/10">
-                <CardContent className="p-6 space-y-4">
-                  <h3 className="font-bold text-lg">Quick Response Guarantee</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    We typically respond to all inquiries within 24 hours during business days. For urgent matters, please mention it in your message.
-                  </p>
-                </CardContent>
-              </Card>
+                  <div className="flex items-start gap-3">
+                    <Phone className="w-5 h-5 text-brand-400 mt-0.5" />
+                    <div>
+                      <p className="font-medium text-sm text-slate-300">{t("contact.phoneLabel")}</p>
+                      <p className="text-sm text-slate-400">
+                        {t("contact.phoneVal")}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <Clock className="w-5 h-5 text-brand-400 mt-0.5" />
+                    <div>
+                      <p className="font-medium text-sm text-slate-300">{t("contact.responseLabel")}</p>
+                      <p className="text-sm text-slate-400">
+                        {t("contact.responseVal")}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-xl bg-gradient-to-br from-brand-500/10 to-slate-900 border border-brand-500/20 p-6 space-y-4 shadow-card">
+                <h3 className="font-bold text-lg text-white">
+                  {t("contact.quick.title")}
+                </h3>
+                <p className="text-sm text-slate-400 leading-relaxed">
+                  {t("contact.quick.body")}
+                </p>
+              </div>
             </div>
           </div>
         </div>

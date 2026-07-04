@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
-import { Menu, X, Globe } from 'lucide-react';
+import { Menu, X, Globe, ArrowRight, Hexagon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useI18n } from '@/lib/i18n';
 
@@ -32,16 +32,25 @@ export function Navigation() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-background/95 backdrop-blur-md border-b border-border' : 'bg-transparent'
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${
+        isScrolled 
+          ? 'bg-slate-950/90 backdrop-blur-md border-slate-800/50 py-2' 
+          : 'bg-slate-950/0 border-transparent py-4'
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 md:px-8">
-        <div className="flex items-center justify-between h-20">
-          <Link href="/" data-testid="link-home">
-            <span className="flex items-center gap-2 hover-elevate active-elevate-2 rounded-md px-3 py-2 -ml-3 cursor-pointer">
-              <span className="text-2xl font-bold font-display bg-gradient-to-r from-primary to-chart-2 bg-clip-text text-transparent">
-                OmniflowAI
+        <div className="flex items-center justify-between h-16">
+
+          <Link href="/">
+            <span className="flex items-center gap-3 cursor-pointer group">
+              {/* Code-based Logo with Hexagon. dir="ltr" keeps the brand lockup
+                  (⬡mniflowAI) rendering left-to-right even in Arabic — brand names
+                  stay LTR; only the whole logo block mirrors to the RTL side via
+                  the parent flex + document dir. */}
+              <span dir="ltr" className="text-4xl font-bold font-display tracking-tight transition-colors flex items-center">
+                <Hexagon className="w-9 h-9 text-brand-500 group-hover:text-brand-400 transition-colors stroke-[3] mr-1" />
+                <span className="text-white group-hover:text-brand-400 transition-colors">Omniflow</span>
+                <span className="text-brand-500 group-hover:text-brand-400 transition-colors">AI</span>
               </span>
             </span>
           </Link>
@@ -49,12 +58,7 @@ export function Navigation() {
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href}>
-                <span
-                  className={`text-sm font-medium transition-colors hover:text-primary cursor-pointer ${
-                    location === link.href ? 'text-primary' : 'text-foreground'
-                  }`}
-                  data-testid={`link-${link.label.toLowerCase()}`}
-                >
+                <span className={`text-sm font-medium transition-colors cursor-pointer ${location === link.href ? 'text-brand-400' : 'text-slate-300 hover:text-white'}`}>
                   {link.label}
                 </span>
               </Link>
@@ -66,22 +70,22 @@ export function Navigation() {
               variant="ghost"
               size="icon"
               onClick={toggleLanguage}
-              className="rounded-md"
-              data-testid="button-language-toggle"
+              aria-label={language === 'en' ? 'التبديل إلى العربية' : 'Switch to English'}
+              className="rounded-full text-slate-400 hover:text-white hover:bg-white/10"
             >
               <Globe className="w-5 h-5" />
             </Button>
-            <Button asChild data-testid="button-cta-nav">
-              <Link href="/contact">
-                {t('hero.cta.secondary')}
-              </Link>
-            </Button>
+            <Link href="/contact">
+              <Button className="bg-primary text-primary-foreground font-semibold rounded-full px-6">
+                {t('nav.cta')}
+                <ArrowRight className={`w-4 h-4 ${isRTL ? 'mr-2' : 'ml-2'}`} />
+              </Button>
+            </Link>
           </div>
 
           <button
-            className="md:hidden p-2 rounded-md hover-elevate active-elevate-2"
+            className="md:hidden p-2 rounded-md text-slate-300 hover:text-white hover:bg-white/10"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            data-testid="button-mobile-menu"
           >
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -89,37 +93,29 @@ export function Navigation() {
       </div>
 
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-background border-t border-border">
-          <div className="px-6 py-4 space-y-3">
+        <div className="md:hidden bg-slate-950 border-t border-slate-800 absolute top-full left-0 right-0 h-screen">
+          <div className="px-6 py-6 space-y-4">
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href}>
                 <span
-                  className={`block px-4 py-2 rounded-md text-sm font-medium transition-colors hover-elevate active-elevate-2 cursor-pointer ${
-                    location === link.href ? 'text-primary bg-primary/10' : 'text-foreground'
+                  className={`block px-4 py-4 rounded-xl text-lg font-medium transition-colors cursor-pointer ${
+                    location === link.href ? 'text-brand-400 bg-brand-500/10' : 'text-slate-300 hover:text-white hover:bg-white/5'
                   }`}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  data-testid={`link-mobile-${link.label.toLowerCase()}`}
                 >
                   {link.label}
                 </span>
               </Link>
             ))}
-            <div className="flex items-center gap-3 pt-4 border-t border-border">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={toggleLanguage}
-                className="flex-1"
-                data-testid="button-language-toggle-mobile"
-              >
-                <Globe className="w-4 h-4 mr-2" />
-                {language === 'en' ? 'العربية' : 'English'}
+            <div className="flex gap-3 mt-8">
+              <Button variant="outline" className="flex-1 border-slate-700 text-slate-300 h-12" onClick={toggleLanguage}>
+                <Globe className="w-4 h-4 mr-2" /> {language === 'en' ? 'العربية' : 'English'}
               </Button>
-              <Button asChild size="sm" className="flex-1" onClick={() => setIsMobileMenuOpen(false)}>
-                <Link href="/contact">
-                  {t('hero.cta.secondary')}
-                </Link>
-              </Button>
+              <Link href="/contact" className="flex-1">
+                <Button className="w-full bg-primary text-primary-foreground font-bold h-12 rounded-full" onClick={() => setIsMobileMenuOpen(false)}>
+                  {t('nav.cta')}
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

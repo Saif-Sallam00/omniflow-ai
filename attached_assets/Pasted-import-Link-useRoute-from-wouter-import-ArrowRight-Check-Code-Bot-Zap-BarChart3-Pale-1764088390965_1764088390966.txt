@@ -1,0 +1,262 @@
+import { Link, useRoute } from 'wouter';
+import { ArrowRight, Check, Code, Bot, Zap, BarChart3, Palette, Globe, ShieldCheck, Crown } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { useI18n } from '@/lib/i18n';
+import dashboardImage from '@assets/generated_images/website_dashboard_mockup_showcase.png';
+import aiImage from '@assets/generated_images/ai_automation_visual_concept.png';
+
+export default function ServiceDetail() {
+  const [, params] = useRoute('/services/:slug');
+  const { t, isRTL } = useI18n();
+
+  const services = {
+    // === AUDIENCE A: ELITE / BRAND ===
+    'website-development': {
+      type: 'brand',
+      icon: Palette,
+      title: 'Bespoke Digital Presence',
+      subtitle: 'Where Art Meets Architecture',
+      description: 'For visionaries who refuse to compromise. We architect digital legacies that command attention, build trust, and elevate your market standing instantly. Your website is not just a tool; it is the digital embodiment of your reputation.',
+      image: dashboardImage,
+      features: [
+        'Signature Visual Identity',
+        'Immersive Motion Design',
+        'Global-Ready Architecture',
+        'Enterprise-Grade Security',
+        'Authority-Building Content',
+        'Curated User Journeys',
+        'Seamless Mobile Experience',
+        'Premium Post-Launch Support'
+      ],
+      // Process hidden for brand to maintain "magic" feel
+      process: [], 
+    },
+
+    // === AUDIENCE B: SMB / TECH ===
+    'ai-agents': {
+      type: 'tech',
+      icon: Bot,
+      title: 'AI Agents Development',
+      subtitle: 'Intelligent AI-powered solutions that work 24/7',
+      description: 'Our AI agents provide intelligent customer service, automate repetitive tasks, and deliver personalized experiences to your customers around the clock.',
+      image: aiImage,
+      features: [
+        '24/7 automated customer support',
+        'Natural language processing',
+        'Multi-language support',
+        'Custom training on your data',
+        'Seamless integration',
+        'Analytics dashboard',
+        'Continuous learning',
+        'Cost-effective scalability',
+      ],
+      process: [
+        { step: '1', title: 'Analysis', description: 'We audit your support logs to identify automation opportunities.' },
+        { step: '2', title: 'Training', description: 'We train custom AI models on your specific business data.' },
+        { step: '3', title: 'Integration', description: 'Seamless connection with your CRM and helpdesk tools.' },
+        { step: '4', title: 'Optimization', description: 'Continuous refinement based on real user interactions.' },
+      ],
+    },
+    'automation': {
+      type: 'tech',
+      icon: Zap,
+      title: 'Business Automation',
+      subtitle: 'Streamline operations and save valuable time',
+      description: 'Automate repetitive business processes, sync data across platforms, and free up your team to focus on what matters most - growing your business.',
+      image: aiImage,
+      features: [
+        'Workflow automation',
+        'Data synchronization',
+        'Automated email & SMS',
+        'Payment processing',
+        'Inventory management',
+        'Custom API integrations',
+        'Scheduled reports',
+        'Error monitoring',
+      ],
+      process: [
+        { step: '1', title: 'Audit', description: 'Identify manual bottlenecks in your current workflow.' },
+        { step: '2', title: 'Design', description: 'Map out efficient, automated logic flows.' },
+        { step: '3', title: 'Build', description: 'Develop and test the automation scripts.' },
+        { step: '4', title: 'Deploy', description: 'Live implementation with monitoring systems.' },
+      ],
+    },
+    'digital-marketing': {
+      type: 'brand', // Hybrid
+      icon: BarChart3,
+      title: 'Digital Authority & Growth',
+      subtitle: 'Drive traffic, engagement, and conversions',
+      description: 'Our digital marketing strategies combine SEO, performance marketing, and data-driven insights to help your business reach the right audience and achieve measurable results.',
+      image: dashboardImage,
+      features: [
+        'Comprehensive SEO',
+        'Performance Marketing',
+        'Content Strategy',
+        'Advanced Analytics',
+        'Conversion Optimization',
+        'Social Integration',
+        'Email Automation',
+        'Competitor Analysis',
+      ],
+      process: [
+        { step: '1', title: 'Research', description: 'Analyze your market, competitors, and opportunities.' },
+        { step: '2', title: 'Strategy', description: 'Develop a comprehensive marketing strategy.' },
+        { step: '3', title: 'Execute', description: 'Launch campaigns and optimize for performance.' },
+        { step: '4', title: 'Report', description: 'Track results and provide detailed analytics.' },
+      ],
+    },
+  };
+
+  const service = params?.slug ? services[params.slug as keyof typeof services] : null;
+
+  if (!service) {
+    return (
+      <div className="min-h-screen pt-20 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold mb-4">Service Not Found</h1>
+          <Link href="/services">
+            <Button>View All Services</Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const Icon = service.icon;
+  const isBrandMode = service.type === 'brand';
+
+  // Dynamic Styles based on Audience Type
+  const pageBg = isBrandMode ? 'bg-[#FDFBF7]' : 'bg-slate-50';
+  const headingFont = isBrandMode ? 'font-serif' : 'font-display';
+  const accentColor = isBrandMode ? 'text-amber-600' : 'text-blue-600';
+  const buttonStyle = isBrandMode ? 'rounded-full' : 'rounded-md';
+  const checkIconColor = isBrandMode ? 'text-slate-900' : 'text-chart-2';
+
+  return (
+    <div className={`min-h-screen pt-20 ${pageBg}`}>
+      <section className="py-24">
+        <div className="max-w-7xl mx-auto px-6 md:px-8">
+          
+          {/* === SPLIT HERO SECTION (Maintained & Enhanced) === */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-24">
+            
+            {/* Left Column: Text Content */}
+            <div className="space-y-8">
+              <div className={`w-16 h-16 rounded-xl ${isBrandMode ? 'bg-white border border-slate-200' : 'bg-blue-600/10'} flex items-center justify-center`}>
+                <Icon className={`w-8 h-8 ${isBrandMode ? 'text-slate-800' : 'text-blue-600'}`} />
+              </div>
+              
+              <div>
+                <h1 className={`text-5xl md:text-6xl font-bold ${headingFont} mb-4 leading-tight`}>
+                  {service.title}
+                </h1>
+                <p className={`text-xl md:text-2xl ${accentColor} font-medium`}>
+                  {service.subtitle}
+                </p>
+              </div>
+
+              <p className="text-lg text-slate-600 leading-relaxed font-light">
+                {service.description}
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                <Link href={`/contact?intent=${isBrandMode ? 'consultation' : 'audit'}`}>
+                  <Button size="lg" className={`${buttonStyle} ${isBrandMode ? 'bg-slate-900 hover:bg-slate-800' : 'bg-blue-600 hover:bg-blue-500'}`}>
+                    {isBrandMode ? 'Request Consultation' : 'Get Started'}
+                    <ArrowRight className={`w-5 h-5 ${isRTL ? 'mr-2' : 'ml-2'}`} />
+                  </Button>
+                </Link>
+                <Link href="/portfolio">
+                  <Button size="lg" variant="outline" className={`${buttonStyle} border-slate-300`}>
+                    View Our Work
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            {/* Right Column: Image (Enhanced) */}
+            <div className="relative group">
+              {/* Decorative glow for Tech mode */}
+              {!isBrandMode && (
+                <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/20 to-indigo-600/20 blur-3xl rounded-full opacity-50" />
+              )}
+              
+              <img
+                src={service.image}
+                alt={service.title}
+                className={`relative w-full rounded-2xl shadow-2xl object-cover aspect-[4/3] transition-transform duration-700 group-hover:scale-[1.02] ${isBrandMode ? 'border-8 border-white' : 'border border-slate-200/50 bg-white'}`}
+              />
+            </div>
+          </div>
+
+          {/* === FEATURES GRID === */}
+          <div className="mb-24">
+            <h2 className={`text-3xl md:text-4xl font-bold ${headingFont} mb-12 text-center`}>
+              {isBrandMode ? 'Curated Features' : 'Technical Specifications'}
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+              {service.features.map((feature, index) => (
+                <div key={index} className={`flex items-center gap-4 p-5 rounded-xl transition-all hover:shadow-md ${isBrandMode ? 'bg-white border border-slate-100' : 'bg-slate-50 hover:bg-white'}`}>
+                  <div className={`w-8 h-8 rounded-full ${isBrandMode ? 'bg-slate-100' : 'bg-green-100'} flex items-center justify-center flex-shrink-0`}>
+                    <Check className={`w-4 h-4 ${checkIconColor}`} />
+                  </div>
+                  <span className="text-slate-700 font-medium">{feature}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* === PROCESS SECTION (Conditional) === */}
+          {/* Only show process steps if they exist in the data (Hidden for Branding) */}
+          {service.process && service.process.length > 0 && (
+            <div className="mb-24">
+              <h2 className={`text-3xl md:text-4xl font-bold ${headingFont} mb-12 text-center`}>
+                Our Process
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                {service.process.map((item, index) => (
+                  <Card key={index} className="text-center border-slate-200 hover:border-blue-300 transition-all duration-300 hover:shadow-lg group">
+                    <CardContent className="p-6 space-y-4">
+                      <div className="w-12 h-12 rounded-full bg-slate-100 text-slate-600 font-bold text-xl flex items-center justify-center mx-auto group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                        {item.step}
+                      </div>
+                      <h3 className="font-bold text-lg">{item.title}</h3>
+                      <p className="text-sm text-muted-foreground leading-relaxed">{item.description}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* === BOTTOM CTA === */}
+          <div className={`rounded-2xl p-12 text-center relative overflow-hidden ${isBrandMode ? 'bg-slate-900 text-white' : 'bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-50 border border-blue-100'}`}>
+            {/* Decorative background for Brand mode */}
+            {isBrandMode && (
+               <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+            )}
+
+            <div className="relative z-10 max-w-2xl mx-auto">
+              <h2 className={`text-3xl md:text-4xl font-bold ${headingFont} mb-6 ${!isBrandMode && 'text-slate-900'}`}>
+                {isBrandMode ? 'Ready to Elevate Your Brand?' : 'Ready to Optimize Your Workflow?'}
+              </h2>
+              <p className={`text-lg mb-8 ${isBrandMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                {isBrandMode 
+                  ? "Let's craft a digital presence that speaks volumes before you even enter the room."
+                  : "Let's discuss how we can save you hours every week with custom automation."}
+              </p>
+              <Link href={`/contact?intent=${isBrandMode ? 'consultation' : 'audit'}`}>
+                <Button size="lg" className={isBrandMode ? 'bg-white text-slate-900 hover:bg-slate-200 rounded-full' : 'bg-blue-600 text-white hover:bg-blue-700 rounded-md shadow-lg shadow-blue-600/20'}>
+                  {t('cta.final.button')}
+                  <ArrowRight className={`w-5 h-5 ${isRTL ? 'mr-2' : 'ml-2'}`} />
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </div>
+  );
+}

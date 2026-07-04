@@ -1,170 +1,217 @@
+import { useState } from 'react';
 import { Link } from 'wouter';
-import { ArrowRight, ExternalLink } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { ArrowUpRight, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useQuery } from '@tanstack/react-query';
+import { Project } from '@shared/schema';
+import { PORTFOLIO_TAB_ORDER, PILLARS, CATEGORY_TO_PILLAR, type Category, type Pillar } from '@shared/taxonomy';
+import { onImageError } from '@/lib/placeholder';
 import { useI18n } from '@/lib/i18n';
-import dashboardImage from '@assets/generated_images/website_dashboard_mockup_showcase.png';
-import aiImage from '@assets/generated_images/ai_automation_visual_concept.png';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 
 export default function Portfolio() {
-  const { t, isRTL } = useI18n();
+  const { t } = useI18n();
+  useDocumentTitle("Portfolio");
+  const [activeFilter, setActiveFilter] = useState<string>('all');
 
-  const projects = [
-    {
-      title: 'Luxury Real Estate Platform',
-      client: 'Premium Properties Inc.',
-      category: 'Website Development',
-      description: 'A high-end real estate platform featuring advanced property search, virtual tours, and lead management system.',
-      results: [
-        '+250% increase in qualified leads',
-        '3x faster property search',
-        '45% reduction in bounce rate',
-      ],
-      technologies: ['React', 'Node.js', 'PostgreSQL', 'AI Search'],
-      image: dashboardImage,
+  // Deep-link pillar filter: /portfolio?service=<pillar-slug> (e.g. ai-training,
+  // digital-marketing, software). The pillar is DERIVED from each project's
+  // category via CATEGORY_TO_PILLAR (taxonomy is the single source of truth —
+  // no serviceCategory is stored). Read once on entry; the category tabs below
+  // still work normally and compose within the active pillar.
+  const serviceParam = new URLSearchParams(window.location.search).get('service');
+  const activePillar: Pillar | null =
+    serviceParam && (PILLARS as readonly string[]).includes(serviceParam)
+      ? (serviceParam as Pillar)
+      : null;
+  const inActivePillar = (p: Project) =>
+    !activePillar || CATEGORY_TO_PILLAR[p.category] === activePillar;
+
+  // Base query: ALL projects — used to decide which category tabs to show.
+  const { data: allProjects, isLoading: allLoading } = useQuery<Project[]>({
+    queryKey: ['/api/projects'],
+  });
+
+  // Display query: hits /api/projects?category=<slug> when a specific tab is active.
+  const { data: filteredData, isLoading: filterLoading } = useQuery<Project[]>({
+    queryKey: ['/api/projects', 'filter', activeFilter],
+    queryFn: async () => {
+      const url =
+        activeFilter === 'all'
+          ? '/api/projects'
+          : `/api/projects?category=${activeFilter}`;
+      const res = await fetch(url, { credentials: 'include' });
+      if (!res.ok) throw new Error('Failed to load projects');
+      return res.json();
     },
-    {
-      title: 'Beauty Center Booking System',
-      client: 'Elegance Spa & Beauty',
-      category: 'Website Development + Automation',
-      description: 'Complete booking and management system with automated reminders, payment processing, and customer management.',
-      results: [
-        '+180% in online bookings',
-        '90% reduction in no-shows',
-        'Automated appointment reminders',
-      ],
-      technologies: ['React', 'Express', 'Stripe', 'SMS API'],
-      image: dashboardImage,
-    },
-    {
-      title: 'AI Customer Service Agent',
-      client: 'TechCorp Solutions',
-      category: 'AI Agents',
-      description: 'Intelligent AI-powered customer service system handling inquiries, support tickets, and product recommendations.',
-      results: [
-        '24/7 automated customer support',
-        '85% query resolution rate',
-        '60% reduction in support costs',
-      ],
-      technologies: ['GPT-4', 'Node.js', 'WebSocket', 'NLP'],
-      image: aiImage,
-    },
-    {
-      title: 'E-commerce Automation Suite',
-      client: 'Fashion Forward LLC',
-      category: 'Automation + Marketing',
-      description: 'Complete e-commerce automation including inventory management, order processing, and marketing automation.',
-      results: [
-        '75% time saved on operations',
-        '+200% email conversion rate',
-        'Real-time inventory sync',
-      ],
-      technologies: ['Python', 'APIs', 'Zapier', 'SEO Tools'],
-      image: dashboardImage,
-    },
-    {
-      title: 'Multi-Vendor Marketplace',
-      client: 'LocalMarket Hub',
-      category: 'Website Development',
-      description: 'Scalable marketplace platform connecting local vendors with customers, featuring vendor dashboards and analytics.',
-      results: [
-        '150+ vendors onboarded',
-        '+300% monthly transactions',
-        'Advanced analytics dashboard',
-      ],
-      technologies: ['React', 'Node.js', 'MongoDB', 'Stripe'],
-      image: dashboardImage,
-    },
-    {
-      title: 'Marketing Analytics Dashboard',
-      client: 'Digital Growth Agency',
-      category: 'Digital Marketing',
-      description: 'Comprehensive marketing analytics platform aggregating data from multiple sources with AI-powered insights.',
-      results: [
-        'Unified data from 15+ platforms',
-        'AI-powered recommendations',
-        '40% faster reporting',
-      ],
-      technologies: ['React', 'D3.js', 'Python', 'ML Models'],
-      image: aiImage,
-    },
+  });
+
+  const isLoading = allLoading || filterLoading;
+  // Category filter (server) composed with the pillar deep-link filter (client).
+  const filteredProjects = (filteredData || []).filter(inActivePillar);
+
+  // Only surface a category tab if at least one project currently has it —
+  // scoped to the active pillar when deep-linked. "All" is always shown.
+  const presentCategories = new Set(
+    (allProjects || []).filter(inActivePillar).map((p) => p.category)
+  );
+  const visibleTabs: string[] = [
+    'all',
+    ...PORTFOLIO_TAB_ORDER.filter((c) => presentCategories.has(c)),
   ];
 
+  const tabLabel = (tab: string) =>
+    tab === 'all' ? t('common.all') : t(`category.${tab}`);
+
+  if (isLoading) return <PortfolioSkeleton />;
+
   return (
-    <div className="min-h-screen pt-20">
-      <section className="py-24">
+    <div className="min-h-screen pt-20 bg-slate-950 text-white">
+
+      {/* 1. Minimal Header */}
+      <section className="py-20 md:py-24 bg-slate-950/50 border-b border-slate-800/50">
+        <div className="max-w-7xl mx-auto px-6 md:px-8 text-center">
+          <h1 className="text-4xl md:text-5xl font-display font-bold text-white mb-6">
+            {t('portfolio.title')}
+          </h1>
+          <p className="text-xl text-slate-400 max-w-2xl mx-auto font-normal">
+            {t('portfolio.sub')}
+          </p>
+        </div>
+      </section>
+
+      {/* 1b. Active pillar deep-link banner (only when ?service=<pillar> is set) */}
+      {activePillar && (
+        <section className="border-b border-slate-800/50 bg-brand-500/5 py-3">
+          <div className="max-w-7xl mx-auto px-6 md:px-8 flex items-center justify-center gap-3 text-sm">
+            <span className="text-slate-400">
+              {t('portfolio.filter.showing')}{' '}
+              <span className="font-semibold text-brand-400">{t(`portfolio.pillar.${activePillar}`)}</span>
+            </span>
+            <a
+              href="/portfolio"
+              className="inline-flex items-center gap-1 text-slate-400 hover:text-white transition-colors"
+            >
+              <X className="w-3.5 h-3.5" />
+              {t('portfolio.filter.clear')}
+            </a>
+          </div>
+        </section>
+      )}
+
+      {/* 2. Filter Tabs */}
+      <section className="sticky top-16 z-30 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/50 py-4">
+        <div className="max-w-7xl mx-auto px-6 md:px-8 flex justify-center">
+          <Tabs defaultValue="all" className="w-full max-w-3xl" onValueChange={setActiveFilter}>
+            <TabsList className="w-full flex-wrap bg-slate-900 border border-slate-800 rounded-full p-1">
+              {visibleTabs.map((tab) => (
+                <TabsTrigger
+                  key={tab}
+                  value={tab}
+                  className="rounded-full px-4 py-2 text-sm font-medium text-slate-400 data-[state=active]:bg-slate-800 data-[state=active]:text-white data-[state=active]:shadow-sm transition-all flex-1"
+                >
+                  {tabLabel(tab)}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+        </div>
+      </section>
+
+      {/* 3. The Gallery Grid */}
+      <section className="py-20 md:py-24">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
-          <div className="max-w-3xl mx-auto text-center mb-16">
-            <h1 className="text-5xl md:text-6xl font-bold font-display mb-6">
-              {t('portfolio.title')}
-            </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground">
-              {t('portfolio.subtitle')}
-            </p>
-          </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {projects.map((project, index) => (
-              <Card key={index} className="overflow-hidden hover-elevate transition-all duration-300" data-testid={`card-project-${index}`}>
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="w-full h-64 object-cover"
-                />
-                <CardContent className="p-8 space-y-6">
-                  <div className="space-y-2">
-                    <Badge variant="secondary" data-testid={`badge-category-${index}`}>
-                      {project.category}
-                    </Badge>
-                    <h3 className="text-2xl font-bold">{project.title}</h3>
-                    <p className="text-sm text-muted-foreground">{project.client}</p>
+          {filteredProjects.length === 0 ? (
+            <div className="text-center py-20">
+              <p className="text-slate-400">{t('portfolio.empty')}</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+              {filteredProjects.map((project) => (
+                <Link key={project.id} href={`/portfolio/${project.id}`}>
+                  <div className="group cursor-pointer flex flex-col gap-4" data-testid={`card-project-${project.id}`}>
+
+                    {/* Image Card */}
+                    <div className="relative overflow-hidden rounded-xl bg-slate-900 aspect-[4/3] shadow-card border border-slate-800 group-hover:border-slate-700 transition-all duration-500">
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60 z-10" />
+                      <div className="absolute inset-0 bg-white/0 group-hover:bg-white/5 z-10 transition-colors duration-500" />
+
+                      {/* Hover Overlay Button */}
+                      <div className="absolute top-4 right-4 z-20 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                        <div className="w-10 h-10 bg-brand-500 rounded-full flex items-center justify-center shadow-sm">
+                          <ArrowUpRight className="w-5 h-5 text-white" />
+                        </div>
+                      </div>
+
+                      <img
+                        src={project.image}
+                        alt={project.title}
+                        loading="lazy"
+                        decoding="async"
+                        onError={onImageError}
+                        className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
+                      />
+                    </div>
+
+                    {/* Minimal Text Info */}
+                    <div className="space-y-1 px-1">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-xl font-bold text-white group-hover:text-brand-400 transition-colors">
+                          {project.title}
+                        </h3>
+                        <Badge variant="outline" className="border-slate-800 text-slate-400 text-[10px] uppercase tracking-wider bg-slate-900">
+                          {t(`category.${project.category}`)}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-slate-400 font-medium">
+                        {project.client}
+                      </p>
+
+                      {/* Free-text tags (data — not translated) */}
+                      {project.tags && project.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 pt-2">
+                          {project.tags.map((tag) => (
+                            <span
+                              key={tag}
+                              className="rounded-md bg-slate-900 border border-slate-800 px-2 py-0.5 text-[11px] text-slate-400"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
                   </div>
+                </Link>
+              ))}
+            </div>
+          )}
 
-                  <p className="text-muted-foreground leading-relaxed">
-                    {project.description}
-                  </p>
-
-                  <div className="space-y-3">
-                    <h4 className="font-semibold text-sm">Key Results:</h4>
-                    <ul className="space-y-2">
-                      {project.results.map((result, i) => (
-                        <li key={i} className="flex items-start gap-2">
-                          <span className="text-chart-2 font-bold mt-1">✓</span>
-                          <span className="text-sm text-muted-foreground">{result}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    {project.technologies.map((tech, i) => (
-                      <Badge key={i} variant="outline" className="text-xs">
-                        {tech}
-                      </Badge>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          <div className="mt-16 text-center bg-card rounded-xl p-12">
-            <h2 className="text-3xl md:text-4xl font-bold font-display mb-6">
-              Want to See Your Project Here?
-            </h2>
-            <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Let's build something amazing together. Get in touch today to discuss your project.
-            </p>
-            <Link href="/contact">
-              <Button size="lg" data-testid="button-contact-cta">
-                {t('cta.final.button')}
-                <ArrowRight className={`w-5 h-5 ${isRTL ? 'mr-2' : 'ml-2'}`} />
-              </Button>
-            </Link>
-          </div>
         </div>
       </section>
     </div>
   );
 }
+
+const PortfolioSkeleton = () => (
+  <div className="min-h-screen pt-32 bg-slate-950 px-6">
+    <div className="max-w-7xl mx-auto">
+      <div className="text-center mb-16 space-y-4">
+        <div className="h-10 w-64 bg-slate-800 rounded-full mx-auto animate-pulse"></div>
+        <div className="h-4 w-96 bg-slate-800 rounded-full mx-auto animate-pulse"></div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {[1, 2, 3, 4, 5, 6].map(i => (
+          <div key={i} className="space-y-4">
+            <div className="w-full aspect-[4/3] bg-slate-900 rounded-xl animate-pulse"></div>
+            <div className="h-6 w-3/4 bg-slate-900 rounded animate-pulse"></div>
+            <div className="h-4 w-1/4 bg-slate-900 rounded animate-pulse"></div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
