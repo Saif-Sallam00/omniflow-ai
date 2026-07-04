@@ -70,6 +70,15 @@ const pillars = [
 const transformBefore = ["home.transform.before.1", "home.transform.before.2", "home.transform.before.3", "home.transform.before.4"];
 const transformAfter = ["home.transform.after.1", "home.transform.after.2", "home.transform.after.3", "home.transform.after.4"];
 
+// Client-reach stats (Section 2 trust strip). Founder-provided real facts, rendered
+// verbatim. `text: true` = the value is a phrase, not a numeral, so it uses the
+// smaller value size instead of the large numeral treatment.
+const reachStats = [
+  { valueKey: "home.reach.stat1.value", labelKey: "home.reach.stat1.label", text: false },
+  { valueKey: "home.reach.stat2.value", labelKey: "home.reach.stat2.label", text: false },
+  { valueKey: "home.reach.stat3.value", labelKey: "home.reach.stat3.label", text: true },
+];
+
 const howWeWork = [
   { step: "01", titleKey: "home.how.diagnose.title", descKey: "home.how.diagnose.desc" },
   { step: "02", titleKey: "home.how.design.title", descKey: "home.how.design.desc" },
@@ -244,7 +253,13 @@ export default function Home() {
 
       {/* === 2. TRUST STRIP + CLIENT LOGOS (LIGHT band — P6 trust) === */}
       <section className="py-20 md:py-24 bg-surface border-y border-black/[0.06] overflow-hidden">
-        <div className="max-w-6xl mx-auto px-6 md:px-8 mb-16 flex flex-col items-center text-center">
+        {/* Trust header + client reach — static, founder-provided facts. One header:
+            the pulse-pill eyebrow over the concrete reach headline (the generic
+            "shaping the future" line was redundant with this and was removed). Lives
+            inside this same LIGHT band as the logos below, so it does not touch the
+            section alternation. Numerals use the site's stat treatment (bold +
+            brand-orange), not a mono font (JetBrains Mono is not loaded here). */}
+        <div className="max-w-4xl mx-auto px-6 md:px-8 mb-16 flex flex-col items-center text-center">
           <span className="inline-flex items-center gap-2 rounded-full border border-brand-500/25 bg-brand-500/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-brand-600">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-500 opacity-75" />
@@ -253,8 +268,41 @@ export default function Home() {
             {t("home.trustEyebrow")}
           </span>
           <h2 className="mt-5 text-3xl md:text-4xl font-bold tracking-tight text-slate-900 max-w-3xl text-balance">
-            {t("home.trust")}
+            {t("home.reach.headline")}
           </h2>
+
+          <dl className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-8 md:gap-6 w-full max-w-3xl">
+            {reachStats.map((s) => (
+              <div key={s.valueKey} className="flex flex-col items-center text-center">
+                <dd
+                  className={`flex min-h-[3rem] md:min-h-[3.5rem] items-center justify-center font-bold leading-tight text-brand-600 ${
+                    s.text
+                      ? "text-2xl md:text-3xl"
+                      : "text-4xl md:text-5xl tabular-nums"
+                  }`}
+                >
+                  {t(s.valueKey)}
+                </dd>
+                <dt className="mt-3 text-sm md:text-base text-slate-600">
+                  {t(s.labelKey)}
+                </dt>
+              </div>
+            ))}
+          </dl>
+
+          {/* Country strip: rendered as discrete spans in a wrap-friendly flex row so
+              the middle-dot separators mirror correctly in RTL (Arabic) and wrap
+              gracefully on mobile. */}
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm text-slate-500">
+            {t("home.reach.countries").split(" · ").flatMap((country, i) =>
+              i === 0
+                ? [<span key={country}>{country}</span>]
+                : [
+                    <span key={`sep-${i}`} aria-hidden="true" className="text-slate-300">·</span>,
+                    <span key={country}>{country}</span>,
+                  ]
+            )}
+          </div>
         </div>
 
         {/* Single-row infinite marquee - no containers. Edge fades match the light band. */}
