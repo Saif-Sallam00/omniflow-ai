@@ -1,12 +1,9 @@
-import { Shield, Users, Target, Award, Linkedin, Mail } from "lucide-react";
+import { Shield, Users, Target, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useI18n } from "@/lib/i18n";
 import { useDocumentTitle } from "@/hooks/use-document-title";
-import FounderImage from "@/assets/team_images/founder.jpeg";
-import DesignHeadImage from "@/assets/team_images/headofdesign.jpeg";
-import SoftwareHeadImage from "@/assets/team_images/headofsoftware.jpeg";
-import MarketingImage from "@/assets/team_images/headofmarketing.jpeg";
+import TeamImage from "@/assets/team_images/omniflowai-team.webp";
 
 export default function About() {
   const { t } = useI18n();
@@ -48,11 +45,11 @@ export default function About() {
             <div className="relative group">
               <div className="absolute inset-0 bg-brand-500 rounded-xl transform rotate-2 translate-x-2 translate-y-2 opacity-20 group-hover:opacity-30 transition-opacity"></div>
               <img
-                src={FounderImage}
-                alt="Founder of OmniflowAI"
+                src={TeamImage}
+                alt="The OmniflowAI team"
                 loading="lazy"
                 decoding="async"
-                className="relative rounded-xl shadow-elevated w-full object-cover aspect-[4/5] grayscale group-hover:grayscale-0 transition-all duration-700 border border-slate-800"
+                className="relative rounded-xl shadow-elevated w-full object-cover aspect-video grayscale group-hover:grayscale-0 transition-all duration-700 border border-slate-800"
               />
             </div>
 
@@ -66,56 +63,7 @@ export default function About() {
                 <p>{t("about.story.p2")}</p>
                 <p>{t("about.story.p3")}</p>
               </div>
-
-              {/* Founder info — FROZEN (not translated) */}
-              {/* TODO(team-final) */}
-              <div className="pt-6 border-t border-slate-800">
-                <div className="flex items-center gap-4">
-                  <div>
-                    <p className="text-lg font-bold text-white">
-                      [TODO(team-final)]
-                    </p>
-                    <p className="text-orange-400 text-sm">[TODO(team-final)]</p>
-                  </div>
-                </div>
-              </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. THE TEAM GRID — cards FROZEN (not translated) */}
-      {/* TODO(team-final) */}
-      <section className="py-20 md:py-24">
-        <div className="max-w-7xl mx-auto px-6 md:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 text-white">
-              {t("about.team.heading")}
-            </h2>
-            <p className="text-slate-400 max-w-2xl mx-auto">
-              {t("about.team.sub")}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <TeamCard
-              image={DesignHeadImage}
-              name="[TODO(team-final)]"
-              role="[TODO(team-final)]"
-              bio="[TODO(team-final)]"
-            />
-            <TeamCard
-              image={SoftwareHeadImage}
-              name="[TODO(team-final)]"
-              role="[TODO(team-final)]"
-              bio="[TODO(team-final)]"
-            />
-            <TeamCard
-              image={MarketingImage}
-              name="[TODO(team-final)]"
-              role="[TODO(team-final)]"
-              bio="[TODO(team-final)]"
-            />
           </div>
         </div>
       </section>
@@ -158,41 +106,6 @@ export default function About() {
 }
 
 // --- HELPER COMPONENTS ---
-
-function TeamCard({
-  image,
-  name,
-  role,
-  bio,
-}: {
-  image: string;
-  name: string;
-  role: string;
-  bio: string;
-}) {
-  return (
-    <div className="group relative overflow-hidden rounded-xl bg-slate-900/50 border border-slate-800 hover:border-slate-700 transition-all duration-300 shadow-card">
-      <div className="aspect-[4/3] overflow-hidden bg-slate-800">
-        <img
-          src={image}
-          alt={name}
-          loading="lazy"
-          decoding="async"
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100"
-        />
-      </div>
-      <div className="p-6">
-        <h3 className="text-xl font-bold text-white">{name}</h3>
-        <p className="text-orange-400 text-sm font-medium mb-4">{role}</p>
-        <p className="text-slate-400 text-sm leading-relaxed">{bio}</p>
-        <div className="mt-6 flex gap-4 opacity-50 group-hover:opacity-100 transition-opacity">
-          <Linkedin className="w-5 h-5 text-slate-300 cursor-pointer hover:text-brand-400 transition-colors" />
-          <Mail className="w-5 h-5 text-slate-300 cursor-pointer hover:text-brand-400 transition-colors" />
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function ValueCard({
   icon: Icon,
