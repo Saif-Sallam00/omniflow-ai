@@ -46,7 +46,7 @@ export function Navigation() {
               {/* Code-based Logo with Hexagon */}
               <span className="text-4xl font-bold font-display tracking-tight transition-colors flex items-center">
                 <Hexagon className="w-9 h-9 text-brand-500 group-hover:text-brand-400 transition-colors stroke-[3] mr-1" />
-                <span className="text-white group-hover:text-brand-400 transition-colors">mniflow</span>
+                <span className="text-white group-hover:text-brand-400 transition-colors">Omniflow</span>
                 <span className="text-brand-500 group-hover:text-brand-400 transition-colors">AI</span>
               </span>
             </span>

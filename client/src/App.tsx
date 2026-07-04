@@ -48,6 +48,11 @@ function ScrollToTop() {
 // Router Component
 function Router() {
   const { t } = useI18n();
+  const [location] = useLocation();
+  // Admin (/admin/*) is a self-contained CMS shell — it renders its own
+  // header/nav, so the public Navigation, Footer, and floating WhatsApp CTA
+  // are suppressed on those routes.
+  const isAdmin = location.startsWith("/admin");
   // Safe Analytics Hook
   try {
     useAnalytics();
@@ -58,7 +63,7 @@ function Router() {
   return (
     <>
       <ScrollToTop />
-      <Navigation />
+      {!isAdmin && <Navigation />}
       <main className="flex-grow">
         <Suspense fallback={<PageLoader />}>
         <Switch>
@@ -94,23 +99,25 @@ function Router() {
         </Switch>
         </Suspense>
       </main>
-      <Footer />
+      {!isAdmin && <Footer />}
 
-      {/* Floating WhatsApp CTA */}
-      <a 
-        href="https://wa.me/201092849400" 
-        target="_blank" 
-        rel="noopener noreferrer"
-        className="fixed bottom-8 right-8 z-50 group"
-      >
-        <div className="absolute inset-0 bg-primary rounded-full animate-ping opacity-75 group-hover:opacity-100"></div>
-        <div className="relative bg-primary text-primary-foreground p-4 rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center gap-2">
-          <MessageCircle className="w-8 h-8" />
-          <span className="hidden group-hover:block font-bold pr-2 whitespace-nowrap transition-all">
-            {t("whatsapp.chat")}
-          </span>
-        </div>
-      </a>
+      {/* Floating WhatsApp CTA — public chrome only */}
+      {!isAdmin && (
+        <a
+          href="https://wa.me/201092849400"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="fixed bottom-8 right-8 z-50 group"
+        >
+          <div className="absolute inset-0 bg-primary rounded-full animate-ping opacity-75 group-hover:opacity-100"></div>
+          <div className="relative bg-primary text-primary-foreground p-4 rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center gap-2">
+            <MessageCircle className="w-8 h-8" />
+            <span className="hidden group-hover:block font-bold pr-2 whitespace-nowrap transition-all">
+              {t("whatsapp.chat")}
+            </span>
+          </div>
+        </a>
+      )}
     </>
   );
 }

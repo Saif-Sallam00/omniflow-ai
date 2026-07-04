@@ -45,8 +45,7 @@ export const projects = pgTable("projects", {
 
   // Feature Flags
   isFeatured: boolean("is_featured").default(false).notNull(),            // Home Page
-  isServiceShowcase: boolean("is_service_showcase").default(false).notNull(), // Services Page Hero
-  showOnServicePage: boolean("show_on_service_page").default(false).notNull() // Service Detail List
+  isServiceShowcase: boolean("is_service_showcase").default(false).notNull() // Services Page Hero
 });
 
 // Category validation is sourced from shared/taxonomy.ts (single source of truth).

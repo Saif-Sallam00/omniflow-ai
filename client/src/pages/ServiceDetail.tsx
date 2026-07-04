@@ -17,11 +17,11 @@ export default function ServiceDetail() {
   useDocumentTitle(PILLAR_LABELS[slug as Pillar]);
 
   // slug is a PILLAR slug. A project belongs on this pillar's page when its
-  // category rolls up to the pillar (CATEGORY_TO_PILLAR) and it is flagged
-  // showOnServicePage. Uses the default JSON query fn so the data parses properly.
+  // category rolls up to the pillar (CATEGORY_TO_PILLAR). Uses the default JSON
+  // query fn so the data parses properly.
   const { data: allProjects } = useQuery<Project[]>({ queryKey: ['/api/projects'] });
   const relatedProjects = (allProjects || []).filter(
-    (p) => p.showOnServicePage && CATEGORY_TO_PILLAR[p.category] === slug
+    (p) => CATEGORY_TO_PILLAR[p.category] === slug
   );
 
   // The three PILLAR service pages, built from the i18n dictionary.

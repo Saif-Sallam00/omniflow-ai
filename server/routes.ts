@@ -171,10 +171,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get All Projects (with optional filtering)
   app.get("/api/projects", async (req, res) => {
     const category = req.query.category as string;
-    const showOnServicePage = req.query.showOnServicePage === 'true';
 
     if (category) {
-      const projects = await storage.getProjectsByCategory(category, showOnServicePage);
+      const projects = await storage.getProjectsByCategory(category);
       return res.json(projects);
     }
 

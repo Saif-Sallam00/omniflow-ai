@@ -22,7 +22,7 @@ export interface IStorage {
 
   // --- New Showcase Methods ---
   getShowcaseProjects(): Promise<Project[]>;
-  getProjectsByCategory(category: string, showOnServicePageOnly?: boolean): Promise<Project[]>;
+  getProjectsByCategory(category: string): Promise<Project[]>;
 
   // --- Leads (contact form) ---
   createLead(data: ContactFormData): Promise<Lead>;
@@ -115,12 +115,8 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(projects).where(eq(projects.isServiceShowcase, true));
   }
 
-  async getProjectsByCategory(category: string, showOnServicePageOnly = false): Promise<Project[]> {
-    const conditions = [eq(projects.category, category as Category)];
-    if (showOnServicePageOnly) {
-      conditions.push(eq(projects.showOnServicePage, true));
-    }
-    return await db.select().from(projects).where(and(...conditions));
+  async getProjectsByCategory(category: string): Promise<Project[]> {
+    return await db.select().from(projects).where(eq(projects.category, category as Category));
   }
 
   // --- Leads ---
