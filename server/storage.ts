@@ -24,8 +24,9 @@ export interface IStorage {
   getShowcaseProjects(): Promise<Project[]>;
   getProjectsByCategory(category: string): Promise<Project[]>;
 
-  // --- Leads (contact form) ---
+  // --- Leads (contact form + newsletter) ---
   createLead(data: ContactFormData): Promise<Lead>;
+  createNewsletterLead(email: string): Promise<Lead>;
   listLeads(): Promise<Lead[]>;
   updateLeadStatus(id: number, status: LeadStatus): Promise<Lead | undefined>;
   deleteLead(id: number): Promise<boolean>;
@@ -128,6 +129,17 @@ export class DatabaseStorage implements IStorage {
       company: data.company || null,
       service: data.service,
       message: data.message,
+      source: "contact",
+    }).returning();
+    return lead;
+  }
+
+  // Newsletter signup: email only. name/service/message stay null (absent, not
+  // faked); tagged source="newsletter" so admin can distinguish it.
+  async createNewsletterLead(email: string): Promise<Lead> {
+    const [lead] = await db.insert(leads).values({
+      email,
+      source: "newsletter",
     }).returning();
     return lead;
   }

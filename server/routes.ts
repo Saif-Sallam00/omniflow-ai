@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { pool } from "./db";
 import {
   contactFormSchema,
+  newsletterSchema,
   insertProjectSchema,
   LEAD_STATUSES,
   type Lead,
@@ -15,7 +16,6 @@ import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
-import { z } from "zod";
 import { Resend } from "resend";
 import { ObjectStorageService } from "./objectStorage";
 import multer from "multer";
@@ -66,19 +66,21 @@ async function notifyNewLead(lead: Lead) {
   try {
     const resend = new Resend(apiKey);
     const to = process.env.NOTIFY_EMAIL || CONTACT_EMAIL;
+    // Source-aware + null-safe: newsletter leads carry only an email.
     await resend.emails.send({
       from: "OmniflowAI Leads <onboarding@resend.dev>",
       to,
-      subject: `New lead: ${lead.name} (${lead.service})`,
+      subject: `New ${lead.source} lead: ${lead.name || lead.email}`,
       text: [
-        `Name: ${lead.name}`,
+        `Source: ${lead.source}`,
+        `Name: ${lead.name || "-"}`,
         `Email: ${lead.email}`,
         `Phone: ${lead.phone || "-"}`,
         `Company: ${lead.company || "-"}`,
-        `Service: ${lead.service}`,
+        `Service: ${lead.service || "-"}`,
         "",
         "Message:",
-        lead.message,
+        lead.message || "-",
       ].join("\n"),
     });
     console.log(`[leads] Notification email sent to ${to}.`);
@@ -310,17 +312,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // --- NEWSLETTER ---
 
-  // Public: capture a subscriber email (duplicates are ignored, still return success).
+  // Public: newsletter signup → stored as a lead (source="newsletter") so it
+  // surfaces in /admin/leads, then the same fire-and-forget notify as contact.
   app.post("/api/subscribe", async (req, res) => {
-    const parsed = z.object({ email: z.string().email() }).safeParse(req.body);
+    const parsed = newsletterSchema.safeParse(req.body);
     if (!parsed.success) {
       return res.status(400).json({ success: false, message: "Invalid email." });
     }
     try {
-      await storage.createSubscriber(parsed.data.email);
+      const lead = await storage.createNewsletterLead(parsed.data.email);
+      // Fire-and-forget — lead is already saved; email must never fail the request.
+      void notifyNewLead(lead);
       res.json({ success: true });
     } catch (error) {
-      console.error("[subscribe] Failed to save subscriber:", error);
+      console.error("[subscribe] Failed to save newsletter lead:", error);
       res.status(500).json({ success: false, message: "Could not subscribe right now." });
     }
   });

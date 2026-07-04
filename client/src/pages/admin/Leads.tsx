@@ -5,7 +5,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useDocumentTitle } from "@/hooks/use-document-title";
-import { Lead, LeadStatus } from "@shared/schema";
+import { Lead, LeadStatus, LeadSource } from "@shared/schema";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +20,12 @@ const STATUS_STYLES: Record<LeadStatus, string> = {
   new: "bg-amber-500/15 text-amber-300 border border-amber-500/30",
   read: "bg-slate-700/40 text-slate-300 border border-slate-600/50",
   archived: "bg-slate-800/60 text-slate-500 border border-slate-700",
+};
+
+// Distinguish where a lead came from. Admin is English-only by convention.
+const SOURCE_STYLES: Record<LeadSource, string> = {
+  contact: "bg-slate-700/40 text-slate-300 border border-slate-600/50",
+  newsletter: "bg-sky-500/15 text-sky-300 border border-sky-500/30",
 };
 
 function AdminNav({ active }: { active: "portfolio" | "leads" }) {
@@ -99,9 +105,11 @@ export default function Leads() {
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="font-semibold text-white">{lead.name}</h3>
+                      {/* Newsletter leads have no name — fall back to the email. */}
+                      <h3 className="font-semibold text-white">{lead.name || lead.email}</h3>
+                      <Badge className={SOURCE_STYLES[lead.source]}>{lead.source}</Badge>
                       <Badge className={STATUS_STYLES[lead.status]}>{lead.status}</Badge>
-                      <span className="text-xs uppercase tracking-wide text-slate-500">{lead.service}</span>
+                      {lead.service && <span className="text-xs uppercase tracking-wide text-slate-500">{lead.service}</span>}
                     </div>
                     <div className="text-sm text-slate-400 mt-2 space-y-1">
                       <div className="flex items-center gap-2"><Mail className="w-3.5 h-3.5 text-slate-500" /><a href={`mailto:${lead.email}`} className="hover:underline hover:text-white break-all">{lead.email}</a></div>
@@ -124,17 +132,19 @@ export default function Leads() {
                   </div>
                 </div>
 
-                <div className="mt-3 text-sm text-slate-300">
-                  <p className={expanded === lead.id ? "whitespace-pre-wrap" : "line-clamp-2"}>{lead.message}</p>
-                  {lead.message.length > 140 && (
-                    <button
-                      onClick={() => setExpanded(expanded === lead.id ? null : lead.id)}
-                      className="text-xs font-medium text-primary hover:text-orange-400 mt-1"
-                    >
-                      {expanded === lead.id ? "Show less" : "Show more"}
-                    </button>
-                  )}
-                </div>
+                {lead.message && (
+                  <div className="mt-3 text-sm text-slate-300">
+                    <p className={expanded === lead.id ? "whitespace-pre-wrap" : "line-clamp-2"}>{lead.message}</p>
+                    {lead.message.length > 140 && (
+                      <button
+                        onClick={() => setExpanded(expanded === lead.id ? null : lead.id)}
+                        className="text-xs font-medium text-primary hover:text-orange-400 mt-1"
+                      >
+                        {expanded === lead.id ? "Show less" : "Show more"}
+                      </button>
+                    )}
+                  </div>
+                )}
 
                 <div className="mt-3 text-xs text-slate-500">
                   {new Date(lead.createdAt).toLocaleString()}

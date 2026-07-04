@@ -15,6 +15,12 @@ export const contactFormSchema = z.object({
 
 export type ContactFormData = z.infer<typeof contactFormSchema>;
 
+// --- Newsletter (footer email capture → newsletter lead). Email only. ---
+export const newsletterSchema = z.object({
+  email: z.string().email("Invalid email address"),
+});
+export type NewsletterData = z.infer<typeof newsletterSchema>;
+
 // --- EXISTING: Admin Users ---
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
@@ -71,18 +77,26 @@ export const selectProjectSchema = createInsertSchema(projects, {
 export type Project = typeof projects.$inferSelect;
 export type InsertProject = typeof projects.$inferInsert;
 
-// --- LEADS (contact form submissions) ---
+// --- LEADS (contact form submissions + newsletter signups) ---
 export const LEAD_STATUSES = ["new", "read", "archived"] as const;
 export type LeadStatus = (typeof LEAD_STATUSES)[number];
 
+// Where a lead came from. Defaulted to "contact" so existing rows backfill
+// cleanly; newsletter signups are tagged "newsletter" to distinguish them.
+export const LEAD_SOURCES = ["contact", "newsletter"] as const;
+export type LeadSource = (typeof LEAD_SOURCES)[number];
+
 export const leads = pgTable("leads", {
   id: serial("id").primaryKey(),
-  name: text("name").notNull(),
+  // name / service / message are nullable: a newsletter lead carries only an
+  // email + source. The rest is genuinely absent (null), never faked.
+  name: text("name"),
   email: text("email").notNull(),
   phone: text("phone"),
   company: text("company"),
-  service: text("service").$type<ContactService>().notNull(),
-  message: text("message").notNull(),
+  service: text("service").$type<ContactService>(),
+  message: text("message"),
+  source: text("source").$type<LeadSource>().default("contact").notNull(),
   status: text("status").$type<LeadStatus>().default("new").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
