@@ -17,7 +17,12 @@
     --brand-600: 21 90% 48%;   /* orange-600 — solid CTA fill (default) */
     --brand-700: 17 88% 40%;   /* orange-700 — hover / pressed / on-light text */
     --brand-light: 38 92% 50%; /* amber-500 — highlight word & footer signal dot */
-    
+
+    /* Light readability surface (BUILD_PLAN P6). #F6F7F8 = hsl(210 14% 97%).
+       Used for the trust/readability bands (logos, services, process, portfolio,
+       outcomes). Dark stays for identity/impact bands. */
+    --surface-light: 210 14% 97%;
+
     /* --- CORE SHADCN THEME --- */
     --background: 0 0% 100%;
     --foreground: 222 47% 11%;
@@ -30,10 +35,12 @@
     --popover-foreground: 222 47% 11%;
     --popover-border: 214 32% 91%;
 
-    /* Primary = brand orange-600 solid, white text (the one canonical fill). */
-    --primary: 21 90% 48%;
+    /* Primary = Flow Orange #FF6B1F solid, white text — the ONE canonical CTA
+       fill (BUILD_PLAN P5, Phase 2). Consumed by the shadcn Button `default`
+       variant (`bg-primary`); no gradient CTAs. Do not add a second accent. */
+    --primary: 20 100% 56%;        /* Flow Orange #FF6B1F */
     --primary-foreground: 0 0% 100%;
-    --primary-border: 17 88% 40%;
+    --primary-border: 20 100% 47%; /* darker Flow Orange for the button border */
 
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222 47% 11%;
@@ -170,6 +177,22 @@
   }
   .active-elevate:active:not(.no-default-active-elevate)::after {
     background-color: var(--elevate-2);
+  }
+
+  /* Card hover-lift with a faint Flow Orange glow (Phase 5, P5 single accent).
+     Hover/focus only — touch users get the fully-functional static card (the card
+     is a link; nothing is hidden behind hover). The global reduced-motion block
+     zeroes the transition; the lift is then a discrete hover state, not motion. */
+  .card-lift {
+    transition:
+      transform var(--duration-base) var(--ease-standard),
+      box-shadow var(--duration-base) var(--ease-standard),
+      border-color var(--duration-base) var(--ease-standard);
+  }
+  .card-lift:hover,
+  .card-lift:focus-within {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px -10px hsl(var(--primary) / 0.28);
   }
 }
 

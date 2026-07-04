@@ -4,6 +4,9 @@ import {
   Bot,
   Target,
   Layers,
+  Workflow,
+  Users,
+  Compass,
   CheckCircle2,
   Shield
 } from "lucide-react";
@@ -14,6 +17,8 @@ import { type Category } from '@shared/taxonomy';
 import { onImageError } from '@/lib/placeholder';
 import { useI18n } from '@/lib/i18n';
 import { useDocumentTitle } from '@/hooks/use-document-title';
+import { useInView } from '@/hooks/use-in-view';
+import { InteractiveSystemMap, HexGridSubstrate, type InteractiveNode } from '@/components/systems';
 import {
   Carousel,
   CarouselContent,
@@ -69,9 +74,78 @@ const proofRank = (c: Category) => {
   return i < 0 ? PROOF_ORDER.length : i;
 };
 
+// --- Phase 5 motion helpers (CSS + IntersectionObserver only; reduced-motion safe) ---
+
+// Subtle scroll-in reveal (fade + small rise). Reduced-motion / no-IO → renders in
+// final state immediately (useInView initialises inView=true). Purely decorative:
+// content is never gated behind it, so touch and no-JS still see everything.
+function Reveal({
+  children,
+  className = "",
+  delayMs = 0,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delayMs?: number;
+}) {
+  const { ref, inView } = useInView<HTMLDivElement>();
+  return (
+    <div
+      ref={ref}
+      style={delayMs ? { transitionDelay: `${delayMs}ms` } : undefined}
+      className={`transition-all duration-700 ease-standard ${
+        inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+      } ${className}`}
+    >
+      {children}
+    </div>
+  );
+}
+
+// Systems-problem highlight: reveal the orange words progressively as the moment
+// enters view. `inView` comes from the parent section so the stagger is tied to the
+// statement, not each word. Splitting on spaces works for EN and AR (word order and
+// stagger read right-to-left in RTL because DOM order is preserved).
+function HighlightWords({ text, inView }: { text: string; inView: boolean }) {
+  const words = text.split(" ");
+  return (
+    <span className="text-brand-400">
+      {words.map((word, i) => (
+        <span
+          key={i}
+          style={{ transitionDelay: `${i * 90}ms` }}
+          className={`inline-block me-[0.25em] transition-all duration-500 ease-standard ${
+            inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+          }`}
+        >
+          {word}
+        </span>
+      ))}
+    </span>
+  );
+}
+
 export default function Home() {
   const { t } = useI18n();
   useDocumentTitle();
+
+  // Phase 5: scroll gates for the systems-problem statement (word reveal) and the
+  // process timeline (sequential step activation). Both reduced-motion/touch safe.
+  const valueProp = useInView<HTMLDivElement>();
+  const process = useInView<HTMLDivElement>();
+
+  // Hero signature piece (Phase 6.1): six real capabilities on a ring that connect
+  // into one central Business System — interactive on hover/scroll, static/connected
+  // as the touch & reduced-motion fallback. Labels are real i18n strings.
+  const heroSystemNodes: InteractiveNode[] = [
+    { id: "ai-training", label: t("systemMap.node.aiTraining"), icon: Bot },
+    { id: "marketing", label: t("systemMap.node.marketing"), icon: Target },
+    { id: "software", label: t("systemMap.node.software"), icon: Layers },
+    { id: "automation", label: t("systemMap.node.automation"), icon: Workflow },
+    { id: "crm", label: t("systemMap.node.crm"), icon: Users },
+    { id: "strategy", label: t("systemMap.node.strategy"), icon: Compass },
+  ];
+
   const { data: projects } = useQuery<Project[]>({ queryKey: ['/api/projects'] });
   const all = projects || [];
 
@@ -101,57 +175,86 @@ export default function Home() {
       {/* === 1. HERO === */}
       <section className="relative min-h-[80vh] mt-16 md:mt-20 flex items-center overflow-hidden py-20 md:py-28">
         <div className="absolute inset-0 bg-gradient-to-b from-orange-950/10 via-transparent to-transparent pointer-events-none" />
+        {/* Engineered hex substrate — whisper-subtle, decorative, full-bleed */}
+        <HexGridSubstrate className="absolute inset-0" opacity={0.035} fade="radial" />
 
-        <div className="relative z-10 max-w-4xl mx-auto px-6 md:px-8 text-center">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.1] tracking-tight">
-            {t("home.hero.h1.lead")}{" "}
-            <span className="text-brand-400">
-              {t("home.hero.h1.highlight")}
-            </span>
-          </h1>
+        <div className="relative z-10 w-full max-w-6xl mx-auto px-6 md:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-10 items-center">
 
-          <p className="text-lg md:text-xl text-slate-400 leading-relaxed max-w-2xl mx-auto mt-8">
-            {t("home.hero.sub")}
-          </p>
+            {/* Copy — text and CTAs unchanged; alignment goes start-aligned on desktop */}
+            <div className="text-center lg:text-start">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.1] tracking-tight">
+                {t("home.hero.h1.lead")}{" "}
+                <span className="text-brand-400">
+                  {t("home.hero.h1.highlight")}
+                </span>
+              </h1>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-10">
-            <Link href="/contact">
-              <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-brand-light to-brand-600 text-white font-bold h-12 md:h-14 px-8 rounded-full shadow-sm hover:brightness-110 transition">
-                {t("common.cta.bookCall")} <ArrowRight className="ms-2 w-5 h-5" />
-              </Button>
-            </Link>
-            <Link href="/portfolio">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto border-slate-700 text-slate-300 hover:text-white hover:bg-white/10 h-12 md:h-14 px-8 rounded-full">
-                {t("home.hero.cta2")}
-              </Button>
-            </Link>
+              <p className="text-lg md:text-xl text-slate-400 leading-relaxed max-w-2xl mx-auto lg:mx-0 mt-8">
+                {t("home.hero.sub")}
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mt-10">
+                <Link href="/contact">
+                  <Button size="lg" className="w-full sm:w-auto bg-primary text-primary-foreground font-bold h-12 md:h-14 px-8 rounded-full shadow-sm hover:brightness-110 transition">
+                    {t("common.cta.bookCall")} <ArrowRight className="ms-2 w-5 h-5" />
+                  </Button>
+                </Link>
+                <Link href="/portfolio">
+                  <Button size="lg" variant="outline" className="w-full sm:w-auto border-slate-700 text-slate-300 hover:text-white hover:bg-white/10 h-12 md:h-14 px-8 rounded-full">
+                    {t("home.hero.cta2")}
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            {/* Interactive connected-system: capabilities → one Business System.
+                Hover/focus/tap emphasises a connection; scroll-in assembles it.
+                Static-connected on touch/reduced-motion. RTL mirrors internally. */}
+            <div className="mx-auto w-full max-w-sm lg:max-w-none">
+              <InteractiveSystemMap
+                centerLabel={t("systemMap.center")}
+                nodes={heroSystemNodes}
+                ariaLabel={t("systemMap.aria")}
+                width={480}
+                height={460}
+              />
+            </div>
+
           </div>
         </div>
       </section>
 
-      {/* === 2. TRUST STRIP + CLIENT LOGOS === */}
-      <section className="py-20 md:py-24 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 overflow-hidden">
+      {/* === 2. TRUST STRIP + CLIENT LOGOS (LIGHT band — P6 trust) === */}
+      <section className="py-20 md:py-24 bg-surface border-y border-black/[0.06] overflow-hidden">
         <div className="max-w-6xl mx-auto px-6 md:px-8">
-          <p className="text-sm text-slate-400 uppercase tracking-widest text-center mb-16">
+          <p className="text-sm text-slate-500 uppercase tracking-widest text-center mb-16">
             {t("home.trust")}
           </p>
         </div>
 
-        {/* Single-row infinite marquee - no containers */}
+        {/* Single-row infinite marquee - no containers. Edge fades match the light band. */}
         <div className="relative">
-          <div className="absolute left-0 top-0 bottom-0 w-32 md:w-48 bg-gradient-to-r from-slate-950 to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-32 md:w-48 bg-gradient-to-l from-slate-950 to-transparent z-10 pointer-events-none" />
+          <div className="absolute left-0 top-0 bottom-0 w-32 md:w-48 bg-gradient-to-r from-[#F6F7F8] to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-32 md:w-48 bg-gradient-to-l from-[#F6F7F8] to-transparent z-10 pointer-events-none" />
 
           <div className="flex items-center animate-marquee">
+            {/* Uniform tiles: every logo sits on the same light surface at the same
+                size, so the row reads as one band despite the source PNGs having
+                mismatched baked-in backgrounds (white / dark / transparent). */}
             {[...allClients, ...allClients].map((client, index) => (
-              <img
+              <div
                 key={index}
-                src={client.logo}
-                alt={client.name}
-                loading="lazy"
-                decoding="async"
-                className="flex-shrink-0 h-16 md:h-20 w-auto object-contain mx-8 md:mx-12 opacity-90 hover:opacity-100 transition-opacity"
-              />
+                className="flex-shrink-0 mx-3 md:mx-4 h-20 md:h-24 w-40 md:w-48 flex items-center justify-center rounded-xl bg-white border border-slate-200 px-6 shadow-card"
+              >
+                <img
+                  src={client.logo}
+                  alt={client.name}
+                  loading="lazy"
+                  decoding="async"
+                  className="max-h-12 md:max-h-14 w-auto object-contain"
+                />
+              </div>
             ))}
           </div>
         </div>
@@ -167,45 +270,55 @@ export default function Home() {
         `}</style>
       </section>
 
-      {/* === 3. VALUE PROPOSITION === */}
-      <section className="py-20 md:py-24 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
-        <div className="max-w-4xl mx-auto px-6 md:px-8 text-center">
+      {/* === 3. VALUE PROPOSITION (systems-problem statement — stays DARK, P6 identity) === */}
+      <section className="py-20 md:py-24 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 border-y border-white/[0.06]">
+        <div ref={valueProp.ref} className="max-w-4xl mx-auto px-6 md:px-8 text-center">
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 leading-tight">
-            {t("home.valueProp.title.lead")}{" "}
-            <span className="text-brand-400">
-              {t("home.valueProp.title.highlight")}
+            <span
+              className={`transition-opacity duration-700 ease-standard ${
+                valueProp.inView ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              {t("home.valueProp.title.lead")}{" "}
             </span>
+            {/* Orange highlight words reveal progressively as the moment enters view */}
+            <HighlightWords text={t("home.valueProp.title.highlight")} inView={valueProp.inView} />
           </h2>
-          <p className="text-lg text-slate-400 leading-relaxed mt-8">
+          <p
+            style={{ transitionDelay: "450ms" }}
+            className={`text-lg text-slate-400 leading-relaxed mt-8 transition-all duration-700 ease-standard ${
+              valueProp.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+            }`}
+          >
             {t("home.valueProp.body")}
           </p>
         </div>
       </section>
 
-      {/* === 4. PILLARS === */}
-      <section className="py-20 md:py-24 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 border-t border-slate-800/30">
+      {/* === 4. PILLARS / SERVICES (LIGHT band — P6 readability) === */}
+      <section className="py-20 md:py-24 bg-surface border-t border-black/[0.06]">
         <div className="max-w-6xl mx-auto px-6 md:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-12 md:mb-16 max-w-2xl">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-12 md:mb-16 max-w-2xl">
             {t("home.pillars.title")}
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+          <Reveal className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             {pillars.map((pillar, index) => {
               const Icon = pillar.icon;
               return (
                 <Link key={index} href={pillar.href}>
-                  <div className="group h-full flex flex-col p-6 md:p-8 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-slate-700 transition-colors backdrop-blur-sm cursor-pointer shadow-card">
+                  <div className="card-lift group h-full flex flex-col p-6 md:p-8 rounded-xl bg-white border border-slate-200 hover:border-slate-300 cursor-pointer shadow-card">
                     <div className="w-12 h-12 rounded-xl bg-brand-500/10 flex items-center justify-center mb-6">
-                      <Icon className="w-6 h-6 text-brand-400" />
+                      <Icon className="w-6 h-6 text-brand-600" />
                     </div>
-                    <h3 className="text-xl font-semibold text-white mb-3 leading-snug">
+                    <h3 className="text-xl font-semibold text-slate-900 mb-3 leading-snug">
                       {t(pillar.titleKey)}
                     </h3>
-                    <p className="text-sm md:text-base text-slate-400 leading-relaxed">
+                    <p className="text-sm md:text-base text-slate-600 leading-relaxed">
                       {t(pillar.bodyKey)}
                     </p>
                     {pillar.subcapsKey && (
-                      <p className="text-xs text-brand-400/80 font-medium mt-6 pt-6 border-t border-slate-800">
+                      <p className="text-xs text-brand-700 font-medium mt-6 pt-6 border-t border-slate-200">
                         {t(pillar.subcapsKey)}
                       </p>
                     )}
@@ -213,20 +326,20 @@ export default function Home() {
                 </Link>
               );
             })}
-          </div>
+          </Reveal>
         </div>
       </section>
 
-      {/* === 5. TRANSFORMATION (Before / After) === */}
-      <section className="py-20 md:py-24 bg-slate-900/30 border-y border-slate-800/30">
+      {/* === 5. TRANSFORMATION (Before / After — stays DARK, P6 impact) === */}
+      <section className="py-20 md:py-24 bg-slate-950 border-y border-white/[0.06]">
         <div className="max-w-6xl mx-auto px-6 md:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-12 md:mb-16 text-center">
             {t("home.transform.title")}
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+          <Reveal className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {/* Before */}
-            <div className="p-6 md:p-8 rounded-xl bg-slate-950/50 border border-slate-800 shadow-card">
+            <div className="p-6 md:p-8 rounded-xl bg-slate-900/50 border border-slate-800 shadow-card">
               <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">{t("home.transform.before.label")}</p>
               <ul className="space-y-4">
                 {transformBefore.map((key, i) => (
@@ -244,25 +357,25 @@ export default function Home() {
               <ul className="space-y-4">
                 {transformAfter.map((key, i) => (
                   <li key={i} className="flex items-start gap-3 text-slate-200">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-1 flex-shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-brand-400 mt-1 flex-shrink-0" />
                     {t(key)}
                   </li>
                 ))}
               </ul>
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
 
       {/* === 6. PROOF (DB-driven; hides cleanly when there are no featured projects) === */}
       {featured.length > 0 && (
-        <section className="py-20 md:py-24 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
+        <section className="py-20 md:py-24 bg-surface border-t border-black/[0.06]">
           <div className="max-w-6xl mx-auto px-6 md:px-8">
             <div className="max-w-2xl mb-12 md:mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
                 {t("home.proof.title")}
               </h2>
-              <p className="text-slate-400 leading-relaxed">
+              <p className="text-slate-600 leading-relaxed">
                 {t("home.proof.body")}
               </p>
             </div>
@@ -276,7 +389,7 @@ export default function Home() {
               {featured.map((project) => (
                 <Link key={project.id} href={`/portfolio/${project.id}`}>
                   <div className="group cursor-pointer">
-                    <div className="relative overflow-hidden rounded-xl bg-slate-950 aspect-[4/3] border border-slate-800 group-hover:border-slate-700 transition-colors mb-4">
+                    <div className="card-lift relative overflow-hidden rounded-xl bg-slate-100 aspect-[4/3] border border-slate-200 hover:border-slate-300 mb-4">
                       <img
                         src={project.image}
                         alt={project.title}
@@ -286,13 +399,13 @@ export default function Home() {
                         className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                       />
                     </div>
-                    <h3 className="text-lg font-semibold text-white group-hover:text-brand-400 transition-colors mb-1">
+                    <h3 className="text-lg font-semibold text-slate-900 group-hover:text-brand-600 transition-colors mb-1">
                       {project.title}
                     </h3>
-                    <p className="text-sm text-slate-400">{t(`category.${project.category}`)}</p>
+                    <p className="text-sm text-slate-600">{t(`category.${project.category}`)}</p>
                     {/* Real per-project result (CMS-entered). Renders nothing when absent — never fabricated. */}
                     {project.results?.[0] && (
-                      <p className="text-sm font-semibold text-brand-400 mt-2">{project.results[0]}</p>
+                      <p className="text-sm font-semibold text-brand-700 mt-2">{project.results[0]}</p>
                     )}
                   </div>
                 </Link>
@@ -304,19 +417,19 @@ export default function Home() {
 
       {/* === 7. RECENT WORK (DB-driven; hides when empty, no fallback) === */}
       {recent.length > 0 && (
-        <section className="py-20 md:py-24 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 border-t border-slate-800/30">
+        <section className="py-20 md:py-24 bg-surface border-t border-black/[0.06]">
           <div className="max-w-6xl mx-auto px-6 md:px-8">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4">
               <div>
-                <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
+                <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-2">
                   {t("home.recent.title")}
                 </h2>
-                <p className="text-slate-400">
+                <p className="text-slate-600">
                   {t("home.recent.sub")}
                 </p>
               </div>
               <Link href="/portfolio">
-                <Button variant="ghost" className="text-slate-400 hover:text-white">
+                <Button variant="ghost" className="text-slate-600 hover:text-slate-900">
                   {t("common.viewAllProjects")}
                   <ArrowRight className="w-4 h-4 ms-2" />
                 </Button>
@@ -329,7 +442,7 @@ export default function Home() {
                   <CarouselItem key={project.id} className="md:basis-1/2 lg:basis-1/3 pl-6">
                     <Link href={`/portfolio/${project.id}`}>
                       <div className="group cursor-pointer">
-                        <div className="relative overflow-hidden rounded-xl bg-slate-950 aspect-[4/3] border border-slate-800/50 group-hover:border-slate-700 transition-colors mb-4">
+                        <div className="card-lift relative overflow-hidden rounded-xl bg-slate-100 aspect-[4/3] border border-slate-200 hover:border-slate-300 mb-4">
                           <img
                             src={project.image}
                             alt={project.title}
@@ -339,13 +452,13 @@ export default function Home() {
                             className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                           />
                         </div>
-                        <h3 className="text-lg font-semibold text-white group-hover:text-brand-400 transition-colors mb-1">
+                        <h3 className="text-lg font-semibold text-slate-900 group-hover:text-brand-600 transition-colors mb-1">
                           {project.title}
                         </h3>
-                        <p className="text-sm text-slate-400">{t(`category.${project.category}`)}</p>
+                        <p className="text-sm text-slate-600">{t(`category.${project.category}`)}</p>
                         {/* Real per-project result (CMS-entered). Renders nothing when absent — never fabricated. */}
                         {project.results?.[0] && (
-                          <p className="text-sm font-semibold text-brand-400 mt-2">{project.results[0]}</p>
+                          <p className="text-sm font-semibold text-brand-700 mt-2">{project.results[0]}</p>
                         )}
                       </div>
                     </Link>
@@ -353,41 +466,67 @@ export default function Home() {
                 ))}
               </CarouselContent>
               <div className="flex justify-end gap-2 mt-8">
-                <CarouselPrevious className="static translate-y-0 bg-slate-900 border-slate-800 hover:bg-slate-800 text-white w-10 h-10" />
-                <CarouselNext className="static translate-y-0 bg-slate-900 border-slate-800 hover:bg-slate-800 text-white w-10 h-10" />
+                <CarouselPrevious className="static translate-y-0 bg-white border-slate-200 hover:bg-slate-100 text-slate-900 w-10 h-10" />
+                <CarouselNext className="static translate-y-0 bg-white border-slate-200 hover:bg-slate-100 text-slate-900 w-10 h-10" />
               </div>
             </Carousel>
           </div>
         </section>
       )}
 
-      {/* === 8. HOW WE WORK === */}
-      <section className="py-20 md:py-24 bg-slate-900/30 border-y border-slate-800/30">
+      {/* === 8. HOW WE WORK / PROCESS (LIGHT band — P6 readability) === */}
+      <section className="py-20 md:py-24 bg-surface border-t border-black/[0.06]">
         <div className="max-w-6xl mx-auto px-6 md:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-12 md:mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-12 md:mb-16">
             {t("home.how.title")}
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
-            {howWeWork.map((item, index) => (
-              <div key={index} className="relative p-4 md:p-6 rounded-xl bg-slate-950/50 border border-slate-800 shadow-card">
-                <div className="text-4xl md:text-6xl font-bold text-slate-800/50 mb-3 md:mb-4">
-                  {item.step}
+          {/* Scroll-activated timeline: steps light up in sequence (staggered delay)
+              as the section enters view, reinforcing the ordered method. The active
+              step takes the Flow Orange accent (top bar + tinted number); the large
+              numbers stay subtle. Opacity/colour only → mirrors cleanly in RTL. */}
+          <div ref={process.ref} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+            {howWeWork.map((item, index) => {
+              const active = process.inView;
+              const delay = { transitionDelay: `${index * 180}ms` };
+              return (
+                <div
+                  key={index}
+                  style={delay}
+                  className={`relative p-4 md:p-6 rounded-xl bg-white shadow-card overflow-hidden border transition-colors duration-500 ease-standard ${
+                    active ? "border-brand-500/30" : "border-slate-200"
+                  }`}
+                >
+                  <span
+                    aria-hidden="true"
+                    style={delay}
+                    className={`absolute inset-x-0 top-0 h-1 bg-primary transition-opacity duration-500 ease-standard ${
+                      active ? "opacity-100" : "opacity-0"
+                    }`}
+                  />
+                  <div
+                    style={delay}
+                    className={`text-4xl md:text-6xl font-bold mb-3 md:mb-4 transition-colors duration-500 ease-standard ${
+                      active ? "text-brand-400" : "text-slate-200"
+                    }`}
+                  >
+                    {item.step}
+                  </div>
+                  <h3 className="text-xl font-semibold text-slate-900 mb-2 md:mb-3">
+                    {t(item.titleKey)}
+                  </h3>
+                  <p className="text-sm md:text-base text-slate-600 leading-relaxed">
+                    {t(item.descKey)}
+                  </p>
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-2 md:mb-3">
-                  {t(item.titleKey)}
-                </h3>
-                <p className="text-sm md:text-base text-slate-400 leading-relaxed">
-                  {t(item.descKey)}
-                </p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* === 9. GLOBAL BRAND LINE === */}
-      <section className="py-20 md:py-24 bg-gradient-to-r from-brand-700/10 via-slate-900/50 to-brand-700/10 border-y border-brand-500/10">
+      {/* === 9. GLOBAL BRAND LINE (brand statement — stays DARK, P6 identity) === */}
+      <section className="py-20 md:py-24 bg-slate-950 bg-gradient-to-r from-brand-700/15 via-slate-950 to-brand-700/15 border-y border-brand-500/10">
         <div className="max-w-6xl mx-auto px-6 md:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="flex items-center gap-4">
@@ -412,7 +551,7 @@ export default function Home() {
       <section className="py-24 md:py-32 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 relative">
         <div className="absolute inset-0 bg-gradient-to-t from-orange-950/20 via-transparent to-transparent" />
 
-        <div className="relative z-10 max-w-3xl mx-auto px-6 md:px-8 text-center">
+        <Reveal className="relative z-10 max-w-3xl mx-auto px-6 md:px-8 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
             {t("home.finalCta.title")}
           </h2>
@@ -433,7 +572,7 @@ export default function Home() {
           <p className="text-sm text-slate-400 mt-6">
             {t("home.finalCta.sub")}
           </p>
-        </div>
+        </Reveal>
       </section>
     </div>
   );

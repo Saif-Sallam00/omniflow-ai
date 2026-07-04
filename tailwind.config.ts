@@ -59,6 +59,8 @@ export default {
           700: "hsl(var(--brand-700) / <alpha-value>)",
           light: "hsl(var(--brand-light) / <alpha-value>)",
         },
+        // Light readability surface (#F6F7F8) — P6 trust/readability bands.
+        surface: "hsl(var(--surface-light) / <alpha-value>)",
         border: "hsl(var(--border) / <alpha-value>)",
         input: "hsl(var(--input) / <alpha-value>)",
         ring: "hsl(var(--ring) / <alpha-value>)",

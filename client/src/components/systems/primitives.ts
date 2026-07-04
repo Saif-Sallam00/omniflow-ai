@@ -57,6 +57,10 @@ export type SystemNode = {
   /** Real label only (taxonomy / i18n) — never an invented string or metric. */
   label?: string;
   accent?: boolean;
+  /** Size multiplier relative to the map's nodeSize (hub > primary > support). */
+  scale?: number;
+  /** Soft radial brand glow behind the node — for the dominant central hub. */
+  halo?: boolean;
 };
 
 export type SystemEdge = {
@@ -64,6 +68,11 @@ export type SystemEdge = {
   to: string;
   variant?: EdgeVariant;
   pulse?: boolean;
+  /** Explicit per-edge accent (brand). Not derived from node accent, so the hub
+   *  can be orange without turning every connected line orange. */
+  accent?: boolean;
+  /** Faint background line (thinner + lower opacity) — for depth layering. */
+  faint?: boolean;
 };
 
 // --- Default coordinate space + layout presets -------------------------------

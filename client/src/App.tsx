@@ -103,8 +103,8 @@ function Router() {
         rel="noopener noreferrer"
         className="fixed bottom-8 right-8 z-50 group"
       >
-        <div className="absolute inset-0 bg-green-500 rounded-full animate-ping opacity-75 group-hover:opacity-100"></div>
-        <div className="relative bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center gap-2">
+        <div className="absolute inset-0 bg-primary rounded-full animate-ping opacity-75 group-hover:opacity-100"></div>
+        <div className="relative bg-primary text-primary-foreground p-4 rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center gap-2">
           <MessageCircle className="w-8 h-8" />
           <span className="hidden group-hover:block font-bold pr-2 whitespace-nowrap transition-all">
             {t("whatsapp.chat")}

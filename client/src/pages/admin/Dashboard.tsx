@@ -34,8 +34,9 @@ const projectFormSchema = z.object({
   client: z.string().min(2, "Client name is required"),
   category: z.enum(CATEGORIES),
   description: z.string().min(10, "Short description is required"),
-  challenge: z.string().min(10, "Challenge details are required"),
-  solution: z.string().min(10, "Solution details are required"),
+  challenge: z.string().min(10, "Problem details are required"),
+  diagnosis: z.string().optional(),
+  solution: z.string().min(10, "System details are required"),
   resultsString: z.string().min(5, "Add at least one result (one per line)"),
   technologiesString: z.string().min(2, "Add tech stack (one per line)"),
   image: z.string().min(1, "Upload an image or provide a URL"),
@@ -69,6 +70,7 @@ export default function Dashboard() {
       category: CATEGORIES[0],
       description: "",
       challenge: "",
+      diagnosis: "",
       solution: "",
       resultsString: "",
       technologiesString: "",
@@ -139,6 +141,7 @@ export default function Dashboard() {
         category: project.category,
         description: project.description,
         challenge: project.challenge,
+        diagnosis: project.diagnosis ?? "",
         solution: project.solution,
         image: project.image,
         resultsString: project.results.join('\n'),
@@ -318,18 +321,20 @@ export default function Dashboard() {
                 <FormItem><FormLabel>Short Description</FormLabel><FormControl><Textarea rows={2} {...field} /></FormControl><FormMessage /></FormItem>
               )} />
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                 <FormField control={form.control} name="challenge" render={({ field }) => (
-                    <FormItem><FormLabel>Challenge</FormLabel><FormControl><Textarea rows={4} {...field} /></FormControl><FormMessage /></FormItem>
-                 )} />
-                 <FormField control={form.control} name="solution" render={({ field }) => (
-                    <FormItem><FormLabel>Solution</FormLabel><FormControl><Textarea rows={4} {...field} /></FormControl><FormMessage /></FormItem>
-                 )} />
-              </div>
+              {/* Portfolio narrative: Problem → Diagnosis → System → Outcome (Phase 3) */}
+              <FormField control={form.control} name="challenge" render={({ field }) => (
+                 <FormItem><FormLabel>Problem</FormLabel><FormControl><Textarea rows={3} {...field} /></FormControl><FormMessage /></FormItem>
+              )} />
+              <FormField control={form.control} name="diagnosis" render={({ field }) => (
+                 <FormItem><FormLabel>Diagnosis — what you found when you looked (the root cause). Optional.</FormLabel><FormControl><Textarea rows={3} {...field} /></FormControl><FormMessage /></FormItem>
+              )} />
+              <FormField control={form.control} name="solution" render={({ field }) => (
+                 <FormItem><FormLabel>System — what you built</FormLabel><FormControl><Textarea rows={3} {...field} /></FormControl><FormMessage /></FormItem>
+              )} />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField control={form.control} name="resultsString" render={({ field }) => (
-                  <FormItem><FormLabel>Results (one per line)</FormLabel><FormControl><Textarea rows={4} className="font-mono" {...field} /></FormControl><FormMessage /></FormItem>
+                  <FormItem><FormLabel>Outcome — real results (one per line)</FormLabel><FormControl><Textarea rows={4} className="font-mono" {...field} /></FormControl><FormMessage /></FormItem>
                 )} />
                 <FormField control={form.control} name="technologiesString" render={({ field }) => (
                   <FormItem><FormLabel>Technologies (one per line)</FormLabel><FormControl><Textarea rows={4} className="font-mono" {...field} /></FormControl><FormMessage /></FormItem>

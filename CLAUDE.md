@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 OmniflowAI is a bilingual (EN/AR) agency marketing website with a small admin CMS. Single repo containing a React frontend (`client/`), an Express backend (`server/`), and code shared between them (`shared/`). Originally a Replit project (see `replit.md`, `.replit`).
 
+**Before any homepage work, read `docs/BUILD_PLAN.md`** — it holds the governing principles (P0–P6) and cross-cutting constraints for the homepage visual rebuild.
+
 ---
 
 ## Working principles (read before making changes)

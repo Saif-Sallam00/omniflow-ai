@@ -7,6 +7,8 @@ export interface FlowLineProps {
   variant?: EdgeVariant;
   /** brand-tinted vs neutral slate. */
   accent?: boolean;
+  /** Faint background line (thinner + lower opacity) for depth layering. */
+  faint?: boolean;
   dashed?: boolean;
   /** Mount the travelling "comet" — only when motion is allowed. */
   pulse?: boolean;
@@ -25,6 +27,7 @@ export function FlowLine({
   to,
   variant = "curve",
   accent = false,
+  faint = false,
   dashed = false,
   pulse = false,
   strokeWidth = 1.5,
@@ -32,6 +35,8 @@ export function FlowLine({
 }: FlowLineProps) {
   const reduced = useReducedMotion();
   const d = edgePath(from, to, variant);
+  const baseOpacity = faint ? 0.28 : accent ? 0.6 : 0.85;
+  const baseWidth = faint ? strokeWidth * 0.7 : strokeWidth;
 
   return (
     <g aria-hidden="true" className={accent ? "text-brand-500" : "text-slate-700"}>
@@ -39,8 +44,8 @@ export function FlowLine({
         d={d}
         fill="none"
         stroke="currentColor"
-        strokeOpacity={accent ? 0.55 : 0.9}
-        strokeWidth={strokeWidth}
+        strokeOpacity={baseOpacity}
+        strokeWidth={baseWidth}
         strokeDasharray={dashed ? "3 4" : undefined}
         strokeLinecap="round"
       />

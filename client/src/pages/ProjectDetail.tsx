@@ -66,7 +66,7 @@ export default function ProjectDetail() {
             <div className="grid grid-cols-2 gap-3 md:gap-4">
               {project.results.slice(0, 4).map((result, i) => (
                 <div key={i} className="bg-slate-900/50 p-4 rounded-xl border border-slate-800 backdrop-blur-sm">
-                  <TrendingUp className="w-4 h-4 text-emerald-400 mb-2" />
+                  <TrendingUp className="w-4 h-4 text-brand-400 mb-2" />
                   <p className="font-bold text-white text-xs md:text-sm">{result}</p>
                 </div>
               ))}
@@ -89,11 +89,19 @@ export default function ProjectDetail() {
 
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-12 md:space-y-16">
+              {/* Portfolio narrative: Problem → Diagnosis → System → Outcome (Phase 3).
+                  Diagnosis renders only when present (nullable) — never fabricated. */}
               <div className="pl-6 border-l-2 border-brand-500">
                 <h2 className="text-2xl font-bold text-white mb-4">{t('projectDetail.challenge')}</h2>
                 <div className="prose prose-invert text-slate-400"><p>{project.challenge}</p></div>
               </div>
-              <div className="pl-6 border-l-2 border-emerald-500">
+              {project.diagnosis && (
+                <div className="pl-6 border-l-2 border-brand-500">
+                  <h2 className="text-2xl font-bold text-white mb-4">{t('projectDetail.diagnosis')}</h2>
+                  <div className="prose prose-invert text-slate-400"><p>{project.diagnosis}</p></div>
+                </div>
+              )}
+              <div className="pl-6 border-l-2 border-brand-500">
                 <h2 className="text-2xl font-bold text-white mb-4">{t('projectDetail.solution')}</h2>
                 <div className="prose prose-invert text-slate-400"><p>{project.solution}</p></div>
               </div>

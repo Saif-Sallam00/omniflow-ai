@@ -34,8 +34,11 @@ export const projects = pgTable("projects", {
   client: text("client").notNull(),
   category: text("category").$type<Category>().notNull(), 
   description: text("description").notNull(),
-  challenge: text("challenge").notNull(),
-  solution: text("solution").notNull(),
+  // Portfolio narrative: Problem → Diagnosis → System → Outcome (Phase 3).
+  challenge: text("challenge").notNull(),        // Problem — what was broken
+  diagnosis: text("diagnosis"),                  // Diagnosis — the root cause we found (nullable)
+  solution: text("solution").notNull(),          // System — what we built
+  // results[] below = Outcome — real, measured results (never fabricated)
   results: jsonb("results").$type<string[]>().notNull(),
   technologies: jsonb("technologies").$type<string[]>().notNull(),
   image: text("image").notNull(),
