@@ -188,7 +188,17 @@ export function InteractiveSystemMap({
         const gap = nodeR + 12;
         const lx = nx + (dx / len) * gap;
         const ly = ny + (dy / len) * gap;
-        const anchor = dx / len > 0.25 ? "start" : dx / len < -0.25 ? "end" : "middle";
+        // text-anchor start/end are direction-relative, so they invert under
+        // dir="rtl". Swap them for RTL (and pin the text's direction below) so
+        // every label still fans OUTWARD from its node instead of flowing back
+        // over the hexagon (which caused the Arabic clipping/overlap).
+        const outwardRight = dx / len > 0.25;
+        const outwardLeft = dx / len < -0.25;
+        const anchor = outwardRight
+          ? (isRTL ? "end" : "start")
+          : outwardLeft
+          ? (isRTL ? "start" : "end")
+          : "middle";
         const lines = wrapLabel(n.label, 12);
         const lineH = 14;
         const firstDy = -((lines.length - 1) / 2) * lineH + 4;
@@ -242,7 +252,7 @@ export function InteractiveSystemMap({
               y={ly}
               textAnchor={anchor}
               className={`${labelColor} transition-colors duration-500`}
-              style={{ fontSize: 12, fontWeight: 500, opacity: revealed ? 1 : 0.4 }}
+              style={{ fontSize: 12, fontWeight: 500, opacity: revealed ? 1 : 0.4, direction: isRTL ? "rtl" : "ltr" }}
             >
               {lines.map((ln, li) => (
                 <tspan key={li} x={lx} dy={li === 0 ? firstDy : lineH}>
