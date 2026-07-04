@@ -104,14 +104,3 @@ export const leads = pgTable("leads", {
 export const insertLeadSchema = createInsertSchema(leads);
 export type Lead = typeof leads.$inferSelect;
 export type InsertLead = typeof leads.$inferInsert;
-
-// --- NEWSLETTER SUBSCRIBERS (capture only; no emails are sent to them) ---
-export const subscribers = pgTable("subscribers", {
-  id: serial("id").primaryKey(),
-  email: text("email").notNull().unique(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-export const insertSubscriberSchema = createInsertSchema(subscribers);
-export type Subscriber = typeof subscribers.$inferSelect;
-export type InsertSubscriber = typeof subscribers.$inferInsert;

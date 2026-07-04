@@ -1,5 +1,5 @@
 import {
-  users, projects, leads, subscribers,
+  users, projects, leads,
   type User, type InsertUser, type Project, type InsertProject,
   type Lead, type LeadStatus, type ContactFormData,
 } from "@shared/schema";
@@ -30,9 +30,6 @@ export interface IStorage {
   listLeads(): Promise<Lead[]>;
   updateLeadStatus(id: number, status: LeadStatus): Promise<Lead | undefined>;
   deleteLead(id: number): Promise<boolean>;
-
-  // --- Newsletter subscribers ---
-  createSubscriber(email: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -156,12 +153,6 @@ export class DatabaseStorage implements IStorage {
   async deleteLead(id: number): Promise<boolean> {
     const [deleted] = await db.delete(leads).where(eq(leads.id, id)).returning();
     return !!deleted;
-  }
-
-  // --- Subscribers ---
-  async createSubscriber(email: string): Promise<void> {
-    // Ignore duplicates gracefully (unique email) — don't leak which emails exist.
-    await db.insert(subscribers).values({ email }).onConflictDoNothing();
   }
 }
 
