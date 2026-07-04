@@ -417,19 +417,19 @@ export default function Home() {
 
       {/* === 7. RECENT WORK (DB-driven; hides when empty, no fallback) === */}
       {recent.length > 0 && (
-        <section className="py-20 md:py-24 bg-surface border-t border-black/[0.06]">
+        <section className="py-20 md:py-24 bg-slate-950 border-y border-white/[0.06]">
           <div className="max-w-6xl mx-auto px-6 md:px-8">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4">
               <div>
-                <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-2">
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
                   {t("home.recent.title")}
                 </h2>
-                <p className="text-slate-600">
+                <p className="text-slate-400">
                   {t("home.recent.sub")}
                 </p>
               </div>
               <Link href="/portfolio">
-                <Button variant="ghost" className="text-slate-600 hover:text-slate-900">
+                <Button variant="ghost" className="text-slate-400 hover:text-white">
                   {t("common.viewAllProjects")}
                   <ArrowRight className="w-4 h-4 ms-2" />
                 </Button>
@@ -442,7 +442,7 @@ export default function Home() {
                   <CarouselItem key={project.id} className="md:basis-1/2 lg:basis-1/3 pl-6">
                     <Link href={`/portfolio/${project.id}`}>
                       <div className="group cursor-pointer">
-                        <div className="card-lift relative overflow-hidden rounded-xl bg-slate-100 aspect-[4/3] border border-slate-200 hover:border-slate-300 mb-4">
+                        <div className="card-lift relative overflow-hidden rounded-xl bg-slate-900 aspect-[4/3] border border-slate-800 hover:border-slate-700 mb-4">
                           <img
                             src={project.image}
                             alt={project.title}
@@ -452,13 +452,13 @@ export default function Home() {
                             className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                           />
                         </div>
-                        <h3 className="text-lg font-semibold text-slate-900 group-hover:text-brand-600 transition-colors mb-1">
+                        <h3 className="text-lg font-semibold text-white group-hover:text-brand-400 transition-colors mb-1">
                           {project.title}
                         </h3>
-                        <p className="text-sm text-slate-600">{t(`category.${project.category}`)}</p>
+                        <p className="text-sm text-slate-400">{t(`category.${project.category}`)}</p>
                         {/* Real per-project result (CMS-entered). Renders nothing when absent — never fabricated. */}
                         {project.results?.[0] && (
-                          <p className="text-sm font-semibold text-brand-700 mt-2">{project.results[0]}</p>
+                          <p className="text-sm font-semibold text-brand-400 mt-2">{project.results[0]}</p>
                         )}
                       </div>
                     </Link>
@@ -466,8 +466,8 @@ export default function Home() {
                 ))}
               </CarouselContent>
               <div className="flex justify-end gap-2 mt-8">
-                <CarouselPrevious className="static translate-y-0 bg-white border-slate-200 hover:bg-slate-100 text-slate-900 w-10 h-10" />
-                <CarouselNext className="static translate-y-0 bg-white border-slate-200 hover:bg-slate-100 text-slate-900 w-10 h-10" />
+                <CarouselPrevious className="static translate-y-0 bg-slate-900 border-slate-800 hover:bg-slate-800 text-white w-10 h-10" />
+                <CarouselNext className="static translate-y-0 bg-slate-900 border-slate-800 hover:bg-slate-800 text-white w-10 h-10" />
               </div>
             </Carousel>
           </div>
