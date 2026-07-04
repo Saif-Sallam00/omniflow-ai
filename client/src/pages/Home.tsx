@@ -35,7 +35,6 @@ import Petra from '@/assets/clients/Petra.png';
 import DarELmaaly from '@/assets/clients/Dar-ELmaaly.png';
 import elkhateer from '@/assets/clients/elkhateer.png';
 import Madrid from '@/assets/clients/Madrid.png';
-import PluginTalents from '@/assets/clients/Plugin talents.png';
 import BeitEl3tara from '@/assets/clients/Beit_el3tara.png';
 import RelianceHub from '@/assets/clients/Reliance Hub.png';
 import elmodhsh from '@/assets/clients/elmodhsh.png';
@@ -49,6 +48,18 @@ import Cutz from '@/assets/clients/Cutz.png';
 import kayan from '@/assets/clients/kayan.png';
 import darat from '@/assets/clients/darat.png';
 import rafeek from '@/assets/clients/rafeek.png';
+import fiveMinutes from '@/assets/clients/5minutes.jpg';
+import alforat from '@/assets/clients/alforat.jpg';
+import arcade from '@/assets/clients/arcade.png';
+import cleaning from '@/assets/clients/cleaning.png';
+import elgabry from '@/assets/clients/elgabry.jpg';
+import gewiss from '@/assets/clients/gewiss.jpg';
+import imagehome from '@/assets/clients/imagehome.jpg';
+import jotun from '@/assets/clients/jotun.jpg';
+import majarrah from '@/assets/clients/majarrah.jpg';
+import oem from '@/assets/clients/oem.png';
+import pioneer from '@/assets/clients/pioneer.jpg';
+import thaki from '@/assets/clients/thaki.jpg';
 
 const pillars = [
   { icon: Bot, titleKey: "pillars.aiTraining.title", bodyKey: "pillars.aiTraining.body", href: "/services/ai-training" },
@@ -161,12 +172,18 @@ export default function Home() {
     { name: "Madrid", logo: Madrid }, { name: "Ipec", logo: Ipec },
     { name: "Electromeca", logo: electromeca }, { name: "N2oosh", logo: n2oosh },
     { name: "Dar El Maaly", logo: DarELmaaly }, { name: "El Khateer", logo: elkhateer },
-    { name: "Plugin Talents", logo: PluginTalents }, { name: "Beit El 3tara", logo: BeitEl3tara },
+    { name: "Beit El 3tara", logo: BeitEl3tara },
     { name: "El Modhsh", logo: elmodhsh }, { name: "Decork", logo: Decork },
     { name: "Princess", logo: Princess }, { name: "Naas", logo: naas },
     { name: "Ta2deer", logo: ta2deer }, { name: "Gzour", logo: Gzour },
     { name: "Mashareeb", logo: mashareeb }, { name: "Cutz", logo: Cutz },
     { name: "Kayan", logo: kayan }, { name: "Darat", logo: darat }, { name: "Rafeek", logo: rafeek },
+    { name: "5 Minutes", logo: fiveMinutes }, { name: "Alforat", logo: alforat },
+    { name: "Arcade", logo: arcade }, { name: "Cleaning", logo: cleaning },
+    { name: "El Gabry", logo: elgabry }, { name: "Gewiss", logo: gewiss },
+    { name: "Image Home", logo: imagehome }, { name: "Jotun", logo: jotun },
+    { name: "Majarrah", logo: majarrah }, { name: "OEM", logo: oem },
+    { name: "Pioneer", logo: pioneer }, { name: "Thaki", logo: thaki },
   ];
 
   return (
@@ -227,10 +244,17 @@ export default function Home() {
 
       {/* === 2. TRUST STRIP + CLIENT LOGOS (LIGHT band — P6 trust) === */}
       <section className="py-20 md:py-24 bg-surface border-y border-black/[0.06] overflow-hidden">
-        <div className="max-w-6xl mx-auto px-6 md:px-8">
-          <p className="text-sm text-slate-500 uppercase tracking-widest text-center mb-16">
+        <div className="max-w-6xl mx-auto px-6 md:px-8 mb-16 flex flex-col items-center text-center">
+          <span className="inline-flex items-center gap-2 rounded-full border border-brand-500/25 bg-brand-500/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-brand-600">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-500 opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-brand-500" />
+            </span>
+            {t("home.trustEyebrow")}
+          </span>
+          <h2 className="mt-5 text-3xl md:text-4xl font-bold tracking-tight text-slate-900 max-w-3xl text-balance">
             {t("home.trust")}
-          </p>
+          </h2>
         </div>
 
         {/* Single-row infinite marquee - no containers. Edge fades match the light band. */}
@@ -238,21 +262,21 @@ export default function Home() {
           <div className="absolute left-0 top-0 bottom-0 w-32 md:w-48 bg-gradient-to-r from-[#F6F7F8] to-transparent z-10 pointer-events-none" />
           <div className="absolute right-0 top-0 bottom-0 w-32 md:w-48 bg-gradient-to-l from-[#F6F7F8] to-transparent z-10 pointer-events-none" />
 
-          <div className="flex items-center animate-marquee">
+          <div className="flex w-max items-center animate-marquee">
             {/* Uniform tiles: every logo sits on the same light surface at the same
                 size, so the row reads as one band despite the source PNGs having
                 mismatched baked-in backgrounds (white / dark / transparent). */}
             {[...allClients, ...allClients].map((client, index) => (
               <div
                 key={index}
-                className="flex-shrink-0 mx-3 md:mx-4 h-20 md:h-24 w-40 md:w-48 flex items-center justify-center rounded-xl bg-white border border-slate-200 px-6 shadow-card"
+                className="flex-shrink-0 mx-3 md:mx-4 h-20 md:h-24 w-40 md:w-48 flex items-center justify-center rounded-xl bg-white border border-slate-200 px-4 shadow-card"
               >
                 <img
                   src={client.logo}
                   alt={client.name}
                   loading="lazy"
                   decoding="async"
-                  className="max-h-12 md:max-h-14 w-auto object-contain"
+                  className="max-h-16 md:max-h-20 max-w-full w-auto object-contain"
                 />
               </div>
             ))}
@@ -265,7 +289,7 @@ export default function Home() {
             100% { transform: translateX(-50%); }
           }
           .animate-marquee {
-            animation: marquee 45s linear infinite;
+            animation: marquee 30s linear infinite;
           }
         `}</style>
       </section>
