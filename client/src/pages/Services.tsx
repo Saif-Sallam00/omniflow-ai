@@ -1,183 +1,175 @@
+import { useState, useRef, type KeyboardEvent } from 'react';
 import { Link } from 'wouter';
-import { ArrowRight, Globe, Bot, BarChart3, ArrowUpRight } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Bot, BarChart3, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useQuery } from '@tanstack/react-query';
-import { Project } from '@shared/schema';
-import { CATEGORY_TO_PILLAR, type Pillar } from '@shared/taxonomy';
-import { onImageError } from '@/lib/placeholder';
+import { type Pillar } from '@shared/taxonomy';
 import { useI18n } from '@/lib/i18n';
 import { useDocumentTitle } from '@/hooks/use-document-title';
 
+// Pillar panels. `pillar` values are taxonomy slugs (the single source of truth —
+// `satisfies … Pillar` fails the build if a slug drifts). `key` is the i18n
+// namespace: note the digital-marketing pillar uses the LOCAL display label
+// "Marketing" (key "marketing") — the canonical taxonomy label is untouched.
+// Order matches PILLARS: AI Training → Marketing → Software.
+const PANELS = [
+  { pillar: 'ai-training', icon: Bot, key: 'aiTraining' },
+  { pillar: 'digital-marketing', icon: BarChart3, key: 'marketing' },
+  { pillar: 'software', icon: Globe, key: 'software' },
+] as const satisfies readonly { pillar: Pillar; icon: typeof Bot; key: string }[];
+
 export default function Services() {
   const { t } = useI18n();
-  useDocumentTitle("Services");
+  useDocumentTitle('Services');
 
-  // Fetch Showcase Projects
-  const { data: showcaseProjects } = useQuery<Project[]>({
-    queryKey: ['/api/projects/showcase'],
-  });
+  const [active, setActive] = useState<Pillar>('ai-training');
+  const panelRef = useRef<HTMLDivElement>(null);
 
-  // A pillar's showcase = showcase projects whose category rolls up to it.
-  // Deterministic winner when several qualify: most recently created (highest id;
-  // there is no updatedAt column). No behaviour change for 0 or 1 match.
-  const getShowcaseProject = (pillar: Pillar) => {
-    return (showcaseProjects || [])
-      .filter(p => CATEGORY_TO_PILLAR[p.category] === pillar)
-      .sort((a, b) => b.id - a.id)[0];
+  // Select a pillar and bring the detail panel into view — used by the
+  // pain-router buttons, which sit far below the panel. No page reload.
+  const selectAndReveal = (pillar: Pillar) => {
+    setActive(pillar);
+    panelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  const services = [
-    { id: 'ai-training', pillar: 'ai-training' as Pillar, icon: Bot, titleKey: 'pillars.aiTraining.title', bodyKey: 'pillars.aiTraining.body', href: '/services/ai-training' },
-    { id: 'digital-marketing', pillar: 'digital-marketing' as Pillar, icon: BarChart3, titleKey: 'pillars.digitalMarketing.title', bodyKey: 'pillars.digitalMarketing.body', href: '/services/digital-marketing' },
-    { id: 'software', pillar: 'software' as Pillar, icon: Globe, titleKey: 'pillars.software.title', bodyKey: 'pillars.software.body', subcapsKey: 'pillars.software.subcaps', href: '/services/software' },
-  ];
+  // Accessible tablist: roving tabindex + Left/Right arrow navigation.
+  const onTabKeyDown = (e: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    e.preventDefault();
+    const dir = e.key === 'ArrowRight' ? 1 : -1;
+    const nextPillar = PANELS[(index + dir + PANELS.length) % PANELS.length].pillar;
+    setActive(nextPillar);
+    requestAnimationFrame(() => document.getElementById(`tab-${nextPillar}`)?.focus());
+  };
 
-  const together = [
-    { step: '01', titleKey: 'services.together.capture.title', descKey: 'services.together.capture.desc' },
-    { step: '02', titleKey: 'services.together.attract.title', descKey: 'services.together.attract.desc' },
-    { step: '03', titleKey: 'services.together.automate.title', descKey: 'services.together.automate.desc' },
-  ];
+  const activePanel = PANELS.find((p) => p.pillar === active)!;
+  const activeLabel = t(`services.pillar.${activePanel.key}.label`);
 
   return (
-    <div className="min-h-screen pt-20 bg-slate-950">
+    <div className="min-h-screen pt-20 bg-slate-950 text-white">
 
-      {/* HERO */}
-      <section className="py-24 relative">
-        <div className="absolute top-0 right-0 w-[50%] h-[60%] bg-gradient-to-bl from-orange-950/30 via-transparent to-transparent" />
-        <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 text-center">
+      {/* === HEADER === */}
+      <section className="py-20 md:py-24 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[50%] h-[60%] bg-gradient-to-bl from-orange-950/30 via-transparent to-transparent pointer-events-none" />
+        <div className="relative z-10 max-w-4xl mx-auto px-6 md:px-8 text-center">
           <p className="text-brand-400/80 text-sm font-medium tracking-wide mb-6">{t('services.eyebrow')}</p>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
             {t('services.title.lead')} <span className="text-slate-500">{t('services.title.highlight')}</span>
           </h1>
           <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
-            {t('common.brandLine')}
+            {t('services.subhead')}
           </p>
         </div>
       </section>
 
-      {/* SERVICES LIST */}
+      {/* === PILLAR SELECTOR + DETAIL PANEL === */}
       <section className="pb-24">
-        <div className="max-w-7xl mx-auto px-6 md:px-8 space-y-12">
-          {services.map((service) => {
-            const Icon = service.icon;
-            const showcase = getShowcaseProject(service.pillar);
+        <div className="max-w-5xl mx-auto px-6 md:px-8">
 
-            return (
-              <div key={service.id} className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+          {/* Selectable pillar tabs */}
+          <div
+            role="tablist"
+            aria-label={t('services.eyebrow')}
+            className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-10"
+          >
+            {PANELS.map(({ pillar, icon: Icon, key }, index) => {
+              const selected = active === pillar;
+              return (
+                <button
+                  key={pillar}
+                  role="tab"
+                  id={`tab-${pillar}`}
+                  aria-selected={selected}
+                  aria-controls="pillar-panel"
+                  tabIndex={selected ? 0 : -1}
+                  onClick={() => setActive(pillar)}
+                  onKeyDown={(e) => onTabKeyDown(e, index)}
+                  className={`flex items-center gap-3 rounded-xl border px-5 py-4 text-start transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                    selected
+                      ? 'border-brand-500/50 bg-brand-500/10 text-white shadow-card'
+                      : 'border-slate-800 bg-slate-900/50 text-slate-400 hover:border-slate-700 hover:text-white'
+                  }`}
+                >
+                  <span className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${selected ? 'bg-brand-500/20' : 'bg-slate-800/60'}`}>
+                    <Icon className={`w-5 h-5 ${selected ? 'text-brand-400' : 'text-slate-400'}`} />
+                  </span>
+                  <span className="font-semibold">{t(`services.pillar.${key}.label`)}</span>
+                </button>
+              );
+            })}
+          </div>
 
-                {/* Service Info Card */}
-                <div className={`p-8 md:p-10 rounded-xl bg-slate-900/50 border border-slate-800 backdrop-blur-sm flex flex-col justify-between shadow-card ${showcase ? 'lg:col-span-7' : 'lg:col-span-12'}`}>
-                  <div className="space-y-6">
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-brand-500/10 flex items-center justify-center flex-shrink-0">
-                        <Icon className="w-6 h-6 text-brand-400" />
-                      </div>
-                      <div>
-                        <h2 className="text-2xl font-bold text-white">{t(service.titleKey)}</h2>
-                      </div>
-                    </div>
-                    <p className="text-slate-400 leading-relaxed">{t(service.bodyKey)}</p>
-                    {service.subcapsKey && (
-                      <p className="text-sm text-brand-400/80 font-medium">{t(service.subcapsKey)}</p>
-                    )}
-                  </div>
-                  <div className="pt-8">
-                    <Link href={service.href}>
-                      <Button variant="ghost" className="text-slate-400 hover:text-white hover:bg-white/5 ps-0">
-                        {t('services.learnMore')} <ArrowRight className="w-4 h-4 ms-2" />
-                      </Button>
-                    </Link>
-                  </div>
+          {/* Detail panel for the selected pillar */}
+          <div
+            role="tabpanel"
+            id="pillar-panel"
+            ref={panelRef}
+            aria-labelledby={`tab-${active}`}
+            tabIndex={0}
+            className="scroll-mt-24 rounded-2xl border border-slate-800 bg-slate-900/50 p-8 md:p-12 shadow-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <h2 className="text-3xl font-bold text-white mb-3">{t(`services.pillar.${activePanel.key}.title`)}</h2>
+            <p className="text-lg text-brand-400/90 font-medium mb-6">{t(`services.pillar.${activePanel.key}.tagline`)}</p>
+            <p className="text-slate-400 leading-relaxed max-w-2xl mb-10">{t(`services.pillar.${activePanel.key}.body`)}</p>
+
+            {/* Numbered process steps */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+              {[1, 2, 3, 4].map((n) => (
+                <div key={n} className="rounded-xl bg-slate-950/50 border border-slate-800/60 p-5">
+                  <div className="text-2xl font-bold text-slate-700 mb-2">{String(n).padStart(2, '0')}</div>
+                  <div className="font-semibold text-white">{t(`services.pillar.${activePanel.key}.step.${n}`)}</div>
                 </div>
+              ))}
+            </div>
 
-                {/* Showcase Project Preview (Only if exists) */}
-                {showcase && (
-                  <div className="lg:col-span-5 relative group overflow-hidden rounded-xl border border-slate-800 bg-slate-900/60">
-                    <img
-                      src={showcase.image}
-                      alt={showcase.title}
-                      loading="lazy"
-                      decoding="async"
-                      onError={onImageError}
-                      className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent p-8 flex flex-col justify-end">
-                      <div className="space-y-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                        <p className="text-xs font-bold text-brand-400 uppercase tracking-widest mb-2">{t('services.featuredProject')}</p>
-                        <h3 className="text-xl font-bold text-white">{showcase.title}</h3>
-                        <p className="text-sm text-slate-300 line-clamp-2 mb-4">{showcase.description}</p>
-                        <Link href={`/portfolio/${showcase.id}`}>
-                          <Button size="sm" className="bg-white/10 hover:bg-white/20 text-white border border-white/10 backdrop-blur-md rounded-full">
-                            {t('services.viewCaseStudy')} <ArrowUpRight className="w-3 h-3 ms-2" />
-                          </Button>
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+            {/* Panel CTAs */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link href="/contact">
+                <Button size="lg" className="bg-primary text-primary-foreground font-semibold px-8 py-6 rounded-lg">
+                  {t('common.cta.bookCall')}
+                  <ArrowRight className="w-4 h-4 ms-2" />
+                </Button>
+              </Link>
+              <Link href={`/portfolio?service=${active}`}>
+                <Button size="lg" variant="ghost" className="text-slate-400 hover:text-white hover:bg-white/5 px-8 py-6 rounded-lg">
+                  {t('services.explore')} {activeLabel}
+                  <ArrowUpRight className="w-4 h-4 ms-2" />
+                </Button>
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* === HOW THEY WORK TOGETHER === */}
+      {/* === PAIN ROUTER === */}
       <section className="py-24 bg-slate-900/30 border-y border-slate-800/30">
-        <div className="max-w-7xl mx-auto px-6 md:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-white mb-4">
-              {t('services.together.title')}
-            </h2>
-            <p className="text-slate-400 max-w-2xl mx-auto">
-              {t('services.together.sub')}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {together.map((item, index) => (
-              <div key={index} className="relative p-6 rounded-xl bg-slate-950/50 border border-slate-800 shadow-card">
-                <div className="text-4xl font-bold text-slate-800 mb-4">
-                  {item.step}
-                </div>
-                <h3 className="text-lg font-semibold text-white mb-2">
-                  {t(item.titleKey)}
-                </h3>
-                <p className="text-sm text-slate-400 leading-relaxed">
-                  {t(item.descKey)}
-                </p>
-
-                {/* Connector arrow (inline-end so it mirrors in RTL) */}
-                {index < 2 && (
-                  <div className="hidden md:block absolute top-1/2 -end-3 w-6 h-6 -translate-y-1/2 z-10">
-                    <ArrowRight className="w-6 h-6 text-slate-700" />
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* === CTA === */}
-      <section className="py-24 relative">
-        <div className="absolute inset-0 bg-gradient-to-t from-orange-950/20 via-transparent to-transparent" />
-
-        <div className="relative z-10 max-w-3xl mx-auto px-6 md:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-            {t('services.cta.title')}
-          </h2>
-          <p className="text-xl text-slate-400 mb-10">
-            {t('services.cta.body')}
-          </p>
-          <Link href="/contact">
-            <Button
-              size="lg"
-              className="bg-primary text-primary-foreground font-semibold px-8 py-6 text-base rounded-full transition-colors"
+        <div className="max-w-3xl mx-auto px-6 md:px-8 text-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-10">{t('services.painRouter.title')}</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <button
+              onClick={() => selectAndReveal('digital-marketing')}
+              className="rounded-xl border border-slate-800 bg-slate-950/50 px-6 py-5 text-start font-medium text-slate-300 hover:border-brand-500/40 hover:text-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              {t('services.cta.button')}
-              <ArrowRight className="w-4 h-4 ms-2" />
-            </Button>
-          </Link>
+              {t('services.painRouter.leads')}
+            </button>
+            <button
+              onClick={() => selectAndReveal('software')}
+              className="rounded-xl border border-slate-800 bg-slate-950/50 px-6 py-5 text-start font-medium text-slate-300 hover:border-brand-500/40 hover:text-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {t('services.painRouter.ops')}
+            </button>
+            <button
+              onClick={() => selectAndReveal('ai-training')}
+              className="rounded-xl border border-slate-800 bg-slate-950/50 px-6 py-5 text-start font-medium text-slate-300 hover:border-brand-500/40 hover:text-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {t('services.painRouter.aiAdoption')}
+            </button>
+            <Link href="/contact">
+              <button className="w-full h-full rounded-xl border border-brand-500/40 bg-brand-500/10 px-6 py-5 text-start font-semibold text-white hover:bg-brand-500/20 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring inline-flex items-center justify-between gap-2">
+                {t('services.painRouter.all')}
+                <ArrowRight className="w-4 h-4 flex-shrink-0" />
+              </button>
+            </Link>
+          </div>
         </div>
       </section>
     </div>

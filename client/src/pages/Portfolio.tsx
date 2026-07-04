@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Link } from 'wouter';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useQuery } from '@tanstack/react-query';
 import { Project } from '@shared/schema';
-import { PORTFOLIO_TAB_ORDER, type Category } from '@shared/taxonomy';
+import { PORTFOLIO_TAB_ORDER, PILLARS, CATEGORY_TO_PILLAR, type Category, type Pillar } from '@shared/taxonomy';
 import { onImageError } from '@/lib/placeholder';
 import { useI18n } from '@/lib/i18n';
 import { useDocumentTitle } from '@/hooks/use-document-title';
@@ -14,6 +14,19 @@ export default function Portfolio() {
   const { t } = useI18n();
   useDocumentTitle("Portfolio");
   const [activeFilter, setActiveFilter] = useState<string>('all');
+
+  // Deep-link pillar filter: /portfolio?service=<pillar-slug> (e.g. ai-training,
+  // digital-marketing, software). The pillar is DERIVED from each project's
+  // category via CATEGORY_TO_PILLAR (taxonomy is the single source of truth —
+  // no serviceCategory is stored). Read once on entry; the category tabs below
+  // still work normally and compose within the active pillar.
+  const serviceParam = new URLSearchParams(window.location.search).get('service');
+  const activePillar: Pillar | null =
+    serviceParam && (PILLARS as readonly string[]).includes(serviceParam)
+      ? (serviceParam as Pillar)
+      : null;
+  const inActivePillar = (p: Project) =>
+    !activePillar || CATEGORY_TO_PILLAR[p.category] === activePillar;
 
   // Base query: ALL projects — used to decide which category tabs to show.
   const { data: allProjects, isLoading: allLoading } = useQuery<Project[]>({
@@ -35,11 +48,14 @@ export default function Portfolio() {
   });
 
   const isLoading = allLoading || filterLoading;
-  const filteredProjects = filteredData || [];
+  // Category filter (server) composed with the pillar deep-link filter (client).
+  const filteredProjects = (filteredData || []).filter(inActivePillar);
 
-  // Only surface a category tab if at least one project currently has it.
-  // "All" is always shown. No empty tabs.
-  const presentCategories = new Set((allProjects || []).map((p) => p.category));
+  // Only surface a category tab if at least one project currently has it —
+  // scoped to the active pillar when deep-linked. "All" is always shown.
+  const presentCategories = new Set(
+    (allProjects || []).filter(inActivePillar).map((p) => p.category)
+  );
   const visibleTabs: string[] = [
     'all',
     ...PORTFOLIO_TAB_ORDER.filter((c) => presentCategories.has(c)),
@@ -64,6 +80,25 @@ export default function Portfolio() {
           </p>
         </div>
       </section>
+
+      {/* 1b. Active pillar deep-link banner (only when ?service=<pillar> is set) */}
+      {activePillar && (
+        <section className="border-b border-slate-800/50 bg-brand-500/5 py-3">
+          <div className="max-w-7xl mx-auto px-6 md:px-8 flex items-center justify-center gap-3 text-sm">
+            <span className="text-slate-400">
+              {t('portfolio.filter.showing')}{' '}
+              <span className="font-semibold text-brand-400">{t(`portfolio.pillar.${activePillar}`)}</span>
+            </span>
+            <a
+              href="/portfolio"
+              className="inline-flex items-center gap-1 text-slate-400 hover:text-white transition-colors"
+            >
+              <X className="w-3.5 h-3.5" />
+              {t('portfolio.filter.clear')}
+            </a>
+          </div>
+        </section>
+      )}
 
       {/* 2. Filter Tabs */}
       <section className="sticky top-16 z-30 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/50 py-4">
@@ -133,6 +168,20 @@ export default function Portfolio() {
                       <p className="text-sm text-slate-400 font-medium">
                         {project.client}
                       </p>
+
+                      {/* Free-text tags (data — not translated) */}
+                      {project.tags && project.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 pt-2">
+                          {project.tags.map((tag) => (
+                            <span
+                              key={tag}
+                              className="rounded-md bg-slate-900 border border-slate-800 px-2 py-0.5 text-[11px] text-slate-400"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
 
                   </div>

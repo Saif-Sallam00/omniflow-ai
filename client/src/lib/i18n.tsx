@@ -132,6 +132,45 @@ const translations: Record<Language, Record<string, string>> = {
     "services.cta.body": "Book a free call. We'll look at your current setup and tell you exactly what would move the needle—even if it's not something we do.",
     "services.cta.button": "Book a free strategy call",
 
+    // --- SERVICES PAGE: selectable pillar panels ---
+    // "Marketing" here is a LOCAL display label for the digital-marketing pillar;
+    // the canonical taxonomy label ("Digital Marketing") is unchanged.
+    "services.subhead": "Marketing that fills the pipeline, software that runs the business, and AI your team actually uses.",
+    "services.explore": "Explore",
+
+    "services.pillar.aiTraining.label": "AI Training",
+    "services.pillar.aiTraining.title": "AI Training",
+    "services.pillar.aiTraining.tagline": "For teams using AI ad hoc — or not at all.",
+    "services.pillar.aiTraining.body": "We turn AI from scattered experiments into repeatable team capability.",
+    "services.pillar.aiTraining.step.1": "Assess",
+    "services.pillar.aiTraining.step.2": "Locate",
+    "services.pillar.aiTraining.step.3": "Train",
+    "services.pillar.aiTraining.step.4": "Embed",
+
+    "services.pillar.marketing.label": "Marketing",
+    "services.pillar.marketing.title": "Marketing",
+    "services.pillar.marketing.tagline": "For pipelines running on referrals and word of mouth.",
+    "services.pillar.marketing.body": "We turn scattered campaigns into one acquisition system that brings in qualified buyers.",
+    "services.pillar.marketing.step.1": "Audit",
+    "services.pillar.marketing.step.2": "Target",
+    "services.pillar.marketing.step.3": "Launch",
+    "services.pillar.marketing.step.4": "Measure",
+
+    "services.pillar.software.label": "Software",
+    "services.pillar.software.title": "Software",
+    "services.pillar.software.tagline": "For teams running the business on spreadsheets and disconnected tools.",
+    "services.pillar.software.body": "We turn manual workarounds into systems you own, integrate, and scale.",
+    "services.pillar.software.step.1": "Map",
+    "services.pillar.software.step.2": "Design",
+    "services.pillar.software.step.3": "Build",
+    "services.pillar.software.step.4": "Integrate",
+
+    "services.painRouter.title": "Not sure which one fits?",
+    "services.painRouter.leads": "More qualified leads",
+    "services.painRouter.ops": "Messy operations & tools",
+    "services.painRouter.aiAdoption": "Team AI adoption",
+    "services.painRouter.all": "All of the above",
+
     // --- SERVICE DETAIL (shared labels) ---
     "serviceDetail.backAll": "← All services",
     "serviceDetail.seeExamples": "See examples",
@@ -228,6 +267,12 @@ const translations: Record<Language, Record<string, string>> = {
     "portfolio.title": "Selected Work",
     "portfolio.sub": "A curation of digital infrastructure and growth systems engineered for market leaders.",
     "portfolio.empty": "No projects found in this category.",
+    // Portfolio pillar deep-link filter (?service=<pillar>)
+    "portfolio.filter.showing": "Showing",
+    "portfolio.filter.clear": "View all work",
+    "portfolio.pillar.ai-training": "AI Training",
+    "portfolio.pillar.digital-marketing": "Digital Marketing",
+    "portfolio.pillar.software": "Software",
 
     // --- PROJECT DETAIL ---
     "projectDetail.back": "Back to Portfolio",
@@ -421,6 +466,45 @@ const translations: Record<Language, Record<string, string>> = {
     "services.cta.body": "احجز مكالمة مجانية. سننظر في وضعك الحالي ونخبرك بالضبط بما يُحدث فرقاً — حتى لو لم يكن ضمن ما نقدّمه.",
     "services.cta.button": "احجز مكالمة استراتيجية مجانية",
 
+    // --- SERVICES PAGE: selectable pillar panels ---
+    // "التسويق" هنا تسمية عرض محلية لركيزة digital-marketing؛ التسمية المرجعية
+    // في التصنيف ("التسويق الرقمي") تبقى دون تغيير.
+    "services.subhead": "تسويقٌ يملأ مسار المبيعات، وبرمجياتٌ تُدير أعمالك، وذكاءٌ اصطناعي يستخدمه فريقك فعلاً.",
+    "services.explore": "استكشف",
+
+    "services.pillar.aiTraining.label": "التدريب على الذكاء الاصطناعي",
+    "services.pillar.aiTraining.title": "التدريب على الذكاء الاصطناعي",
+    "services.pillar.aiTraining.tagline": "للفرق التي تستخدم الذكاء الاصطناعي بشكل عشوائي — أو لا تستخدمه إطلاقاً.",
+    "services.pillar.aiTraining.body": "نحوّل الذكاء الاصطناعي من تجارب متفرّقة إلى قدرة جماعية قابلة للتكرار.",
+    "services.pillar.aiTraining.step.1": "التقييم",
+    "services.pillar.aiTraining.step.2": "التحديد",
+    "services.pillar.aiTraining.step.3": "التدريب",
+    "services.pillar.aiTraining.step.4": "الترسيخ",
+
+    "services.pillar.marketing.label": "التسويق",
+    "services.pillar.marketing.title": "التسويق",
+    "services.pillar.marketing.tagline": "لمسارات المبيعات التي تعتمد على الإحالات والكلمة المنقولة.",
+    "services.pillar.marketing.body": "نحوّل الحملات المتفرّقة إلى نظام استقطاب واحد يجذب المشترين المؤهّلين.",
+    "services.pillar.marketing.step.1": "التدقيق",
+    "services.pillar.marketing.step.2": "الاستهداف",
+    "services.pillar.marketing.step.3": "الإطلاق",
+    "services.pillar.marketing.step.4": "القياس",
+
+    "services.pillar.software.label": "البرمجيات",
+    "services.pillar.software.title": "البرمجيات",
+    "services.pillar.software.tagline": "للفرق التي تُدير أعمالها بجداول البيانات وأدوات غير مترابطة.",
+    "services.pillar.software.body": "نحوّل الحلول اليدوية المؤقتة إلى أنظمة تملكها وتدمجها وتوسّعها.",
+    "services.pillar.software.step.1": "التخطيط",
+    "services.pillar.software.step.2": "التصميم",
+    "services.pillar.software.step.3": "البناء",
+    "services.pillar.software.step.4": "الدمج",
+
+    "services.painRouter.title": "غير متأكد أيّها يناسبك؟",
+    "services.painRouter.leads": "المزيد من العملاء المؤهّلين",
+    "services.painRouter.ops": "عمليات وأدوات مبعثرة",
+    "services.painRouter.aiAdoption": "تبنّي الفريق للذكاء الاصطناعي",
+    "services.painRouter.all": "كل ما سبق",
+
     // --- SERVICE DETAIL (shared labels) ---
     "serviceDetail.backAll": "جميع الخدمات →",
     "serviceDetail.seeExamples": "شاهد أمثلة",
@@ -517,6 +601,12 @@ const translations: Record<Language, Record<string, string>> = {
     "portfolio.title": "أعمال مختارة",
     "portfolio.sub": "نخبة من البنية الرقمية وأنظمة النمو المصمّمة لروّاد السوق.",
     "portfolio.empty": "لا توجد مشاريع في هذه الفئة.",
+    // Portfolio pillar deep-link filter (?service=<pillar>)
+    "portfolio.filter.showing": "عرض",
+    "portfolio.filter.clear": "عرض جميع الأعمال",
+    "portfolio.pillar.ai-training": "التدريب على الذكاء الاصطناعي",
+    "portfolio.pillar.digital-marketing": "التسويق الرقمي",
+    "portfolio.pillar.software": "البرمجيات",
 
     // --- PROJECT DETAIL ---
     "projectDetail.back": "العودة إلى الأعمال",

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type KeyboardEvent } from "react";
 import { useUser } from "@/hooks/use-user";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -26,7 +26,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Switch } from "@/components/ui/switch";
 
 // Icons
-import { Plus, Edit, Trash2, LogOut, LayoutGrid, CheckCircle2, Star, Zap } from "lucide-react";
+import { Plus, Edit, Trash2, LogOut, LayoutGrid, CheckCircle2, Star, Zap, X } from "lucide-react";
 
 // --- FORM SCHEMA ---
 const projectFormSchema = z.object({
@@ -40,6 +40,7 @@ const projectFormSchema = z.object({
   resultsString: z.string().min(5, "Add at least one result (one per line)"),
   technologiesString: z.string().min(2, "Add tech stack (one per line)"),
   image: z.string().min(1, "Upload an image or provide a URL"),
+  tags: z.array(z.string()).default([]),
   isFeatured: z.boolean().default(false),
   isServiceShowcase: z.boolean().default(false),
 });
@@ -74,6 +75,7 @@ export default function Dashboard() {
       resultsString: "",
       technologiesString: "",
       image: "",
+      tags: [],
       isFeatured: false,
       isServiceShowcase: false,
     },
@@ -144,6 +146,7 @@ export default function Dashboard() {
         image: project.image,
         resultsString: project.results.join('\n'),
         technologiesString: project.technologies.join('\n'),
+        tags: project.tags ?? [],
         isFeatured: project.isFeatured || false,
         isServiceShowcase: project.isServiceShowcase || false,
       });
@@ -159,6 +162,7 @@ export default function Dashboard() {
         resultsString: "",
         technologiesString: "",
         image: "",
+        tags: [],
         isFeatured: false,
         isServiceShowcase: false,
       });
@@ -325,6 +329,17 @@ export default function Dashboard() {
                 )} />
               </div>
 
+              {/* Free-text tags — finer sub-categorization (e.g. ERP, Lead Gen, RAG chatbot) */}
+              <FormField control={form.control} name="tags" render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-slate-300">Tags (optional) — type and press Enter to add</FormLabel>
+                  <FormControl>
+                    <TagsInput value={field.value ?? []} onChange={field.onChange} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+
               <div className="flex justify-end gap-2 pt-4 border-t border-slate-800">
                 <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)} className="border-slate-700 bg-transparent text-slate-300 hover:bg-slate-800 hover:text-white">Cancel</Button>
                 <Button type="submit">{createMutation.isPending || updateMutation.isPending ? "Saving..." : "Save Project"}</Button>
@@ -347,6 +362,58 @@ export default function Dashboard() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+    </div>
+  );
+}
+
+// --- TAGS CHIP INPUT ---
+// Controlled multi-value free-text input. Enter or comma commits the current
+// text as a chip; Backspace on an empty input removes the last chip; the × on
+// each chip removes it. Dedupes and trims. No new dependency.
+function TagsInput({ value, onChange }: { value: string[]; onChange: (next: string[]) => void }) {
+  const [draft, setDraft] = useState("");
+
+  const addTag = (raw: string) => {
+    const tag = raw.trim();
+    if (!tag) return;
+    if (!value.includes(tag)) onChange([...value, tag]);
+    setDraft("");
+  };
+
+  const removeTag = (tag: string) => onChange(value.filter((t) => t !== tag));
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      addTag(draft);
+    } else if (e.key === "Backspace" && draft === "" && value.length > 0) {
+      removeTag(value[value.length - 1]);
+    }
+  };
+
+  return (
+    <div className="flex flex-wrap items-center gap-2 rounded-md border border-slate-800 bg-slate-900 px-3 py-2 focus-within:ring-2 focus-within:ring-ring">
+      {value.map((tag) => (
+        <span key={tag} className="inline-flex items-center gap-1 rounded-md bg-slate-800 px-2 py-1 text-xs font-medium text-slate-200">
+          {tag}
+          <button
+            type="button"
+            onClick={() => removeTag(tag)}
+            className="text-slate-400 hover:text-white"
+            aria-label={`Remove ${tag}`}
+          >
+            <X className="w-3 h-3" />
+          </button>
+        </span>
+      ))}
+      <input
+        value={draft}
+        onChange={(e) => setDraft(e.target.value)}
+        onKeyDown={handleKeyDown}
+        onBlur={() => addTag(draft)}
+        placeholder={value.length === 0 ? "e.g. ERP, Lead Gen, RAG chatbot" : ""}
+        className="flex-1 min-w-[8rem] bg-transparent text-sm text-white placeholder:text-slate-500 outline-none"
+      />
     </div>
   );
 }

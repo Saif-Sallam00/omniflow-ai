@@ -42,6 +42,12 @@ export const projects = pgTable("projects", {
   results: jsonb("results").$type<string[]>().notNull(),
   technologies: jsonb("technologies").$type<string[]>().notNull(),
   image: text("image").notNull(),
+  // Free-text sub-categorization typed per project (e.g. "ERP", "Lead Gen",
+  // "RAG chatbot"). Finer than `category`; not from a fixed taxonomy.
+  // Defaulted to [] so existing rows backfill cleanly (backwards-compatible).
+  // NOTE: the primary service pillar is NOT stored — it is derived from
+  // `category` via CATEGORY_TO_PILLAR (taxonomy is the single source of truth).
+  tags: jsonb("tags").$type<string[]>().default([]).notNull(),
 
   // Feature Flags
   isFeatured: boolean("is_featured").default(false).notNull(),            // Home Page
@@ -53,11 +59,13 @@ export const insertProjectSchema = createInsertSchema(projects, {
   category: z.enum(CATEGORIES),
   results: z.array(z.string()),
   technologies: z.array(z.string()),
+  tags: z.array(z.string()).optional(),
 });
 export const selectProjectSchema = createInsertSchema(projects, {
   category: z.enum(CATEGORIES),
   results: z.array(z.string()),
   technologies: z.array(z.string()),
+  tags: z.array(z.string()).optional(),
 });
 // `category` is typed via projects.category.$type<Category>() — sourced from taxonomy.
 export type Project = typeof projects.$inferSelect;
