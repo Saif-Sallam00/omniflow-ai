@@ -12,7 +12,7 @@ P1 The product is not the tool; the differentiator is the discipline. We deliver
    diagnosis supports"). Show the deliverables, but lead with why they're trustworthy.
    Connected-system visuals = the visual language; diagnosis = the reason to believe.
 P2 One master metaphor, many facets. The connected system (hexagon + nodes + links +
-   single orange). Sections show different STATES of the same system, never new metaphors.
+   single orange). Sections show different STATES of the same system, never new metaphors..
 P3 The homepage is a lifecycle, not a list: exists -> missing -> designed -> built ->
    proven -> performs -> begins.
 P4 Vary the presentation pattern, not the metaphor. No two adjacent sections should share
