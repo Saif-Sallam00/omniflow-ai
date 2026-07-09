@@ -61,7 +61,7 @@ export type ContactService = (typeof CONTACT_SERVICES)[number];
 
 // --- SHARED CONTACT EMAIL ---
 // TODO(email-final): placeholder — replace with real address before launch
-export const CONTACT_EMAIL = "hello@omniflowai.agency";
+export const CONTACT_EMAIL = "hello@omniflowai.net";
 
 // --- SOCIAL LINKS (footer) ---
 // TODO(social-final): fill in real profile URLs. Empty entries render no icon.
