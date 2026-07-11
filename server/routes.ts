@@ -128,6 +128,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     );
   }
 
+  // Behind Replit Autoscale (and any HTTPS-terminating proxy), TLS ends at the
+  // edge and the request reaches Express as plain HTTP. Without trusting the
+  // proxy, express-session sees req.protocol === "http" and refuses to send the
+  // `secure` session cookie — so admin login never persists and every
+  // auth-gated request (image upload, /api/leads) 401s. Trust the first hop.
+  app.set("trust proxy", 1);
+
   // Postgres-backed session store (survives restarts, unlike the old in-memory store).
   const PgSession = connectPgSimple(session);
 
