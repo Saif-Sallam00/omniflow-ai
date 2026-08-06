@@ -249,17 +249,30 @@ const translations: Record<Language, Record<string, string>> = {
       "Your business already works. What it needs now is the infrastructure to scale. We find what's blocking growth, then build the marketing, technology, and AI systems that remove it.",
     "solutions.hero.secondary": "Find your constraint",
 
-    // Hero system visual. §12.5 mandates the visual but §12 defines no copy for
-    // it, so these seven labels are transcribed verbatim from the approved
-    // mockup (docs/OmniFlowAI-Solutions-Page-Mockup-v3.html) and translated.
-    "solutions.viz.before": "Disconnected tools",
-    "solutions.viz.after": "One growth system",
+    // Hero transformation map. §12.5 mandates a hero visual but defines no copy
+    // for it. These labels come from the hero redesign brief: the visual is a
+    // three-stage business transformation map (where you are → business
+    // diagnosis → where you scale), NOT a network/integration diagram.
+    // Stage 3 deliberately reuses solutions.work.* and solutions.shift.next5 so
+    // the capability names are stated in exactly one place site-wide.
+    "solutions.viz.stage1": "Where you are",
+    "solutions.viz.stage2": "Business diagnosis",
+    "solutions.viz.stage3": "Where you scale",
+    "solutions.viz.fn1": "Marketing",
+    "solutions.viz.fn2": "Sales",
+    "solutions.viz.fn3": "Operations",
+    "solutions.viz.fn4": "People",
+    "solutions.viz.fn5": "Data",
+    "solutions.viz.growth": "Growth",
+    "solutions.viz.complexity": "Increasing complexity",
+    "solutions.viz.find1": "Bottlenecks",
+    "solutions.viz.find2": "Manual processes",
+    "solutions.viz.find3": "Operational gaps",
+    "solutions.viz.find4": "Missing systems",
+    "solutions.viz.find5": "AI opportunities",
     "solutions.viz.hub": "Growth system",
-    "solutions.viz.attr1": "Measured",
-    "solutions.viz.attr2": "Connected",
-    "solutions.viz.attr3": "Owned",
     "solutions.viz.aria":
-      "Five disconnected business functions on the left resolving into one connected growth system on the right.",
+      "A three-stage map: the business functions you run today under rising complexity, the business diagnosis that finds what is limiting them, and the growth system built on top — strategy, marketing systems, business technology and AI enablement.",
 
     // Trust strip. Stat VALUES reuse the existing home.reach.* keys — no new
     // numbers are invented for this page (spec §12.3).
@@ -930,15 +943,25 @@ const translations: Record<Language, Record<string, string>> = {
       "أعمالك تعمل بالفعل. ما تحتاجه الآن هو البنية التي تتيح لها التوسّع. نكتشف ما الذي يعيق النمو، ثم نبني أنظمة التسويق والتقنية والذكاء الاصطناعي التي تزيله.",
     "solutions.hero.secondary": "حدّد القيد لديك",
 
-    // Hero system visual
-    "solutions.viz.before": "أدوات غير مترابطة",
-    "solutions.viz.after": "نظام نمو واحد",
+    // Hero transformation map
+    "solutions.viz.stage1": "أين أنت الآن",
+    "solutions.viz.stage2": "تشخيص الأعمال",
+    "solutions.viz.stage3": "إلى أين تتوسّع",
+    "solutions.viz.fn1": "التسويق",
+    "solutions.viz.fn2": "المبيعات",
+    "solutions.viz.fn3": "العمليات",
+    "solutions.viz.fn4": "الفريق",
+    "solutions.viz.fn5": "البيانات",
+    "solutions.viz.growth": "النمو",
+    "solutions.viz.complexity": "تعقيد متصاعد",
+    "solutions.viz.find1": "الاختناقات",
+    "solutions.viz.find2": "العمليات اليدوية",
+    "solutions.viz.find3": "الفجوات التشغيلية",
+    "solutions.viz.find4": "الأنظمة الغائبة",
+    "solutions.viz.find5": "فرص الذكاء الاصطناعي",
     "solutions.viz.hub": "نظام النمو",
-    "solutions.viz.attr1": "قابل للقياس",
-    "solutions.viz.attr2": "مترابط",
-    "solutions.viz.attr3": "مملوك لك",
     "solutions.viz.aria":
-      "خمس وظائف أعمال غير مترابطة على اليسار تتحوّل إلى نظام نمو واحد مترابط على اليمين.",
+      "خريطة من ثلاث مراحل: وظائف الأعمال التي تديرها اليوم في ظل تعقيد متصاعد، وتشخيص الأعمال الذي يكشف ما يحدّها، ونظام النمو المبني فوقها — الاستراتيجية وأنظمة التسويق وتقنية الأعمال وتمكين الذكاء الاصطناعي.",
 
     // Trust strip
     "solutions.trust.label":
