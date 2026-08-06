@@ -248,6 +248,18 @@ const translations: Record<Language, Record<string, string>> = {
       "Your business already works. What it needs now is the infrastructure to scale. We find what's blocking growth, then build the marketing, technology, and AI systems that remove it.",
     "solutions.hero.secondary": "Find your constraint",
 
+    // Hero system visual. §12.5 mandates the visual but §12 defines no copy for
+    // it, so these seven labels are transcribed verbatim from the approved
+    // mockup (docs/OmniFlowAI-Solutions-Page-Mockup-v3.html) and translated.
+    "solutions.viz.before": "Disconnected tools",
+    "solutions.viz.after": "One growth system",
+    "solutions.viz.hub": "Growth system",
+    "solutions.viz.attr1": "Measured",
+    "solutions.viz.attr2": "Connected",
+    "solutions.viz.attr3": "Owned",
+    "solutions.viz.aria":
+      "Five disconnected business functions on the left resolving into one connected growth system on the right.",
+
     // Trust strip. Stat VALUES reuse the existing home.reach.* keys — no new
     // numbers are invented for this page (spec §12.3).
     "solutions.trust.label":
@@ -917,6 +929,16 @@ const translations: Record<Language, Record<string, string>> = {
     "solutions.subhead":
       "أعمالك تعمل بالفعل. ما تحتاجه الآن هو البنية التي تتيح لها التوسّع. نكتشف ما الذي يعيق النمو، ثم نبني أنظمة التسويق والتقنية والذكاء الاصطناعي التي تزيله.",
     "solutions.hero.secondary": "حدّد القيد لديك",
+
+    // Hero system visual
+    "solutions.viz.before": "أدوات غير مترابطة",
+    "solutions.viz.after": "نظام نمو واحد",
+    "solutions.viz.hub": "نظام النمو",
+    "solutions.viz.attr1": "قابل للقياس",
+    "solutions.viz.attr2": "مترابط",
+    "solutions.viz.attr3": "مملوك لك",
+    "solutions.viz.aria":
+      "خمس وظائف أعمال غير مترابطة على اليسار تتحوّل إلى نظام نمو واحد مترابط على اليمين.",
 
     // Trust strip
     "solutions.trust.label":
