@@ -25,7 +25,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useI18n } from "@/lib/i18n";
 import { apiRequest } from "@/lib/queryClient";
 import { contactFormSchema, type ContactFormData } from "@shared/schema";
-import { PILLARS, CONTACT_EMAIL } from "@shared/taxonomy";
+import { CONTACT_SERVICES, CONTACT_EMAIL } from "@shared/taxonomy";
 import { useDocumentTitle } from "@/hooks/use-document-title";
 
 export default function Contact() {
@@ -40,7 +40,8 @@ export default function Contact() {
       email: "",
       phone: "",
       company: "",
-      service: PILLARS[2], // "software" — pillar slug from shared/taxonomy
+      // "not-sure" — the pre-selection must not bias the lead record (§6).
+      service: "not-sure",
       message: "",
     },
   });
@@ -184,10 +185,9 @@ export default function Contact() {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent className="bg-slate-900 border-slate-800 text-white">
-                              {PILLARS.map((p) => (
-                                <SelectItem key={p} value={p}>{t(`serviceOpt.${p}`)}</SelectItem>
+                              {CONTACT_SERVICES.map((s) => (
+                                <SelectItem key={s} value={s}>{t(`serviceOpt.${s}`)}</SelectItem>
                               ))}
-                              <SelectItem value="other">{t("serviceOpt.other")}</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />

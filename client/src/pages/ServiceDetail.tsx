@@ -5,16 +5,26 @@ import { useI18n } from '@/lib/i18n';
 import { useDocumentTitle } from '@/hooks/use-document-title';
 import { useQuery } from '@tanstack/react-query';
 import { Project } from '@shared/schema';
-import { CATEGORY_TO_PILLAR, PILLAR_LABELS, type Pillar } from '@shared/taxonomy';
+import { CATEGORY_TO_PILLAR, type Pillar } from '@shared/taxonomy';
 import { onImageError } from '@/lib/placeholder';
+
+// Keyword-rich meta titles (spec §5.1). Slugs are unchanged, so no redirects
+// and no lost index — the clean labels live in the nav, the search terms live
+// here and in the H1. useDocumentTitle appends " — OmniflowAI". Tab titles are
+// English by design (see use-document-title.ts).
+const META_TITLES: Record<Pillar, string> = {
+  'ai-training': 'AI Training & Enablement for Business Teams',
+  'digital-marketing': 'Digital Marketing Systems — SEO, Paid & Conversion',
+  software: 'Software Development, ERP & CRM Systems',
+};
 
 export default function ServiceDetail() {
   const [, params] = useRoute('/services/:slug');
   const { t } = useI18n();
   const slug = params?.slug || '';
-  // PILLAR_LABELS[slug] is undefined for an unknown slug → falls back to the
+  // META_TITLES[slug] is undefined for an unknown slug → falls back to the
   // site-wide title.
-  useDocumentTitle(PILLAR_LABELS[slug as Pillar]);
+  useDocumentTitle(META_TITLES[slug as Pillar]);
 
   // slug is a PILLAR slug. A project belongs on this pillar's page when its
   // category rolls up to the pillar (CATEGORY_TO_PILLAR). Uses the default JSON
@@ -154,7 +164,7 @@ export default function ServiceDetail() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4">
-            <Link href="/contact">
+            <Link href="/services">
               <Button
                 size="lg"
                 className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-6 rounded-lg"
@@ -177,7 +187,7 @@ export default function ServiceDetail() {
       </section>
 
       {/* === RELATED PROJECTS SECTION === */}
-      {relatedProjects && relatedProjects.length > 0 && (
+      {slug !== 'ai-training' && relatedProjects.length > 0 && (
         <section className="py-24 bg-slate-900/30 border-y border-slate-800/30">
           <div className="max-w-7xl mx-auto px-6 md:px-8">
             <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
@@ -302,7 +312,7 @@ export default function ServiceDetail() {
           <p className="text-lg text-slate-400 mb-10">
             {t('serviceDetail.cta.body')}
           </p>
-          <Link href="/contact">
+          <Link href="/services">
             <Button
               size="lg"
               className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-6 text-base rounded-lg"

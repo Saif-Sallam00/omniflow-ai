@@ -28,7 +28,7 @@ const translations: Record<Language, Record<string, string>> = {
   en: {
     // --- NAV ---
     "nav.home": "Home",
-    "nav.services": "Services",
+    "nav.services": "Solutions",
     "nav.portfolio": "Portfolio",
     "nav.about": "About",
     "nav.contact": "Contact",
@@ -51,10 +51,12 @@ const translations: Record<Language, Record<string, string>> = {
     "category.ai-training": "AI Training",
 
     // --- CONTACT SERVICE OPTIONS ---
-    "serviceOpt.ai-training": "AI Training",
-    "serviceOpt.digital-marketing": "Digital Marketing",
-    "serviceOpt.software": "Software",
-    "serviceOpt.other": "Other",
+    // Solution names are product names — identical in both languages.
+    "serviceOpt.foundation": "Foundation",
+    "serviceOpt.growth-engine": "Growth Engine",
+    "serviceOpt.scale-infrastructure": "Scale Infrastructure",
+    "serviceOpt.custom": "Custom Transformation",
+    "serviceOpt.not-sure": "Not sure yet",
 
     // --- PILLARS (shared by Home + Services) ---
     "pillars.aiTraining.title": "AI Enablement",
@@ -504,7 +506,7 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Service Detail — SOFTWARE
     "serviceDetail.software.title":
-      "Software that becomes your operational backbone",
+      "Business Technology: software, ERP, CRM, and automation",
     "serviceDetail.software.desc":
       "ERP and CRM platforms, customer-facing web, mobile apps, and the automation that connects them — designed to own, integrate, and scale.",
     "serviceDetail.software.cta": "Build your system",
@@ -550,7 +552,7 @@ const translations: Record<Language, Record<string, string>> = {
       "We rebuild or extend what you have, whichever actually makes sense for your situation.",
 
     // Service Detail — DIGITAL MARKETING
-    "serviceDetail.dm.title": "Marketing built as an acquisition system",
+    "serviceDetail.dm.title": "Marketing Systems: SEO, paid, and conversion",
     "serviceDetail.dm.desc":
       "SEO, paid campaigns, and conversion strategy wired into one measurable engine that brings in qualified buyers — not vanity traffic.",
     "serviceDetail.dm.cta": "Scale your acquisition",
@@ -582,10 +584,10 @@ const translations: Record<Language, Record<string, string>> = {
       "We guarantee our work and our process, not market conditions. Targets are agreed upfront and we're accountable to them.",
 
     // Service Detail — AI TRAINING
-    "serviceDetail.ai.title": "AI training that turns tools into capability",
+    "serviceDetail.ai.title": "AI Enablement and team AI training",
     "serviceDetail.ai.desc":
-      "Structured AI adoption programs for teams and leadership — built to leave your people using AI on real work, not just aware of it.",
-    "serviceDetail.ai.cta": "Start your AI program",
+      "AI enablement isn't sold on its own — it's built into every solution. Department-specific use cases, workflow adoption, and practical team enablement, so AI ends up in daily work rather than in a training deck.",
+    "serviceDetail.ai.cta": "See the solutions",
     "serviceDetail.ai.feat.1.title": "Executive AI strategy sessions",
     "serviceDetail.ai.feat.2.title": "Department-level adoption programs",
     "serviceDetail.ai.feat.3.title": "Hands-on workflow integration workshops",
@@ -726,7 +728,7 @@ const translations: Record<Language, Record<string, string>> = {
   ar: {
     // --- NAV ---
     "nav.home": "الرئيسية",
-    "nav.services": "الخدمات",
+    "nav.services": "الحلول",
     "nav.portfolio": "أعمالنا",
     "nav.about": "من نحن",
     "nav.contact": "تواصل معنا",
@@ -749,10 +751,11 @@ const translations: Record<Language, Record<string, string>> = {
     "category.ai-training": "التدريب على الذكاء الاصطناعي",
 
     // --- CONTACT SERVICE OPTIONS ---
-    "serviceOpt.ai-training": "التدريب على الذكاء الاصطناعي",
-    "serviceOpt.digital-marketing": "التسويق الرقمي",
-    "serviceOpt.software": "البرمجيات",
-    "serviceOpt.other": "أخرى",
+    "serviceOpt.foundation": "Foundation",
+    "serviceOpt.growth-engine": "Growth Engine",
+    "serviceOpt.scale-infrastructure": "Scale Infrastructure",
+    "serviceOpt.custom": "Custom Transformation",
+    "serviceOpt.not-sure": "لست متأكداً بعد",
 
     // --- PILLARS (shared by Home + Services) ---
     "pillars.aiTraining.title": "تمكين الذكاء الاصطناعي",
@@ -1167,7 +1170,7 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Service Detail — SOFTWARE
     "serviceDetail.software.title":
-      "برمجيات تتحوّل إلى العمود الفقري التشغيلي لأعمالك",
+      "تقنية الأعمال: البرمجيات وتخطيط الموارد وإدارة العملاء والأتمتة",
     "serviceDetail.software.desc":
       "منصّات ERP وCRM، ومواقع موجّهة للعملاء، وتطبيقات جوال، والأتمتة التي تربطها — مصمّمة لتملكها وتدمجها وتوسّعها.",
     "serviceDetail.software.cta": "ابنِ نظامك",
@@ -1211,7 +1214,7 @@ const translations: Record<Language, Record<string, string>> = {
       "نعيد بناء ما لديك أو نطوّره، أيّهما أنسب لوضعك فعلاً.",
 
     // Service Detail — DIGITAL MARKETING
-    "serviceDetail.dm.title": "تسويق مبني كنظام لاستقطاب العملاء",
+    "serviceDetail.dm.title": "أنظمة التسويق: تحسين محركات البحث والإعلانات المدفوعة والتحويل",
     "serviceDetail.dm.desc":
       "تحسين محركات البحث والحملات المدفوعة واستراتيجية التحويل، مدمجة في محرك واحد قابل للقياس يجلب مشترين مؤهّلين — لا زيارات شكلية.",
     "serviceDetail.dm.cta": "وسّع قاعدة عملائك",
@@ -1240,11 +1243,10 @@ const translations: Record<Language, Record<string, string>> = {
       "نضمن عملنا ومنهجيتنا، لا ظروف السوق. نتّفق على الأهداف مسبقاً ونكون مسؤولين عنها.",
 
     // Service Detail — AI TRAINING
-    "serviceDetail.ai.title":
-      "تدريب على الذكاء الاصطناعي يحوّل الأدوات إلى قدرات فعلية",
+    "serviceDetail.ai.title": "تمكين الذكاء الاصطناعي وتدريب الفرق عليه",
     "serviceDetail.ai.desc":
-      "برامج منظّمة لتبنّي الذكاء الاصطناعي للفرق والقيادات — مصمّمة لتجعل فريقك يستخدم الذكاء الاصطناعي في عمل حقيقي، لا مجرد الإلمام به.",
-    "serviceDetail.ai.cta": "ابدأ برنامجك للذكاء الاصطناعي",
+      "تمكين الذكاء الاصطناعي لا يُباع منفرداً — بل هو مدمج في كل حل. استخدامات خاصة بكل قسم، وتبنٍّ داخل سير العمل، وتمكين عملي للفريق، ليصبح الذكاء الاصطناعي جزءاً من العمل اليومي لا شريحة في عرض تدريبي.",
+    "serviceDetail.ai.cta": "استعرض الحلول",
     "serviceDetail.ai.feat.1.title":
       "جلسات استراتيجية للمدراء حول الذكاء الاصطناعي",
     "serviceDetail.ai.feat.2.title": "برامج تبنٍّ على مستوى الأقسام",

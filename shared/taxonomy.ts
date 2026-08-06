@@ -59,8 +59,19 @@ export const PORTFOLIO_TAB_ORDER = [
   "ai-training",
 ] as const satisfies readonly Category[];
 
-// --- CONTACT FORM "service" options = the three pillars + "other" ---
-export const CONTACT_SERVICES = [...PILLARS, "other"] as const;
+// --- CONTACT FORM "service" options = the four solutions + "not sure yet" ---
+// Phase 1 §6: the form now asks which SOLUTION the lead is after, not which
+// capability. "not-sure" is the default so the pre-selection stops silently
+// biasing every lead record. `leads.service` is a plain text column, so rows
+// written under the old pillar values keep rendering in the admin as-is; only
+// new submissions are validated against this list.
+export const CONTACT_SERVICES = [
+  "foundation",
+  "growth-engine",
+  "scale-infrastructure",
+  "custom",
+  "not-sure",
+] as const;
 export type ContactService = (typeof CONTACT_SERVICES)[number];
 
 // --- SHARED CONTACT EMAIL ---
