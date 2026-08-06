@@ -1,8 +1,18 @@
 # OmniflowAI — Project State Audit
 
-> Read-only snapshot of the codebase as it currently exists. Everything below is
-> drawn from files actually opened. Where something is broken, placeholder, or
-> orphaned, it is called out explicitly. User-facing copy is reproduced verbatim.
+> **Verified against commit `381fe70` on 2026-08-06.** Read-only snapshot of the
+> codebase as it actually exists. Everything below is drawn from files opened in
+> this pass. Where something is a placeholder, orphaned, or inconsistent, it is
+> called out explicitly. User-facing copy is reproduced verbatim.
+>
+> `npm run check` (tsc) and `npm run build` were both run for this audit and are
+> **green**.
+>
+> **This file replaces the original Nov-2025/Jan-2026 audit.** That version
+> described the pre-Layer-1 site (four services, `build`/`attract`/`automate`
+> categories, a contact form that persisted nothing, in-memory sessions, an
+> orphaned i18n dictionary). None of that is true anymore. If you need the old
+> snapshot, read it from git history — do not treat quotes from it as current.
 
 ---
 
@@ -12,36 +22,47 @@
 - **Frontend**: React 18.3.1 (SPA) + TypeScript, built with **Vite 5.4.20**.
 - **Routing**: `wouter` 3.3.5 (client-side, not React Router).
 - **Backend**: **Express 4.21.2** (Node, ESM, run via `tsx` in dev, bundled with `esbuild` for prod).
-- **Language**: TypeScript everywhere (`.ts` / `.tsx`), `strict: true`.
-- `package.json` `name` is `"rest-express"`, `version` `1.0.0`, `license` MIT, `type: module`.
+- **Language**: TypeScript 5.6.3 everywhere (`.ts` / `.tsx`), `strict: true`.
+- `package.json` `name` is still `"rest-express"`, `version` `1.0.0`, `license` MIT, `type: module`.
+- **Node 20+ is required** — the server uses `import.meta.dirname`; on Node 18 it crashes at boot with `ERR_INVALID_ARG_TYPE paths[0]`. (`vite.config.ts` itself derives `__dirname` via `fileURLToPath`, so the config alone is version-tolerant; the server is not.)
 
 ### Styling
-- **Tailwind CSS 3.4.17** (config `tailwind.config.ts`) + PostCSS + Autoprefixer.
-- **shadcn/ui** ("new-york" style, base color `neutral`, CSS variables on) — 47 UI primitives under `client/src/components/ui/`.
-- Global CSS + design tokens in `client/src/index.css`.
-- Plugins: `tailwindcss-animate`, `@tailwindcss/typography`. Also present in deps but unused config-wise: `tw-animate-css`, `@tailwindcss/vite` (v4 plugin, not wired — project uses Tailwind v3).
+- **Tailwind CSS 3.4.17** (`tailwind.config.ts`) + PostCSS + Autoprefixer.
+- **shadcn/ui** ("new-york", base color `neutral`, CSS variables on) — 47 primitives under `client/src/components/ui/`; **~20 are actually imported** by app code.
+- Design tokens in `client/src/index.css` — the "Ember on gunmetal" brand system (see §4).
+- Plugins: `tailwindcss-animate`, `@tailwindcss/typography`.
 
 ### Build & deployment
 - **Build**: `vite build` (client → `dist/public`) **+** `esbuild server/index-prod.ts … → dist/index.js`.
 - **Dev**: `NODE_ENV=development tsx server/index-dev.ts` — Express + Vite middleware, single port **5000**.
-- **Start (prod)**: `NODE_ENV=production node dist/index.js` — serves static `dist/public`.
-- **Deployment target**: **Replit** (`.replit` file). `deploymentTarget = "autoscale"`, external port 80 → local 5000. Modules `nodejs-20`, `web`, `postgresql-16`. **No Vercel/Netlify config present** (despite the prompt's example).
-- Replit Vite plugins (dev-only, gated on `REPL_ID`): `@replit/vite-plugin-cartographer`, `@replit/vite-plugin-dev-banner`, `@replit/vite-plugin-runtime-error-modal`.
+- **Start (prod)**: `NODE_ENV=production node dist/index.js` — serves static `dist/public`, falls through to `index.html` for the SPA.
+- **Measured build output** (this pass): `dist/public` ≈ **1.3 MB** total, `dist/index.js` ≈ **21 KB**. Largest client chunks: shared vendor `index-*.js` 333 KB (gzip 109 KB), `Home` 119 KB (gzip 67 KB), CSS 111 KB (gzip 17 KB). Every page is its own lazy chunk.
+- **Deployment target**: **Replit** (`.replit`). `deploymentTarget = "autoscale"`, external port 80 → local 5000. Modules `nodejs-20`, `web`, `postgresql-16`. No Vercel/Netlify config.
+- Replit Vite plugins are dev-only and gated on `REPL_ID`, except `@replit/vite-plugin-runtime-error-modal` which is loaded unconditionally.
 
 ### Backend / API / services
-- **Express REST API** (see §11). Auth via `passport` + `passport-local`, sessions via `express-session` + `memorystore` (in-memory — **sessions do not survive restart**).
-- **Database**: **Neon serverless Postgres** via `@neondatabase/serverless` + `drizzle-orm` (schema-first, `drizzle-kit push`). WebSocket driver `ws`.
-- **File upload**: `multer` (memory storage, 5MB). Images are **NOT** stored on disk or a bucket — they are converted to **base64 `data:` URIs** and saved in a Postgres text column (`server/objectStorage.ts`).
-- `@google-cloud/storage` is a dependency and `server/objectAcl.ts` references it, but the actual storage path (`objectStorage.ts`) explicitly **does not use cloud buckets** ("We are not using disk or cloud buckets anymore"). ACL code is effectively dead.
-- **Analytics**: Google Analytics 4, injected client-side (`client/src/lib/analytics.ts`).
+- **Express REST API** (see §11). Auth via `passport` + `passport-local`; sessions via `express-session` + **`connect-pg-simple`** — a **Postgres-backed session store** (`session` table, `createTableIfMissing: true`). Sessions now survive restarts.
+- **Database**: **Neon serverless Postgres** via `@neondatabase/serverless` + `drizzle-orm` 0.39.3 (schema-first, `drizzle-kit push`, no checked-in migrations). WebSocket driver `ws`.
+- **File upload**: `multer` (memory storage, 5 MB server cap / 4 MB client cap). Images are compressed by **`sharp` 0.34.5** (rotate-by-EXIF → resize ≤1600 px, no upscale → WebP q80) and returned as a **base64 `data:image/webp` URI** stored in the `projects.image` text column. There is no disk or cloud bucket. `express.json` limit is raised to **50 mb** in `server/app.ts` for this reason.
+- **Email**: **Resend** 6.4.2 — fire-and-forget lead notification, skipped silently without `RESEND_API_KEY`.
+- **Analytics**: Google Analytics 4, injected client-side (`client/src/lib/analytics.ts`), no-ops without the env var.
 
-### Environment variables referenced (names only)
-- `DATABASE_URL` — Neon/Postgres connection string (required; `db.ts`, `drizzle.config.ts`).
-- `PORT` — server port, defaults to `5000`.
-- `NODE_ENV` — dev/prod switch.
-- `REPL_ID` — presence toggles Replit dev plugins (`vite.config.ts`).
-- `VITE_GA_MEASUREMENT_ID` — GA4 measurement ID (`analytics.ts`, `env.d.ts`, `App.tsx`).
-- `.env` exists and is git-ignored; local `.env` has empty `DATABASE_URL=` and `PORT=` (both blank).
+> **Gone since the previous audit:** `@google-cloud/storage` and `server/objectAcl.ts` (deleted), `framer-motion`, `react-icons`, `next-themes`, `@tailwindcss/vite`, `tw-animate-css`, `memorystore` as the session store. `memorystore` is still listed in `package.json` but is no longer imported.
+
+### Environment variables
+| Var | Required | Behaviour when unset |
+|---|---|---|
+| `DATABASE_URL` | **Yes** | `server/db.ts` and `drizzle.config.ts` throw on boot |
+| `PORT` | No | defaults to `5000` |
+| `NODE_ENV` | No | also drives the session `secure` cookie flag |
+| `ADMIN_PASSWORD` | No | seeds `admin` with the built-in default, logs a warning |
+| `SESSION_SECRET` | No | uses the built-in default, logs a warning |
+| `RESEND_API_KEY` | No | email notification skipped, lead still saved |
+| `NOTIFY_EMAIL` | No | falls back to `CONTACT_EMAIL` from the taxonomy |
+| `VITE_GA_MEASUREMENT_ID` | No | GA never initialises |
+| `REPL_ID` | No | presence toggles the Replit dev Vite plugins |
+
+Config is loaded from `.env` (gitignored) via `dotenv/config`, imported at the top of `server/index-dev.ts`, `server/index-prod.ts`, and `drizzle.config.ts`. `.env.example` documents all of the above.
 
 ---
 
@@ -49,178 +70,174 @@
 
 ```
 omniflowai/
-├── client/                         # Frontend (Vite root)
-│   ├── index.html                  # HTML shell, fonts, meta tags
-│   ├── public/
-│   │   └── favicon.svg             # Orange hexagon logo mark
+├── client/                          # Frontend (Vite root)
+│   ├── index.html                   # HTML shell, fonts (Inter/Space Grotesk/Cairo), full meta+OG+Twitter
+│   ├── public/favicon.svg           # Orange hexagon mark
 │   └── src/
-│       ├── App.tsx                 # Router, providers, WhatsApp float button
-│       ├── main.tsx                # React root + ErrorBoundary
-│       ├── index.css               # Design tokens (CSS vars) + utilities
-│       ├── env.d.ts                # Vite env typing
+│       ├── App.tsx                  # Router, providers, lazy routes, WhatsApp float
+│       ├── main.tsx                 # React root + ErrorBoundary
+│       ├── index.css                # "Ember on gunmetal" tokens, RTL, reduced-motion, keyframes
+│       ├── env.d.ts
 │       ├── assets/
-│       │   ├── clients/            # 21 client logo PNGs
-│       │   └── team_images/        # 4 team JPEGs
+│       │   ├── clients/             # 34 client logo files (32 imported — see §10)
+│       │   └── team_images/         # omniflowai-team.webp (single group photo)
 │       ├── components/
 │       │   ├── Navigation.tsx
-│       │   ├── Footer.tsx
-│       │   ├── ROICalculator.tsx   # ⚠ NOT imported anywhere (dead)
+│       │   ├── Footer.tsx           # + NewsletterForm, FooterLink, SocialIcon
 │       │   ├── ObjectUploader.tsx
 │       │   ├── ProtectedRoute.tsx
-│       │   └── ui/                 # 47 shadcn/ui primitives
+│       │   ├── systems/             # Connected-systems visual language (see §5)
+│       │   │   ├── primitives.ts    # SVG geometry + layouts (hub/pipeline/ring), no React
+│       │   │   ├── HexNode.tsx  FlowLine.tsx  SystemMap.tsx
+│       │   │   ├── InteractiveSystemMap.tsx   HexGridSubstrate.tsx  ProductFrame.tsx
+│       │   │   └── index.ts         # public API barrel
+│       │   └── ui/                  # 47 shadcn/ui primitives
 │       ├── hooks/
-│       │   ├── use-analytics.tsx
-│       │   ├── use-mobile.tsx
-│       │   ├── use-toast.ts
-│       │   └── use-user.ts
+│       │   ├── use-analytics.tsx  use-document-title.ts  use-in-view.ts
+│       │   ├── use-reduced-motion.ts  use-mobile.tsx  use-toast.ts  use-user.ts
 │       ├── lib/
-│       │   ├── i18n.tsx            # EN/AR translations + RTL
-│       │   ├── analytics.ts        # GA4
-│       │   ├── queryClient.ts      # TanStack Query + apiRequest
-│       │   └── utils.ts            # cn() helper
+│       │   ├── i18n.tsx             # EN/AR dictionary + provider (296 keys each)
+│       │   ├── analytics.ts  queryClient.ts  placeholder.ts  utils.ts
 │       └── pages/
-│           ├── Home.tsx
-│           ├── About.tsx
-│           ├── Services.tsx
-│           ├── ServiceDetail.tsx
-│           ├── Portfolio.tsx
-│           ├── ProjectDetail.tsx
-│           ├── Contact.tsx
-│           ├── not-found.tsx
+│           ├── Home.tsx  About.tsx  Services.tsx  ServiceDetail.tsx
+│           ├── Portfolio.tsx  ProjectDetail.tsx  Contact.tsx  not-found.tsx
 │           └── admin/
-│               ├── Auth.tsx
-│               ├── Dashboard.tsx
-│               └── ProjectEditor.tsx   # ⚠ 0 bytes (empty)
-├── server/                         # Express backend
-│   ├── app.ts                      # Express app, JSON limits, request logger
-│   ├── index-dev.ts                # Dev entry (Vite middleware)
-│   ├── index-prod.ts               # Prod entry (static serve)
-│   ├── routes.ts                   # All API routes + auth + seeding
-│   ├── storage.ts                  # Drizzle data-access layer
-│   ├── db.ts                       # Neon pool + drizzle instance
-│   ├── objectStorage.ts            # base64 data-URI "storage"
-│   └── objectAcl.ts                # GCS ACL helpers (⚠ dead code)
+│               ├── Auth.tsx  Dashboard.tsx  Leads.tsx
+├── server/
+│   ├── app.ts                       # Express app, 50mb JSON limit, request logger, runApp()
+│   ├── index-dev.ts / index-prod.ts # Vite middleware / static serve
+│   ├── routes.ts                    # All API routes, auth, session, seeding, Resend notify
+│   ├── storage.ts                   # DatabaseStorage implements IStorage (all DB access)
+│   ├── db.ts                        # Neon pool + drizzle instance
+│   └── objectStorage.ts             # sharp → base64 data-URI "storage"
 ├── shared/
-│   └── schema.ts                   # Drizzle tables + Zod schemas
-├── attached_assets/                # ⚠ Scratch/AI-prompt dump, mostly unused
-│   ├── generated_images/           # 3 PNGs, NOT referenced in code
-│   └── Pasted-*.txt                # 4 raw prompt/code dumps
-├── design_guidelines.md            # Design spec (aspirational, see §4/§12)
-├── replit.md                       # Project notes (partly stale, see §12)
-├── package.json / package-lock.json
-├── tailwind.config.ts / postcss.config.js
-├── tsconfig.json / vite.config.ts / drizzle.config.ts
-├── components.json                 # shadcn config
-├── .env / .env.example / .gitignore / .replit
+│   ├── taxonomy.ts                  # SINGLE SOURCE OF TRUTH for pillars/categories/contact
+│   └── schema.ts                    # Drizzle tables + drizzle-zod schemas + types
+├── scripts/optimize-logos.mjs       # One-off client-logo compression utility
+├── attached_assets/                 # Scratch: 3 unused generated PNGs + 4 prompt dumps
+├── docs/                            # All project markdown (this file included)
+├── CLAUDE.md                        # Only markdown intentionally at repo root
+└── package.json · tailwind.config.ts · tsconfig.json · vite.config.ts · drizzle.config.ts
+    components.json · postcss.config.js · .env / .env.example / .replit
 ```
 
-Top-level folders / key files:
-- **`client/`** — the entire React frontend; Vite `root` is set here.
-- **`server/`** — Express API + dev/prod bootstrapping; two entry points (dev uses Vite middleware, prod serves the built bundle).
-- **`shared/`** — a single `schema.ts` shared by client and server (Zod + Drizzle types), aliased `@shared`.
-- **`attached_assets/`** — aliased `@assets` in Vite but only holds AI prompt text dumps and 3 unused generated images. Not part of the shipped app.
-- **`design_guidelines.md`** / **`replit.md`** — documentation. Both describe an *intended* design that partially diverges from what is actually built.
+Key structural facts:
+- **`shared/taxonomy.ts` is the source of truth** for pillar and category slugs/labels, `CATEGORY_TO_PILLAR`, `CONTACT_SERVICES`, `CONTACT_EMAIL`, `SOCIAL_LINKS`, and `LEGACY_CATEGORY_MAP`. Schema validation, pages, admin, and server all import from it. Nothing hardcodes a slug.
+- **`server/storage.ts` is the only DB access layer.** Routes never query Drizzle directly.
+- Path aliases: `@` → `client/src`, `@shared` → `shared`, `@assets` → `attached_assets`.
+- **No test suite and no linter.** `npm run check` (tsc) is the only static verification.
 
 ---
 
 ## 3. Routing & Pages
 
-Routing is defined in `client/src/App.tsx` with `wouter`. A `ScrollToTop` resets scroll on navigation; a global `Navigation` (top) and `Footer` (bottom) wrap every route; a fixed **WhatsApp button** (`https://wa.me/201092849400`) floats bottom-right on all pages.
+Defined in `client/src/App.tsx` with `wouter`. Every page is `React.lazy`-loaded behind a `<Suspense>` with a spinner fallback. `ScrollToTop` resets scroll on navigation.
+
+**Admin chrome suppression:** `location.startsWith("/admin")` hides the public `Navigation`, `Footer`, and the floating WhatsApp CTA — admin renders its own shell.
 
 | Route | Component | Access | Notes |
 |---|---|---|---|
 | `/` | `Home` | Public | |
 | `/about` | `About` | Public | |
 | `/services` | `Services` | Public | |
-| `/services/:slug` | `ServiceDetail` | Public | slugs: `website-development`, `digital-marketing`, `automation`, `ai-agents` |
-| `/portfolio` | `Portfolio` | Public | dynamic from DB |
-| `/portfolio/:id` | `ProjectDetail` | Public | dynamic from DB |
+| `/services/:slug` | `ServiceDetail` | Public | valid slugs = the three **pillars**: `ai-training`, `digital-marketing`, `software` |
+| `/services/website-development` | → `Redirect` | Public | legacy → `/services/software` |
+| `/services/automation` | → `Redirect` | Public | legacy → `/services/software` |
+| `/services/ai-agents` | → `Redirect` | Public | legacy → `/services/software` |
+| `/portfolio` | `Portfolio` | Public | DB-driven; supports `?service=<pillar>` deep link |
+| `/portfolio/:id` | `ProjectDetail` | Public | DB-driven |
 | `/contact` | `Contact` | Public | |
 | `/admin/auth` | `AuthPage` | Public (login) | |
-| `/admin/dashboard` | `Dashboard` | **Protected** (`ProtectedRoute`) | redirects to `/admin/auth` if not logged in |
-| (any other) | `NotFound` | Public | 404 |
+| `/admin/dashboard` | `Dashboard` | **Protected** | portfolio CMS |
+| `/admin/leads` | `Leads` | **Protected** | lead inbox |
+| (any other) | `NotFound` | Public | translated 404 |
 
-**Dead footer links** point to routes that do not exist and will hit the 404 page: `/privacy`, `/terms`, `/sitemap` (see §12).
+The floating WhatsApp CTA links to `https://wa.me/201119936014`.
+
+**There are no dead links.** The old `/privacy`, `/terms`, `/sitemap` footer links were removed and replaced with `TODO(legal-final)` comments; social icons only render for non-empty `SOCIAL_LINKS` entries (all empty → none render).
 
 ### Section order per page
 
-**Home (`Home.tsx`)** — 8 sections:
-1. Hero (badge, headline, subhead, trust stat grid, 2 CTAs, "Results Dashboard" card)
-2. Trusted By — infinite CSS marquee of 21 client logos
-3. How it works — 3-step grid
-4. Featured Case Study (Petra Engineering banner)
-5. Testimonials — 3 cards (desktop grid / mobile carousel)
-6. Featured Work / "Recent work" — carousel of projects (DB or fallback)
-7. Guarantee — 90-day results guarantee bar
-8. Final CTA — "Ready to scale?"
+**Home (`Home.tsx`)** — 10 numbered sections, alternating dark/light per BUILD_PLAN P6:
+1. **Hero** (dark) — headline + sub + 2 CTAs, `InteractiveSystemMap` on the right, `HexGridSubstrate` behind
+2. **Trust strip + client logos** (light `bg-surface`) — pulse-pill eyebrow, reach headline, 3 reach stats, country strip, 30s infinite logo marquee (32 logos, doubled)
+3. **Value proposition** (dark) — the "systems problem" statement, orange words revealed word-by-word on scroll
+4. **Pillars** (light) — 3 cards linking to `/services/<pillar>`
+5. **Transformation** (dark) — Before / After lists
+6. **Proof** (light) — **DB-driven**, only renders when featured projects exist
+7. **Recent work** (dark) — **DB-driven** carousel of non-featured projects (max 6), only renders when non-empty
+8. **How we work** (light) — 4-step scroll-activated timeline (Diagnose → Design → Build → Optimize)
+9. **Global brand line** (dark) — shield icon + brand line + CTA
+10. **Final CTA** (dark)
 
-**About (`About.tsx`)** — 5 sections: Hero ("Our DNA") → Founder story → Team grid (3 cards) → Values (4 cards) → CTA.
+**About (`About.tsx`)** — 4 sections: Hero ("Who we are") → Story (team photo + 3 paragraphs) → Values (4 cards) → CTA. ⚠ The team-grid section is **deliberately not rendered** (frozen `TODO(team-final)`); the JSX comments still number the values section "4." and the CTA "5.".
 
-**Services (`Services.tsx`)** — Hero → Services list (3 services, each optionally with a showcase project) → "Better together" 3-step → CTA.
+**Services (`Services.tsx`)** — Header → **accessible pillar tablist** (roving tabindex + Left/Right arrow keys) with a detail panel per pillar (title, tagline, body, 4 numbered steps, 2 CTAs) → **pain router** (4 buttons that select-and-scroll to the matching pillar, or go to `/contact`).
 
-**ServiceDetail (`ServiceDetail.tsx`)** — Hero → Related Projects (⚠ never renders, see §12) → Features grid → Process steps → FAQ → CTA.
+**ServiceDetail (`ServiceDetail.tsx`)** — Hero (icon, title, subtitle, description, 2 CTAs) → **Related projects** (DB-driven, filtered by `CATEGORY_TO_PILLAR[p.category] === slug`; renders only when non-empty) → Features grid → Process steps → FAQ (plain divs, not an accordion) → CTA.
 
-**Portfolio (`Portfolio.tsx`)** — Header → Filter tabs (All/Build/Attract/Automate) → Gallery grid (or empty-state / skeleton).
+**Portfolio (`Portfolio.tsx`)** — Header → optional pillar deep-link banner (`?service=<pillar>`) → sticky filter tabs → gallery grid / empty state / skeleton. Tabs only appear for categories that at least one current project actually uses.
 
-**ProjectDetail (`ProjectDetail.tsx`)** — Hero header (category, client, title, description, stat tiles) → Main visual image → Challenge/Solution + Tech Stack sidebar CTA.
+**ProjectDetail (`ProjectDetail.tsx`)** — Hero header (category badge, client, title, description, up to 4 result tiles) → full-width image → **Problem → Diagnosis → System** narrative (Diagnosis renders only when present) + Tech Stack sidebar CTA.
 
-**Contact (`Contact.tsx`)** — single section: heading + form (left, 2/3) + info sidebar (right, 1/3).
+**Contact (`Contact.tsx`)** — one section: heading + form (2/3) + info sidebar (1/3) with contact details and the "Quick Response Guarantee" card.
 
-**Admin/Auth** — centered login card. **Admin/Dashboard** — portfolio CMS (project cards, create/edit dialog, delete confirm).
+**Admin** — `Auth` centered login card; `Dashboard` portfolio CMS (cards, create/edit dialog, delete confirm, tag editor); `Leads` inbox (status select, expand message, delete confirm). Both admin pages share an `AdminNav` (Portfolio / Leads).
 
 ---
 
 ## 4. Design System
 
+### "Ember on gunmetal"
+The governing rules live in `docs/BUILD_PLAN.md` (P0–P6). The two that shape everything visible:
+- **P5 — single accent only.** Flow Orange `#FF6B1F`. No second colour.
+- **P6 — dark/light with intent.** Dark = identity/impact (hero, value prop, before/after, brand line, CTA). Light `#F6F7F8` = readability/trust (logos, pillars, proof, process).
+
 ### Theme model
-- The app renders **dark by default via hardcoded slate classes** (e.g. `bg-slate-950`, `text-white`) on nearly every page — NOT via the `.dark` class. `App.tsx` wraps everything in `<div className="... bg-slate-950">`.
-- `index.css` **does** define a full light/dark shadcn token set (`:root` = light, `.dark` = dark), and `tailwind.config.ts` sets `darkMode: ["class"]` — but the `.dark` class is never toggled anywhere. So the shadcn tokens are mostly bypassed for the marketing pages; they only matter for shadcn primitives (buttons, dialogs, etc.).
-- Net effect: **the public site is effectively a fixed dark theme**; the **admin dashboard is light** (`bg-slate-50`, white header). No user-facing theme switch. `next-themes` is a dependency but unused.
+- The public site renders **dark by default via hardcoded slate classes**, not via the `.dark` class. `App.tsx` wraps everything in `bg-slate-950`. Light bands are opt-in via the `bg-surface` token.
+- `index.css` defines a full light/dark shadcn token set and `tailwind.config.ts` sets `darkMode: ["class"]`, but **`.dark` is never toggled**. The `:root` (light) values are what shadcn primitives actually resolve to.
+- **The admin CMS is now dark too** (`bg-[#0a0a0b]`), matching the public site — it was light in the previous audit. Admin remains intentionally English-only.
 
-### Color tokens (from `index.css` `:root`, HSL)
-"Growth Engine" custom vars:
-- `--gunmetal: 222 47% 11%` (premium tech dark)
-- `--midnight: 222 47% 7%`
-- `--gold: 38 92% 50%` / `--gold-hover: 38 92% 45%` (Electric Gold accent)
+### Brand tokens (`index.css` `:root`, HSL)
+```
+--gunmetal: 222 47% 11%      --midnight: 222 47% 7%
+--brand-400: 27 96% 61%      (orange-400 — accent text on dark)
+--brand-500: 25 95% 53%      (orange-500 — core brand)
+--brand-600: 21 90% 48%      (orange-600 — solid CTA fill)
+--brand-700: 17 88% 40%      (orange-700 — hover / on-light text)
+--brand-light: 38 92% 50%    (amber-500 — highlight word, footer signal dot)
+--surface-light: 210 14% 97% (#F6F7F8 — P6 readability bands)
+--primary: 20 100% 56%       (Flow Orange #FF6B1F — the ONE canonical CTA fill)
+--primary-foreground: 0 0% 100%
+--ring: 25 95% 53%           --radius: 0.5rem
+```
+Exposed to Tailwind as the `brand.{400,500,600,700,light}` and `surface` colour scales. The shadcn `Button` `default` variant is `bg-primary` — **no gradient CTAs**.
 
-Core shadcn (light `:root`):
-- `--background: 0 0% 100%`, `--foreground: 222 47% 11%`
-- `--primary: 38 92% 50%` (gold), `--primary-foreground: 222 47% 11%`
-- `--secondary: 210 40% 96.1%`, `--muted: 210 40% 96.1%`, `--muted-foreground: 215.4 16.3% 46.9%`
-- `--accent: 222 47% 11%`, `--destructive: 0 84.2% 60.2%`
-- `--border / --input: 214.3 31.8% 91.4%`, `--ring: 38 92% 50%`, `--radius: 0.5rem`
-- Charts: `--chart-1: 38 92% 50%`, `--chart-2: 173 58% 39%`, `--chart-3: 222 47% 11%`, `--chart-4: 43 74% 66%`, `--chart-5: 27 87% 67%`
-- Elevation: `--elevate-1: rgba(0,0,0,.03)`, `--elevate-2: rgba(0,0,0,.08)` (light); `.dark` uses `rgba(255,255,255,.04/.09)`.
-
-`.dark` overrides: `--background: 222 47% 11%`, `--foreground: 210 40% 98%`, `--card: 217 33% 17%`, `--primary: 210 40% 98%`, etc.
-
-**Actual brand color in practice (Tailwind utility classes, not the tokens):**
-- **Orange** is the real accent on the public site: `orange-400/500/600`, gradients `from-orange-500 to-red-600`, `text-orange-400`. (The gold `--primary` token and orange utilities are two different oranges used in parallel.)
-- **Amber** is the accent on Footer + Admin (`amber-500/600`).
-- Grayscale base: `slate-950 / 900 / 800 / 700 / 500 / 400 / 300`.
-- Status colors: `emerald-400/500` (positive), `blue-400/500/600` (info/ROI), `green-500` (WhatsApp `#25D366`), `red-500`.
-- Hardcoded hexes: WhatsApp `#25D366`; ServiceDetail page bg `#0a0a0b`; ROICalculator `#0F172A` bg and chart colors `#94a3b8`, `#2563eb`, grid `#1e293b`, tooltip `#1e293b`/`#334155`; favicon stroke `#f97316`.
-- Hero/marquee noise texture pulled from external URL `https://grainy-gradients.vercel.app/noise.svg`.
-
-⚠ Inconsistency: the documented palette (gunmetal + electric gold) and the shipped palette (slate + orange/amber, two accent hues) don't fully match. Footer uses amber; the rest of the site uses orange.
+Also defined: a deliberately whisper-quiet shadow scale (`--shadow-xs/sm/md` → `shadow-card` / `shadow-elevated`) and motion tokens (`--ease-standard`, `--duration-fast/base/slow` → `ease-standard`).
 
 ### Typography
-- Loaded in `client/index.html` via Google Fonts: **Inter** (300–700), **Space Grotesk** (400/500/700), **Playfair Display** (400/600/700 + italic).
-- `--font-sans: 'Inter'`, `--font-display: 'Space Grotesk'`, `--font-serif: 'Playfair Display'`.
-- Tailwind `fontFamily`: `sans → Inter`, `display → Space Grotesk`, `serif → Playfair`, `mono → var(--font-mono)` (⚠ `--font-mono` is never defined).
-- `font-display` used for headings on About/Portfolio/Contact/Admin. `font-serif` (Playfair) is loaded but **barely/never used** on visible pages.
-- Heading scale in practice: hero `text-4xl → lg:text-7xl font-black`; section headings `text-3xl md:text-4xl font-bold`; body `text-lg/xl text-slate-400`.
+- Loaded in `client/index.html` via Google Fonts: **Inter** (300–900), **Space Grotesk** (400/700), **Cairo** (400/700).
+- `--font-sans: Inter`, `--font-display: Space Grotesk`. **Playfair Display was removed.**
+- **Cairo is the Arabic webfont**, applied by `[dir="rtl"] body` and `[dir="rtl"] .font-display`, with Inter/Space Grotesk kept in the stack as the Latin fallback for brand and code runs.
+- ⚠ `tailwind.config.ts` still maps `mono: ["var(--font-mono)"]`, but **`--font-mono` is never defined** anywhere. Any `font-mono` usage (e.g. the admin textareas) falls back to the browser default.
 
-### Spacing / radius / shadow conventions
-- Section padding: `py-20 md:py-24` (commonly), up to `py-24 md:py-32` on CTAs.
-- Container: `max-w-7xl` (or `max-w-6xl`/`max-w-4xl`/`max-w-3xl`) `mx-auto px-6 md:px-8`.
-- Radius: heavy use of `rounded-xl`, `rounded-2xl`, `rounded-3xl`, `rounded-full` (pills/buttons). Token `--radius: 0.5rem` drives shadcn `lg/md/sm`.
-- Shadows: `shadow-lg`, `shadow-2xl`, glow blurs (`blur-lg`, `blur-[100px]`, `blur-3xl`), colored ring shadows on buttons.
-- Custom `hover-elevate` / `active-elevate` utilities defined in `index.css` (pseudo-element overlays using `--elevate-1/2`).
+### Utilities & motion in `index.css`
+- `.hover-elevate` / `.active-elevate` — pseudo-element overlays driven by `--elevate-1/2`.
+- `.card-lift` — 4 px hover/focus-within lift with a faint Flow Orange glow.
+- **RTL block** (unlayered so it beats Tailwind): Cairo font swap + `scaleX(-1)` on directional lucide icons.
+- **`prefers-reduced-motion` block** (unlayered): zeroes all animation/transition durations globally.
+- `@keyframes hex-pulse` and `flow-travel` for the connected-systems visuals.
+- The Home logo marquee uses an **inline `@keyframes marquee` (30 s)** injected via a `<style>` tag — the Tailwind config's `scroll` (40 s) and `float` (6 s) animations remain **unused**.
 
-### Theme/token files
-- `client/src/index.css` — reproduced fully in §4 token list above.
-- `tailwind.config.ts` — animations `float` (6s), `scroll` (40s, logo ticker), `accordion-down/up`. ⚠ Note: the Home marquee actually uses an **inline `@keyframes marquee` (10s)** injected via a `<style>` tag, **not** the config's `scroll` animation.
+### ⚠ Token drift (real, current)
+Several files still use raw Tailwind colour utilities instead of the brand tokens the config exposes:
+- `ServiceDetail.tsx` — `bg-orange-500 hover:bg-orange-600`, `text-orange-400`, `bg-[#0a0a0b]` throughout (this page was not migrated to `brand-*` / `bg-primary`).
+- `admin/Auth.tsx` — an all-`amber-500` treatment (gradient logo tile, glows, brand accent).
+- `admin/Dashboard.tsx` / `admin/Leads.tsx` — `amber-*`, `orange-*`, `sky-*` status colours.
+- `Home.tsx`, `About.tsx`, `Contact.tsx`, `Services.tsx` — decorative `from-orange-950/…` background gradients.
+- `Footer.tsx` — `bg-amber-500` pulse dot next to the wordmark.
+
+Not a bug, but it means "single accent, tokens only" is not yet fully true outside the pages that were swept.
 
 ---
 
@@ -228,381 +245,348 @@ Core shadcn (light `:root`):
 
 ### App-specific components
 
-| Component | Path | Key props | Used by |
-|---|---|---|---|
-| `Navigation` | `components/Navigation.tsx` | none | `App.tsx` (global) |
-| `Footer` | `components/Footer.tsx` | none | `App.tsx` (global). Internal helpers `FooterLink`, `SocialIcon` |
-| `ROICalculator` | `components/ROICalculator.tsx` | none | **⚠ Not imported anywhere — dead component** |
-| `ObjectUploader` | `components/ObjectUploader.tsx` | `currentImage?: string`, `onUploadComplete: (url)=>void` | admin `Dashboard.tsx` |
-| `ProtectedRoute` | `components/ProtectedRoute.tsx` | `component`, `path` | `App.tsx` (admin dashboard) |
-| `TeamCard` (local) | inside `About.tsx` | `image, name, role, bio` | About |
-| `ValueCard` (local) | inside `About.tsx` | `icon, title, desc` | About |
-| `ResultsDashboard` (local) | inside `Home.tsx` | none | Home hero |
-| `FeaturedCaseStudy` (local) | inside `Home.tsx` | none | Home |
-| `TestimonialCard` (local) | inside `Home.tsx` | `testimonial` | Home |
-| `PortfolioSkeleton` (local) | inside `Portfolio.tsx` | none | Portfolio loading |
-| `ProjectSkeleton` (local) | inside `ProjectDetail.tsx` | none | ProjectDetail loading |
+| Component | Path | Used by |
+|---|---|---|
+| `Navigation` | `components/Navigation.tsx` | `App.tsx` (public routes only) |
+| `Footer` | `components/Footer.tsx` | `App.tsx` (public routes only). Internal: `NewsletterForm`, `FooterLink`, `SocialIcon` |
+| `ObjectUploader` | `components/ObjectUploader.tsx` | admin `Dashboard` |
+| `ProtectedRoute` | `components/ProtectedRoute.tsx` | `App.tsx` (`/admin/dashboard`, `/admin/leads`) |
 
-### Hooks & libs
-- `hooks/use-user.ts` — `useUser()`: `{ user, isLoading, error, login, logout }` via TanStack Query on `/api/user`.
-- `hooks/use-analytics.tsx` — fires `trackPageView` on route change.
-- `hooks/use-toast.ts`, `hooks/use-mobile.tsx` — standard shadcn helpers.
-- `lib/i18n.tsx` — `I18nProvider`, `useI18n()` → `{ language, setLanguage, t, isRTL }`.
-- `lib/queryClient.ts` — `queryClient`, `apiRequest(method,url,data)` (**returns a raw `Response`**, not parsed JSON — relevant bug in §12), `getQueryFn`.
-- `lib/analytics.ts` — `initGA`, `trackPageView`, `trackEvent`.
-- `lib/utils.ts` — `cn()` (clsx + tailwind-merge).
+### `components/systems/` — the connected-systems visual language
 
-### Component library — shadcn/ui (47 primitives in `components/ui/`)
-`accordion, alert-dialog, alert, aspect-ratio, avatar, badge, breadcrumb, button, calendar, card, carousel, chart, checkbox, collapsible, command, context-menu, dialog, drawer, dropdown-menu, form, hover-card, input-otp, input, label, menubar, navigation-menu, pagination, popover, progress, radio-group, resizable, scroll-area, select, separator, sheet, sidebar, skeleton, slider, switch, table, tabs, textarea, toaster, toast, toggle-group, toggle, tooltip.`
-Many are installed by default and unused by the actual pages (e.g. `calendar`, `command`, `menubar`, `sidebar`, `input-otp`, `breadcrumb`, `pagination`, `resizable`, `context-menu`, `drawer`). Actually used: button, card, badge, input, textarea, select, form, dialog, alert-dialog, switch, tabs, carousel, separator, skeleton, slider, tooltip, toaster/toast.
+| Module | What it is | Currently rendered on a page? |
+|---|---|---|
+| `primitives.ts` | Pure SVG geometry: `hexPath`, `edgePath`, `hub`/`pipeline`/`ring` layouts, `SystemNode`/`SystemEdge` types. No React. | via the components below |
+| `HexNode.tsx` | A single flat-top hexagon node | **No** — imported by nothing at all |
+| `FlowLine.tsx` | A connector path between two nodes | **No** — imported only by `SystemMap` |
+| `SystemMap.tsx` | Static declarative node/edge map. Uses `FlowLine` + `hexPath` directly (**not** `HexNode`) | **No** — exported but used by no page |
+| `InteractiveSystemMap.tsx` | Hover/focus/scroll-driven hub-and-spoke map. Draws straight from `primitives` (`hexPath`, `edgePath`, `ring`) | **Yes** — Home hero |
+| `HexGridSubstrate.tsx` | Whisper-subtle full-bleed hex background | **Yes** — Home hero |
+| `ProductFrame.tsx` | Framing chrome for product imagery | **No** — exported, unused |
+
+The module is a small deliberate design-system library; only 2 of its 6 components are on a page. That is worth knowing before assuming it is dead code — see §12.
+
+### Local (in-file) components
+`Reveal`, `HighlightWords` (Home) · `ValueCard` (About) · `PortfolioSkeleton` (Portfolio) · `ProjectSkeleton` (ProjectDetail) · `AdminNav` (Leads, duplicated inline in Dashboard) · tag editor (Dashboard).
+
+### Hooks
+- `use-user.ts` — `{ user, isLoading, error, login, logout }` over `/api/user`.
+- `use-document-title.ts` — per-route `<title>`; `"<page> — OmniflowAI"`, restores the site default on unmount. Tab titles are English by design.
+- `use-in-view.ts` — IntersectionObserver scroll-reveal gate. **Fails open**: reduced-motion, missing IO, or no `window` all initialise `inView = true`, so content is never hidden behind a missing API.
+- `use-reduced-motion.ts` — JS gate that defaults to `true` (no motion) until measured, so motion-sensitive users never see a flash.
+- `use-analytics.tsx`, `use-toast.ts`, `use-mobile.tsx` — page-view tracking and standard shadcn helpers.
+
+### Libs
+- `lib/i18n.tsx` — `I18nProvider` + `useI18n()` → `{ language, setLanguage, t, isRTL }`. Persists to `localStorage`, sets `documentElement.lang/dir` and `body.dir`. `t()` returns the key itself when missing.
+- `lib/queryClient.ts` — default `queryFn` fetches `queryKey.join("/")` with `credentials: "include"`; `staleTime: Infinity`, no retries or refetch. **`apiRequest(method, url, data)` returns the raw `Response`** — callers must `.json()` it. (It does throw on non-2xx via `throwIfResNotOk`, so a bare `await apiRequest(...)` is a valid fire-and-check.)
+- `lib/placeholder.ts` — `IMAGE_FALLBACK`, an **inline SVG data URI**, plus an `onImageError` handler that detaches itself to avoid loops. Replaced the old external `placehold.co` round-trip.
+- `lib/analytics.ts` — `initGA`, `trackPageView`, `trackEvent`; all no-op without `VITE_GA_MEASUREMENT_ID`.
+- `lib/utils.ts` — `cn()`.
+
+### shadcn/ui — 47 primitives, ~20 used
+**Imported by app code:** `alert-dialog, badge, button, card, carousel, dialog, form, input, label, select, separator, sheet, skeleton, switch, tabs, textarea, toast, toaster, toggle, tooltip`.
+**Installed but unused by pages:** `accordion, alert, aspect-ratio, avatar, breadcrumb, calendar, chart, checkbox, collapsible, command, context-menu, drawer, dropdown-menu, hover-card, input-otp, menubar, navigation-menu, pagination, popover, progress, radio-group, resizable, scroll-area, sidebar, slider, table, toggle-group`.
 
 ---
 
 ## 6. UI/UX & Interaction
 
 ### Layout patterns
-- **Nav**: fixed top, transparent → `bg-slate-950/90 backdrop-blur-md` after 20px scroll. Logo left (hexagon + "mniflow" + "AI"), centered links (desktop), globe language toggle + orange pill CTA right. Mobile: hamburger → full-screen slide-down menu.
-- **Hero (Home)**: two-column grid (text left, animated "Results Dashboard" card right), min-height `90vh`, noise-texture overlay.
-- **Footer**: responsive multi-column (3-col mobile / 2-col tablet / 4-col desktop) with brand blurb, Services, Company, newsletter + contact, bottom bar. Amber accent, background glow blobs.
-- **Grids**: heavy `grid-cols-1 md:grid-cols-2/3/4`. Cards use `bg-slate-900/40 border border-slate-800/50` glass style.
+- **Nav**: fixed top, transparent → `bg-slate-950/90 backdrop-blur-md` after 20 px scroll. Hexagon + "Omniflow"/"AI" lockup, forced `dir="ltr"` so the brand renders left-to-right even in Arabic. Desktop: centred links + globe toggle + orange pill CTA. Mobile: hamburger → full-screen menu with language toggle and CTA.
+- **Hero**: two-column grid (copy / interactive system map), `min-h-[80vh]`, hex substrate behind.
+- **Band alternation**: `bg-surface` (light) and `bg-slate-950` (dark) sections alternate down the homepage per P6, separated by hairline borders.
+- **Cards**: light bands use `bg-white border-slate-200 shadow-card`; dark bands use `bg-slate-900/50 border-slate-800`.
+- **Footer**: 3-col mobile / 2-col tablet / 4-col desktop; brand blurb, Services, Company, newsletter + contact, bottom bar.
 
-### Animations / transitions
-- **`framer-motion` 11.13.1 is installed but NOT used** anywhere in the pages (no `motion.` usage found). All motion is CSS.
-- CSS: infinite **marquee** (inline keyframes, 10s) for client logos; `animate-pulse`, `animate-ping` (WhatsApp), `animate-spin` (loaders); hover `scale-105/110`, `translate-y`, `grayscale→color`, opacity transitions; `backdrop-blur`.
-- Tailwind config animations `float`/`scroll`/`accordion-*` (accordion used by shadcn; `float`/`scroll` largely unused — marquee uses its own inline anim).
-- `embla-carousel-react` powers testimonials (mobile) and Recent Work carousels.
-- Number "animation" in ROICalculator via `setTimeout` (dead component).
+### Animation / motion
+All motion is **CSS + IntersectionObserver** — there is no animation library.
+- Logo marquee (inline 30 s keyframes), `animate-ping` (trust pulse dot, WhatsApp), `animate-pulse` (skeletons, footer dot), `animate-spin` (loaders).
+- `Reveal` (fade + rise), `HighlightWords` (90 ms-staggered word reveal), the process timeline's 180 ms-staggered step activation, `card-lift` hover.
+- `embla-carousel-react` powers the Home "Recent work" carousel.
+- Reduced motion is handled twice over: the global CSS block zeroes durations, and `useReducedMotion()` lets the systems visuals avoid *mounting* infinite animations at all.
 
-### Responsiveness
-- Breakpoints handled throughout: `sm`, `md`, `lg` (Tailwind defaults). Mobile-first with explicit mobile variants (e.g. testimonials switch grid↔carousel at `md`).
-- `replit.md` notes flex-wrap and responsive fixes applied Jan 2026.
-- The **admin Dashboard** is responsive-ish but is a desktop-oriented CMS; the create/edit **Dialog** is `max-w-4xl max-h-[90vh] overflow-y-auto`.
-- No page is fully non-responsive, but the **NotFound** page is a light-theme card (visually inconsistent with the dark site).
+### Responsiveness & accessibility
+- Mobile-first with `sm`/`md`/`lg` variants throughout.
+- **Services tablist** is a proper `role="tablist"` with roving `tabIndex` and Left/Right arrow navigation; the panel is a focusable `role="tabpanel"`.
+- Focus rings use `focus-visible:ring-ring` (brand orange).
+- Images are `loading="lazy" decoding="async"` with a local `onError` fallback.
+- The system map exposes a descriptive `aria-label`; decorative layers are `aria-hidden`.
+- RTL uses logical properties (`ms-`/`me-`/`ps-`/`text-start`) in most places — see §12 for the remaining physical-direction spots.
 
 ### Interactive elements
-- **Forms**: Contact form (RHF + Zod), Admin login, Admin project create/edit. Newsletter input in footer (**non-functional — no handler**).
-- **Modals**: Admin create/edit `Dialog`, delete `AlertDialog`.
-- **Carousels**: testimonials (mobile) + Recent Work (Home).
-- **Filters**: Portfolio category tabs (All/Build/Attract/Automate).
-- **Sliders**: ROICalculator (3 sliders) — dead component.
-- **Language toggle**: globe icon in nav (EN↔AR) — see §12 for how limited its effect is.
+Contact form (RHF + Zod) · footer newsletter (**now functional**) · admin login · admin project create/edit dialog + delete confirm · admin lead status select + delete confirm · Portfolio category tabs + pillar deep-link banner · Services pillar tabs + pain router · Home carousel · language toggle.
 
 ---
 
 ## 7. Copywriting (VERBATIM)
 
-> Reproduced exactly as written in the source. Most page copy is **hardcoded English** in the page components (NOT pulled from the i18n dictionary — see §8/§12).
+> **All user-facing copy now comes from the i18n dictionary.** `client/src/lib/i18n.tsx` holds **296 EN keys and 296 AR keys — verified exact parity, zero missing on either side.** Arabic is formal MSA (فصحى). Below is the **English**; the Arabic mirror exists for every key. Brand name, `CONTACT_EMAIL`, enum/code values, DB content, and the admin CMS are intentionally not translated.
 
-### Global — Navigation (`Navigation.tsx`)
-- Logo (assembled): "**mniflow**" + "**AI**" (with a hexagon icon standing in for the leading "O").
-- Nav links (EN): "Home", "Services", "Portfolio", "About", "Contact" (via i18n keys `nav.*`).
-- Desktop CTA button: value of `hero.cta.secondary` → EN "**Start Consultation**" (fallback text in code: "Let's Talk").
-- Mobile language button: "**العربية**" / "**English**". Mobile CTA: "**Let's Talk**".
+### Global
+- **Nav**: "Home", "Services", "Portfolio", "About", "Contact"; CTA "**Let's Talk**"
+- **Common CTA**: "**Book a strategy call**"
+- **Brand line**: "**We don't hand over deliverables and walk away. We build systems that keep working after we're gone.**"
+- "All", "View all projects", WhatsApp: "**Chat on WhatsApp**"
+- **Category labels**: Business Systems · Web · Mobile · Automation & AI · Digital Marketing · AI Training
+- **Contact service options**: AI Training · Digital Marketing · Software · Other
 
-### Global — Footer (`Footer.tsx`) — fully hardcoded English
-- Brand: "**OmniflowAI**"
-- Blurb: "**We build digital ecosystems that scale. Bridging the gap between premium design and intelligent automation.**"
-- Column "Services": "**Web Dev**", "**Automation**", "**AI Agents**", "**Marketing**" (all link to `/services`)
-- Column "Company": "**About**", "**Work**", "**Contact**", "**Privacy**"
-- Column heading: "**Stay Connected**" (desktop) / "**Connect**" (mobile)
-- Newsletter: "**Get the latest trends in AI and Web Dev delivered to your inbox.**", input placeholder "**Enter your email**"
-- Contact: "**hello@omniflow.ai**", "**Cairo, Egypt**"
-- Bottom bar: "**© {currentYear} OmniflowAI Agency. All rights reserved.**"
-- Bottom links: "**Privacy**", "**Terms**", "**Sitemap**"
-
-### Global — WhatsApp button (`App.tsx`)
-- "**Chat on WhatsApp**" (links to `https://wa.me/201092849400`)
-
-### Home (`Home.tsx`)
-
+### Home
 **Hero**
-- Badge: "**Trusted by 50+ Businesses**"
-- Headline: "**We build the systems that grow your business**" ("grow your business" gradient)
-- Subhead: "**Websites that convert. Marketing that targets the right buyers. Automation that saves your team hundreds of hours. All engineered to pay for itself.**"
-- Trust grid: "**340h**" / "**Saved/Mo**"; "**60%**" / "**Less CAC**"; "**100%**" / "**Ownership**"
-- CTAs: "**Book a Free Strategy Call**", "**View Results**"
+- H1: "**Most teams buy the tool first.**" + accent "**We diagnose first.**"
+- Sub: "**AI, marketing, software, automation — we only build what the diagnosis supports. We look before we touch, so what we build fits how your business actually runs.**"
+- CTAs: "Book a strategy call" · "**See our work**"
 
-**Results Dashboard card**
-- "**CLIENT RESULTS**"; "**Cost/Lead**" "**$150**" "**62% ↓**"; "**Time Saved**" "**340hrs**" "**≈ 2 FTEs**"; "**Avg. Client ROI**" "**6.8×**" "**within 12 months**"
+**System map labels**: Business System (centre); AI Training, Digital Marketing, Software, Automation, CRM, Strategy (ring). Aria: "A connected business system: AI training, digital marketing, software, automation, CRM and strategy all connecting into one central system."
 
-**Trusted By**
-- "**Trusted by 21+ teams**" (rendered as `Trusted by {allClients.length}+ teams`)
+**Trust strip**
+- Eyebrow: "**Trusted partners**"
+- Headline: "**Trusted by brands across the US, the GCC & Egypt**"
+- Stats: "**50+**" / "Projects delivered" · "**8**" / "Countries" · "**Full GCC coverage**" / "+ US & Egypt"
+- Countries: "Egypt · Saudi Arabia · UAE · Qatar · Kuwait · Bahrain · Oman · United States"
 
-**How it works**
-- Heading: "**How it works**"
-- Sub: "**No 47-slide proposals. No months of "discovery." We move fast because your business can't wait.**"
-- Step 01 "**Strategy call**": "**30 minutes. We learn your business, identify the bottlenecks, and tell you honestly if we can help.**" — note "**Free, no pitch**"
-- Step 02 "**Clear proposal**": "**Within 48 hours, you get a specific scope, timeline, and fixed price. No surprises later.**" — note "**Fixed pricing**"
-- Step 03 "**We build, you grow**": "**Regular updates, fast iterations, and a system that starts delivering results within weeks—not months.**" — note "**90-day results guarantee**"
+**Value proposition**
+- "**Most companies don't have a marketing problem.**" + accent "**They have a systems problem.**"
+- "**Disconnected tools, manual handoffs, and no clear line of sight from a lead to a closed deal. We connect the whole chain — how you acquire customers, how you convert them, and how you operate once they're in — so the parts work as one system you can actually measure.**"
 
-**Featured Case Study**
-- Badge: "**Success Story**"
-- Headline: "**How Petra Engineering Cut Proposal Time by 40%**"
-- Sub: "**From manual spreadsheets to automated quoting system that generates proposals in minutes.**"
-- Stats: "**40%**" / "**Faster**"; "**2×**" / "**Wins**"; "**90**" / "**Days ROI**"
-- CTA: "**Read Full Case Study**"
-- Card: "**Petra Engineering**" / "**Construction**"
-- Quote: "**"Omniflow engineered a competitive advantage. Our close rate jumped from 23% to 41%."**"
+**Pillars** — heading "**Three capabilities. One transformation partner.**"
+- "**AI training that turns tools into capability**" — "We run structured AI adoption programs for teams and leadership — from executive strategy sessions to hands-on workflow integration. The goal isn't awareness, it's operational capability: your people using AI on real work, not watching a demo."
+- "**Marketing built as an acquisition system**" — "SEO, paid campaigns, and conversion strategy wired into one engine that targets qualified buyers — not vanity traffic. Every stage is tracked, so you know what a lead actually costs and where revenue comes from."
+- "**Software that becomes your operational backbone**" — "The systems your business runs on — ERP and CRM platforms, customer-facing web, mobile apps, and the automation that connects them. Built to own, integrate, and scale, not to rent." — sub-capabilities: "Business Systems (ERP/CRM) · Web Platforms · Mobile Apps · Automation & AI"
 
-**Testimonials**
-- Heading: "**What clients actually say**"
-- Sub: "**Not marketing fluff. Real feedback from real projects.**"
-- T1: "**"Omniflow transformed our digital presence. Our close rate jumped from 23% to 41% in just 3 months."**" — **Ahmed Hassan**, CEO, Petra Engineering — "**Increased conversion by 78%**"
-- T2: "**"The automation system they built saved us over 300 hours per month in manual data entry."**" — **Sarah Johnson**, Operations Director, Reliance Hub — "**Saved 340+ hours monthly**"
-- T3: "**"Their B2B marketing strategy brought in qualified leads we never thought possible in our niche."**" — **Mohamed Ali**, Marketing Head, Madrid Contracting — "**Reduced CAC by 60%**"
+**Transformation** — "**From scattered tools to one connected system**"
+| Before | After |
+|---|---|
+| Tools that don't talk to each other | One integrated business system |
+| Marketing disconnected from operations | Acquisition, conversion, and operations connected |
+| Manual work slowing everything down | Automated workflows across the business |
+| No clear view of what's actually working | Real-time visibility into performance |
 
-**Featured Work**
-- Heading: "**Recent work**" / Sub: "**Projects that delivered measurable results**" / Link: "**View all projects**"
-- Fallback projects (if DB empty): "**Petra Engineering Website**" / Web Development; "**Reliance Hub Automation**" / Business Automation; "**Madrid Marketing Campaign**" / Digital Marketing
+**Proof** — "**Measured by outcomes, not deliverables**" / "Every engagement is tied to something your business can feel — revenue, efficiency, acquisition cost, scale. Here's the work behind that."
 
-**Guarantee**
-- "**90-day results guarantee**"
-- "**If we don't hit our agreed targets, you get a full refund. Simple as that.**"
-- Button: "**Let's talk**"
+**Recent work** — "**Recent work**" / "A look at the systems we've built."
 
-**Final CTA**
-- "**Ready to scale?**"
-- "**Book a free 30-minute call. We'll look at your current setup, identify the biggest opportunities, and tell you exactly what we'd do—even if you don't hire us.**"
-- Button: "**Book your free strategy call**"
-- "**No pitch. No pressure. Just honest advice.**"
+**How we work** — 01 **Diagnose** "We map your business model, systems, and the bottlenecks slowing growth." · 02 **Design** "We design the right mix of software, marketing, and automation for how you actually operate." · 03 **Build** "We develop and integrate the system, and hand you full ownership." · 04 **Optimize** "We keep improving it against real business data."
 
-### About (`About.tsx`) — hardcoded English
-- Badge: "**Our DNA**"
-- Headline: "**We are engineers who speak Business.**"
-- Sub: "**OmniflowAI wasn't founded by salespeople. It was founded by senior developers tired of seeing businesses overpay for "pretty" websites that break under pressure.**"
-- Founder heading: "**"I built this to fix the agency model."**"
-- Para 1: "**For 20 years, I worked in enterprise software. I saw a massive gap: Small and mid-sized businesses were getting trapped. Agencies would sell them a "custom site" that was really just a cheap template, or worse, hold their code hostage with monthly fees.**"
-- Para 2: "**I started OmniflowAI with one rule: Transparency.**"
-- Para 3: "**We don't hide behind jargon. We build robust, scalable systems using the same technology used by tech giants—and then we hand you the keys. No lock-in. No secrets. Just engineering excellence that drives your bottom line.**"
-- Founder: "**Mosatafa Hekal**" (⚠ likely typo for "Mostafa"), "**Founder & Technical Lead**"
-- Team heading: "**Meet the Builders**" / Sub: "**No outsourcing. No juniors learning on your dime. Just senior talent dedicated to your growth.**"
-- Team: "**Roaa Mohamed**" — Head of Design — "**Ex-Shopify designer obsessed with conversion rates and user psychology.**"
-- "**Saif Sallam**" — Lead Systems Architect — "**Specialist in ERPNext and high-scale database automation.**"
-- "**Faris Sallam**" — Growth Strategist — "**Direct-response marketer who turns traffic into qualified B2B leads.**"
-- Values: "**Code Ownership**" — "**You pay for it, you own it. We transfer full IP and source code upon completion.**"; "**Revenue First**" — "**We don't care about 'likes.' We care about leads, sales, and automation ROI.**"; "**Direct Access**" — "**You talk to the engineers building your product, not an account manager.**"; "**Zero Bloat**" — "**We use lean, modern tech stacks. No heavy plugins. No slow loading times.**"
-- CTA: "**Ready to work with adults?**" / "**Stop gambling on freelancers and templates. Partner with a team that builds assets, not liabilities.**" / Button "**Book a Strategy Call**"
+**Final CTA** — "**Ready to transform how your business runs?**" / "Book a strategy call. We'll look at your current systems and show you exactly what's blocking growth — even if you don't work with us." / button "Book your strategy call" / "No sales pitch. Just clarity."
 
-### Services (`Services.tsx`) — hardcoded English
-- Eyebrow: "**What we do**"
-- Headline: "**Three services. One goal.**"
-- Sub: "**We don't sell hours. We build systems that generate revenue, cut costs, and scale.**"
-- **Web Development** — tagline "**Your website should close deals, not just look pretty.**" — "**We build custom platforms that convert visitors into customers. Fast, mobile-first, and integrated with your existing tools. You own every line of code.**" — features: "Custom development (React, Next.js)", "CRM & ERP integrations", "Conversion-optimized design", "Full code ownership"
-- **Digital Marketing** — tagline "**Stop paying for traffic that doesn't convert.**" — "**We run campaigns that target decision-makers in your industry. SEO that ranks for buyer-intent keywords. Ads that pay for themselves.**" — features: "B2B-focused paid campaigns", "Technical SEO & content", "Conversion tracking", "Monthly performance reports"
-- **AI & Automation** — tagline "**Your team is too expensive for repetitive tasks.**" — "**We build intelligent workflows that handle the boring stuff. Your team focuses on closing deals while the system runs 24/7.**" — features: "Custom workflow automation", "AI chatbots for qualification", "CRM & tool integrations", "WhatsApp/SMS automation"
-- Each: "**Learn more**"; showcase card labels: "**Featured Project**", "**View Case Study**"
-- "Better together" heading: "**Better together**" / Sub: "**Each service works on its own. But when combined, they create a system that compounds—your website feeds your marketing, your marketing feeds your automation, and everything syncs.**"
-- Steps: "**01 Capture**" — "**Your website captures leads and collects the data you need to qualify them.**"; "**02 Attract**" — "**Marketing drives the right people to your site—decision-makers, not tire-kickers.**"; "**03 Automate**" — "**Automation qualifies leads, books meetings, and syncs everything to your CRM.**"
-- CTA: "**Not sure what you need?**" / "**Book a free call. We'll look at your current setup and tell you exactly what would move the needle—even if it's not something we do.**" / Button "**Book a free strategy call**"
+### Services
+- Eyebrow "What we do"; H1 "**Three capabilities.**" + "**One transformation partner.**"
+- Sub: "**Marketing that fills the pipeline, software that runs the business, and AI your team actually uses.**"
+- **AI Training** — "For teams using AI ad hoc — or not at all." / "We turn AI from scattered experiments into repeatable team capability." / steps: Assess · Locate · Train · Embed
+- **Marketing** (local display label for the `digital-marketing` pillar) — "For pipelines running on referrals and word of mouth." / "We turn scattered campaigns into one acquisition system that brings in qualified buyers." / steps: Audit · Target · Launch · Measure
+- **Software** — "For teams running the business on spreadsheets and disconnected tools." / "We turn manual workarounds into systems you own, integrate, and scale." / steps: Map · Design · Build · Integrate
+- Panel CTAs: "Book a strategy call" · "Explore {pillar}"
+- **Pain router** — "**Not sure which one fits?**" → "More qualified leads" · "Messy operations & tools" · "Team AI adoption" · "All of the above"
 
-### ServiceDetail (`ServiceDetail.tsx`) — hardcoded data object, 4 slugs
-Common labels: back "**← All services**"; CTAs "**Get started**", "**See examples**"; sections "**What's included**", "**How it works**" ("**No mystery. No endless meetings. Here's the process.**"), "**Common questions**"; bottom CTA "**Ready to get started?**" / "**Book a free call. We'll discuss your needs and tell you honestly if we're the right fit—no pressure, no sales pitch.**" / "**Book a free strategy call**". "Not found" fallback: "**Service not found**" / "**View all services**". Related-projects section (never shows): "**Proven Results**" / "**See how we've helped companies like yours.**" / "**View Full Portfolio**".
+### ServiceDetail (three pillar pages, all from i18n)
+Shared labels: "← All services", "See examples", "What's included", "How it works" / "No mystery. No endless meetings. Here's the process.", "Common questions", "Proven Results" / "See how we've helped companies like yours." / "View Full Portfolio", "Ready to get started?" / "Book a strategy call. We'll discuss your needs and tell you honestly if we're the right fit — no pressure, no sales pitch.", not-found "Service not found" / "View all services".
 
-- **website-development** — "**Web Development**" — "**Your website should close deals, not just exist.**" — desc: "**We build custom platforms that convert visitors into customers. Not templates. Not WordPress themes. Real software that integrates with your tools, captures the data you need, and scales with your business.**"
-  - Features: "Custom development" / "React, Next.js, or the right tool for the job. Built for performance and maintainability."; "Full code ownership" / "You own everything. No proprietary lock-in, no monthly fees to access your own site."; "CRM & tool integrations" / "Connected to your existing systems from day one. HubSpot, Salesforce, custom ERPs—we handle it."; "Conversion-focused design" / "Every page built to move visitors toward a specific action. Not just "looking good.""; "Mobile-first approach" / "Designed for phones first, because that's where your visitors are."; "Performance optimized" / "Fast load times, clean code, and built for SEO from the ground up."
-  - Process: Discovery / "We learn your business, goals, and technical requirements. 1-2 calls."; Proposal / "Clear scope, timeline, and fixed price within 48 hours."; Design / "Wireframes and visual design. You approve before we build."; Development / "We build, you review weekly. No surprises."; Launch / "Tested, optimized, and live. Training included."
-  - FAQ: "How long does a typical project take?" / "6-12 weeks depending on scope. We'll give you a specific timeline in the proposal."; "Do you do maintenance?" / "Yes, we offer optional maintenance packages. But you're never locked in—you can maintain it yourself or hire anyone."; "What if I already have a website?" / "We can rebuild from scratch or improve what you have. Depends on what makes sense for your situation."
-- **digital-marketing** — "**Digital Marketing**" — "**Stop paying for traffic that doesn't convert.**" — desc: "**We run campaigns that target decision-makers in your industry—not random clicks. SEO that ranks for buyer-intent keywords. Ads that pay for themselves. Everything tracked, measured, and optimized.**"
-  - Features: "B2B-focused campaigns" / "We target the people who actually make buying decisions. Job titles, company size, intent signals."; "Technical SEO" / "Site structure, page speed, schema markup—the foundation that makes content rank."; "Content that converts" / "Not blog posts for the sake of it. Content designed to capture search traffic that converts."; "Conversion tracking" / "You'll know exactly which channels and campaigns drive actual revenue, not just clicks."; "Landing page optimization" / "A/B testing and continuous improvement. Small changes, big impact."; "Monthly reporting" / "Clear reports on what's working, what's not, and what we're doing about it."
-  - Process: Audit / "We analyze your current marketing, competitors, and opportunities."; Strategy / "A clear plan with channels, budgets, and expected outcomes."; Setup / "Tracking, campaigns, and content created and launched."; Optimize / "Continuous testing and improvement based on real data."
-  - FAQ: "What's the minimum budget?" / "We typically work with clients spending $3k+/month on ads. Below that, the math rarely works."; "How long until we see results?" / "Paid: 2-4 weeks. SEO: 3-6 months for meaningful traffic. We'll set realistic expectations upfront."; "Do you guarantee results?" / "We guarantee our work, not market conditions. If we miss agreed targets in 90 days, we make it right."
-- **automation** — "**AI & Automation**" — "**Your team is too expensive for repetitive tasks.**" — desc: "**We build intelligent workflows that handle the boring stuff—lead qualification, appointment booking, data entry, follow-ups. Custom AI agents that work 24/7. Your team focuses on closing deals while the system runs.**"
-  - Features: "Workflow automation" / "n8n, Make, Zapier—whatever fits. Automated processes that connect all your tools."; "AI chatbots" / "Qualify leads, answer FAQs, and book meetings automatically. WhatsApp, web, or wherever."; "CRM automation" / "Leads automatically scored, tagged, and routed to the right person."; "Email & SMS sequences" / "Automated follow-ups that feel personal. Triggered by behavior, not just time."; "Data sync" / "No more manual copying between systems. Everything connected and up to date."; "Custom AI agents" / "Trained on your data. Handles your specific use cases, not generic responses."
-  - Process: Map / "We document your current workflows and identify automation opportunities."; Prioritize / "Focus on highest-impact automations first. Quick wins that prove value."; Build / "We develop and test the automation. You review and approve."; Train / "Your team learns how it works. Documentation included."
-  - FAQ: "Will this replace my team?" / "No. It handles the tasks they shouldn't be doing manually, so they can focus on higher-value work."; "What if something breaks?" / "We include monitoring and alerts. You'll know before your customers do. Support packages available."; "How do you price this?" / "Project-based for builds, optional retainer for ongoing support. No surprises."
-- **ai-agents** — "**AI Agents**" — "**Intelligent automation that works 24/7.**" — desc: "**Custom AI agents trained on your data. Handle customer inquiries, qualify leads, and automate repetitive tasks around the clock.**"
-  - Features: "24/7 availability" / "Your AI agent never sleeps, never takes breaks, never has a bad day."; "Trained on your data" / "Not generic responses. Answers based on your products, services, and processes."; "Multi-channel" / "WhatsApp, web chat, email—wherever your customers are."; "Seamless handoff" / "Complex issues get routed to humans with full context. No starting over."; "Continuous learning" / "Gets smarter over time based on real interactions."; "Analytics dashboard" / "See what people ask, how the bot performs, and where to improve."
-  - Process: Scope / "Define what the agent should handle and what it shouldn't."; Train / "Feed it your knowledge base, FAQs, and example conversations."; Test / "Internal testing before any customer sees it."; Launch / "Gradual rollout with monitoring and refinement."
-  - FAQ: "How accurate is it?" / "Depends on training quality. We aim for 90%+ first-response accuracy."; "What about edge cases?" / "Graceful handoff to humans. The bot knows what it doesn't know."; "Can it integrate with our CRM?" / "Yes. HubSpot, Salesforce, Pipedrive, or custom systems."
-  - ⚠ Note: `/services/ai-agents` slug exists in ServiceDetail data but is **not linked** from the Services list page (which only lists website-development, digital-marketing, automation). Reachable only by direct URL.
+- **software** — "Software that becomes your operational backbone" / "ERP and CRM platforms, customer-facing web, mobile apps, and the automation that connects them — designed to own, integrate, and scale." / CTA "**Build your system**"
+  - Features (with descriptions): Business Systems (ERP / CRM) · Web Platforms · Mobile Apps · Automation & AI
+  - Process: Discovery · Proposal · Design · Build · Launch
+  - FAQ: "Do we own the code?" → "Yes. Full source code and IP transfer on completion. No lock-in, no fees to access your own system." · "Can it integrate with our existing tools?" · "How long does a build take?" · "What if we already have a system?"
+- **digital-marketing** — "Marketing built as an acquisition system" / CTA "**Scale your acquisition**"
+  - Features (titles only, no descriptions): Paid campaigns (Google / Meta / LinkedIn) · Buyer-intent SEO · Conversion-rate optimization · Funnel strategy & tracking
+  - Process: Audit · Strategy · Setup · Optimize
+  - FAQ: "What's the minimum to make this work?" → "We're honest about fit — we're upfront about whether the budget justifies the work, and we'll tell you before you commit." · "How fast do results come?" · "Do you guarantee results?" → "We guarantee our work and our process, not market conditions."
+- **ai-training** — "AI training that turns tools into capability" / CTA "**Start your AI program**"
+  - Features (titles only): Executive AI strategy sessions · Department-level adoption programs · Hands-on workflow integration workshops · Implementation support
+  - Process: Assess · Design · Train · Embed
+  - FAQ: "Is this generic AI training?" → "No. Programs are built around your actual workflows and tools, not a stock curriculum." · "Who is it for?" · "What do we walk away with?"
 
-### Portfolio (`Portfolio.tsx`)
-- Heading: "**Selected Work**"
-- Sub: "**A curation of digital infrastructure and growth systems engineered for market leaders.**"
-- Filter tabs (capitalized): "all", "build", "attract", "automate"
-- Empty state: "**No projects found in this category.**"
-- (Project cards render `title`, `category`, `client` from DB.)
+> Note: the digital-marketing and ai-training feature lists intentionally ship **titles with empty descriptions** (`description: ''`); `ServiceDetail` guards on `feature.description` so nothing empty renders. Software is the only pillar with full feature prose.
 
-### ProjectDetail (`ProjectDetail.tsx`)
-- Back: "**Back to Portfolio**"
-- Error: "**Project not found**"
-- Mobile CTA: "**Start a Project Like This**"
-- Sections: "**The Challenge**", "**The Solution**", sidebar "**Tech Stack**", CTA "**Start Your Project**"
-- (title/description/challenge/solution/results/technologies from DB.)
+### Portfolio / ProjectDetail
+- "**Selected Work**" / "A curation of digital infrastructure and growth systems engineered for market leaders." / empty: "No projects found in this category."
+- Deep-link banner: "Showing **{pillar}**" + "View all work"
+- ProjectDetail: "Back to Portfolio", "Project not found", "Start a Project Like This", **"The Problem"**, **"The Diagnosis"**, **"The System"**, "Tech Stack", "Start Your Project"
 
-### Contact (`Contact.tsx`)
-- Heading: "**Contact Us**" (rendered via `t("Contact Us")` → key missing → literal fallback)
-- Sub: "**Tell us about your project. We'll tell you if we can help.**"
-- Labels: "**Name**", "**Email**", "**Phone** (Optional)", "**Company** (Optional)", "**Service**", "**Message**"
-- Placeholders: "**Ahmed Hassan**", "**ahmed@example.com**", "**+20 100 000 0000**", "**Your Company**", "**Select a service**", "**Tell us about your project goals...**"
-- Service options: "**Website Development**", "**AI Agents**", "**Business Automation**", "**Digital Marketing**", "**Other**"
-- Submit: "**Submit**" / "**Submitting**" (via missing i18n keys → literal)
-- Sidebar "**Info**": Email "**contact@omniflowai.agency**"; Phone "**Available upon request**"; Response Time → **"contact.info.hours"** (⚠ missing key renders literally)
-- "**Quick Response Guarantee**": "**We typically respond to all inquiries within 24 hours during business days. For urgent matters, please mention it in your message.**"
-- Success toast: title = **"contact.success"** (⚠ literal key), desc "**We will get back to you within 24 hours.**"
-- Error toast: title = **"contact.error"** (⚠ literal key), desc "**Please try again or email us directly.**"
+### Contact
+- "**Let's talk**" / "**Tell us about your business and what's slowing it down. We'll tell you honestly if we can help.**"
+- Labels: Name · Email · Phone (optional) · Company (optional) · **What do you need?** · Message
+- Placeholders: "Your name", "you@company.com", "+20 100 000 0000", "Your Company", "Select a service", "Tell us about your project goals..."
+- Buttons: "Send message" / "Sending…"
+- Sidebar "Contact details": Email `contact@omniflowai.net` · Phone "Available on request" · Response Time "Within 24 hours on business days"
+- "**Quick Response Guarantee**" / "We typically respond to all inquiries within 24 hours during business days. For urgent matters, please mention it in your message."
+- Toasts: "Message sent — we'll get back to you within 24 hours." / "Something went wrong — please try again, or email us directly."
 
-### Admin — Auth (`admin/Auth.tsx`)
-- Brand: "**OmniflowCMS**" / "**Content Management System**"
-- "**Welcome Back**" / "**Sign in to access your dashboard**"
-- Labels: "**Username**" (ph "Enter your username"), "**Password**" (ph "Enter your password")
-- Button: "**Sign In**"; footer "**Protected area. Authorized personnel only.**"
+### Footer
+- Tagline: "**We build the systems behind business growth.**"
+- Services: AI Training · Digital Marketing · Software — Company: About · Work · Contact
+- Newsletter: "**Practical notes on AI, marketing, and the systems that connect them — straight to your inbox.**" / placeholder "Enter your email" / toasts "Thanks — you're subscribed." / "Something went wrong, please try again."
+- Location: "` Wilmington, DE, USA`" (⚠ leading space in the string)
+- Copyright: "© {year} **Omniflowai LLC · Registered in Wyoming, USA**"
 
-### Admin — Dashboard (`admin/Dashboard.tsx`)
-- Header brand "**OmniflowCMS**"; "**Logout**"; "**Portfolio**"; "**Add Project**"
-- Dialog title: "**Create New Project**" / "**Edit Project**"
-- Visibility toggles: "**Featured**" ("Show on Home Page "Recent Work""), "**Showcase**" ("The main hero project on Services page (Max 1 per category)"), "**Detail Page**" ("List this project in "Our Work" section of the service detail page")
-- Fields: "**Project Title**" (ph "Luxury Website"), "**Client Name**" (ph "Client Co."), "**Category**" (Build (Web Dev) / Attract (Marketing) / Automate (AI)), "**Image**", "**Short Description**", "**Challenge**", "**Solution**", "**Results (one per line)**", "**Technologies (one per line)**"
-- Buttons: "**Cancel**", "**Save Project**" / "**Saving...**"
-- Delete dialog: "**Are you sure?**" / "**This will permanently delete this project.**" / "**Cancel**" / "**Delete**"
-- Toasts: "Project added to portfolio", "Project details updated successfully", "Project removed from portfolio"
+### About
+- Badge "Who we are"; H1 "**Engineers who understand business.**"
+- Sub: "**OmniflowAI is a digital transformation partner built around one belief: most companies don't need more tools — they need the right systems, built well and connected properly.**"
+- Story: "**We started OmniflowAI to close a gap.**" + three paragraphs on fragmentation, building systems that fit how the business operates, and full ownership / no lock-in / no black boxes.
+- Values: "Systems over services" · "You own it" · "Engineering-led" · "Measured by outcomes"
+- CTA: "**Let's map your systems**" (body reuses the global brand line)
 
-### NotFound (`not-found.tsx`)
-- "**404 Page Not Found**"
-- "**Did you forget to add the page to the router?**" (⚠ developer-facing placeholder copy shown to end users)
-
-### Meta / `<head>` (`client/index.html`)
-- `<title>`: "**OmniflowAI - Design & Automation**"
-- `<meta name="description">`: "**OmniflowAI - Custom Websites & AI-Powered Automation.**"
-- `<meta property="og:title">`: "**OmniflowAI**"
-- No other OG/Twitter tags, no canonical, no favicon PNG (favicon is an SVG referenced as `type="image/png"`).
-
-### i18n dictionary strings (`i18n.tsx`) — MOSTLY ORPHANED
-The dictionary contains a full EN + AR set (hero, problem/solution, "3 systems" services, footer, final CTA, testimonials). **Only `nav.*` and `hero.cta.secondary` are actually consumed by the app.** The rest (below) is **dead copy not shown on any current page** — it describes an older "Operational System / 3 Systems" positioning:
-- EN hero (unused): badge "Operational Partner"; "Turn Digital Presence Into **Revenue Infrastructure**"; "We don't just build websites. We engineer the systems that cut costs, automate workflows, and capture data for serious businesses."; CTAs "Book Strategy Call" / "Start Consultation".
-- EN problem (unused): "The Agency Model is Broken." / "You don't need another redesign. You need operational clarity." + 3 gap/fix blocks.
-- EN systems (unused): "The Operational System" / "Three integrated layers. One scalable engine." + Infrastructure/Growth/Automation blocks.
-- EN footer/CTA (unused): "Engineered for Scale."; "© 2026 OmniflowAI. All rights reserved."; "Stop Guessing. Start Scaling."; "Partner Feedback".
-- Full Arabic mirror of all the above exists but is likewise unused except `nav.*` and the nav CTA.
+### 404 / meta
+- "**Page not found**" / "The page you're looking for doesn't exist or has moved." / "Back to home"
+- `<title>` and OG/Twitter: "**OmniflowAI — Your Digital Transformation Partner**"; description "OmniflowAI is your digital transformation partner — we build systems for growth across AI training, digital marketing, and business software." Favicon correctly declared `type="image/svg+xml"`.
 
 ---
 
-## 8. Positioning & Messaging (as currently expressed)
+## 8. Positioning & Messaging
 
-- **Tagline / value prop (live)**: "**We build the systems that grow your business**" — supported by "Websites that convert. Marketing that targets the right buyers. Automation that saves your team hundreds of hours. All engineered to pay for itself."
-- **Core stance**: engineering-led, anti-agency, transparency, code ownership, revenue-first ("We don't sell hours. We build systems that generate revenue, cut costs, and scale.").
-- **Services named as** (live Services page):
-  1. **Web Development** — "Your website should close deals, not just look pretty."
-  2. **Digital Marketing** — "Stop paying for traffic that doesn't convert."
-  3. **AI & Automation** — "Your team is too expensive for repetitive tasks."
-  - Internal 3-pillar taxonomy: **build / attract / automate**. A 4th service **AI Agents** exists as a detail page but is unlinked.
-- **Claims / stats / social proof currently on the site:**
-  - "Trusted by 50+ Businesses" (hero badge) — but "Trusted by 21+ teams" in the logos section (⚠ inconsistent; 21 = number of logo files).
-  - Hero metrics: 340h saved/mo, 60% less CAC, 100% ownership.
-  - Results card: $150 cost/lead (62% ↓), 340hrs time saved (≈2 FTEs), 6.8× avg client ROI within 12 months.
-  - Petra Engineering case: cut proposal time 40%, 2× wins, 90-day ROI, close rate 23%→41%.
-  - 90-day results guarantee with "full refund."
-  - 3 named testimonials (Ahmed Hassan/Petra, Sarah Johnson/Reliance Hub, Mohamed Ali/Madrid Contracting) — first-name Western + Arabic mix; **note the testimonial quotes and case-study numbers are hardcoded and not tied to real DB data**.
-  - 21 client logos (marquee).
-- ⚠ **Messaging drift**: the i18n dictionary still carries an older, sharper "Revenue Infrastructure / Operational System / 3 integrated layers" positioning that has been superseded by the current friendlier hardcoded copy. Two positionings coexist in the repo; only the hardcoded one ships.
+- **Category**: digital transformation partner — not an agency, not a vendor.
+- **Differentiator (BUILD_PLAN P1)**: **diagnosis before tooling.** "We look before we touch; we only build what the diagnosis supports." The hero leads with it and the process section (Diagnose → Design → Build → Optimize) reinforces it.
+- **Master metaphor (P2)**: the connected system — hexagon, nodes, links, one orange. Expressed literally in the hero's `InteractiveSystemMap` and structurally in the before/after section.
+- **Three settled pillars** (`shared/taxonomy.ts`): **AI Training · Digital Marketing · Software**. The old service names (Web Dev, AI Agents, Automation as a standalone service, Revenue Systems) are gone from the UI, and old URLs redirect into the pillars.
+- **Six portfolio categories** roll up to those pillars: `business-systems`, `web`, `mobile`, `automation` → software; `digital-marketing` → digital-marketing; `ai-training` → ai-training.
+
+### Claims currently on the site — and what backs them
+| Claim | Source |
+|---|---|
+| "50+ projects delivered" | founder-provided, hardcoded in i18n |
+| "8 countries" / "Full GCC coverage + US & Egypt" | founder-provided, hardcoded in i18n |
+| 32 client logos in the marquee | real logo files in the repo |
+| Per-project results on cards and detail pages | **CMS-entered only** — render nothing when absent |
+
+**There are no fabricated numbers anywhere.** The previous version's testimonials (Ahmed Hassan / Sarah Johnson / Mohamed Ali), the Petra case-study banner, the "$150 cost/lead · 340 hrs saved · 6.8× ROI" dashboard, the "90-day results guarantee with full refund", and the "Trusted by 50+ / 21+" contradiction have **all been removed**. The Home proof and recent-work sections simply do not render when the database is empty — there are no placeholder project cards.
+
+### ⚠ Remaining messaging inconsistency
+The footer states a **Wilmington, Delaware** address alongside "**Registered in Wyoming, USA**". Two different US states in adjacent lines. One of them is presumably the registered agent and the other the mailing address, but as written it reads as a contradiction to a careful visitor. Worth a founder decision, not a code fix.
 
 ---
 
 ## 9. Portfolio / Case Studies / Services Content
 
-### Where content lives — the important part
-- **Services content**: **hardcoded** in components. The Services overview array is in `Services.tsx`; the full per-service detail (features/process/FAQ) is a hardcoded `services` object in `ServiceDetail.tsx`. No CMS, no data file.
-- **Testimonials, hero stats, "How it works", case-study banner (Petra)**: **hardcoded** in `Home.tsx`.
-- **Portfolio projects**: **dynamic, from the Postgres database** via the API (`/api/projects`), managed through the admin CMS. There is **no seed data / JSON** for projects in the repo — the portfolio is empty until an admin adds projects through `/admin/dashboard`.
-  - Home "Recent work" uses DB projects, else falls back to 3 hardcoded placeholder cards (Petra/Reliance/Madrid using client logos as images).
-  - Portfolio page and ProjectDetail are **100% DB-driven** (empty state if none).
-- **Project schema** (`shared/schema.ts`, table `projects`): `id, title, client, category (build|attract|automate), description, challenge, solution, results: string[], technologies: string[], image (base64 data-URI or URL), isFeatured, isServiceShowcase, showOnServicePage`.
-- **CMS behavior** (`server/storage.ts`): enforces **max one `isServiceShowcase` per category** (auto-unsets others). `isFeatured` → Home; `isServiceShowcase` → Services hero; `showOnServicePage` → service detail list.
+### Where content lives
+| Content | Source |
+|---|---|
+| All marketing copy (Home, Services, ServiceDetail, About, Portfolio chrome, Contact, Footer, 404) | **i18n dictionary** (`lib/i18n.tsx`), EN + AR |
+| Portfolio projects | **Postgres**, via `/api/projects`, managed in `/admin/dashboard` |
+| Per-project results / metrics | **Postgres** (`results: string[]`), CMS-entered |
+| Client logos, team photo | static imports from `client/src/assets/` |
 
-### Actual case-study / portfolio content present in the repo
-- **None as data.** The only "case study" text baked into code is the **Petra Engineering** banner on Home (verbatim in §7) and the 3 testimonials. Real portfolio entries must be created at runtime via the admin dashboard; the repo ships with an empty projects table.
+**No page hardcodes a display string.** The only English strings outside i18n are in the admin CMS, which is English-only by convention.
+
+### Project schema (`shared/schema.ts`, table `projects`)
+`id · title · client · category (Category enum from taxonomy) · description · challenge · diagnosis (nullable) · solution · results: string[] · technologies: string[] · tags: string[] (default []) · image (base64 data URI or URL) · isFeatured · isServiceShowcase`
+
+- The narrative is explicitly **Problem → Diagnosis → System → Outcome**. `diagnosis` is nullable and renders only when present — never fabricated.
+- `tags` is free-text per-project sub-categorisation (e.g. "ERP", "Lead Gen", "RAG chatbot"), not a fixed taxonomy.
+- **The pillar is not stored.** It is always derived from `category` via `CATEGORY_TO_PILLAR`.
+- `showOnServicePage` (from the old schema) is **gone** — ServiceDetail now derives its related projects from the category→pillar mapping instead of a flag.
+
+### CMS behaviour (`server/storage.ts`)
+- `isFeatured` → Home "Proof" section (sorted by `PROOF_ORDER`: business-systems → automation → digital-marketing → web → mobile → ai-training).
+- Non-featured projects → Home "Recent work" carousel (max 6).
+- `isServiceShowcase` → enforced **unique per category** by `ensureUniqueShowcase` on create and update. ⚠ **No page consumes it** — see §12.
+
+### Actual case-study content in the repo
+**None as data.** The repo ships with an empty `projects` table; every portfolio entry is created at runtime through the admin dashboard. Unlike the previous version, the site degrades cleanly to nothing rather than to placeholder cards.
 
 ---
 
 ## 10. Assets
 
 ### Present and used
-- **Client logos** — `client/src/assets/clients/` (21 PNGs), all imported in `Home.tsx` marquee & fallback cards:
-  `Beit_el3tara.png, Cutz.png, darat.png, Dar-ELmaaly.png, Decork.png, electromeca.png, elkhateer.png, elmodhsh.png, Gzour.png, Ipec.png, kayan.png, Madrid.png, mashareeb.png, n2oosh.png, naas.png, Petra.png, "Plugin talents.png" (has a space), Princess.png, rafeek.png, "Reliance Hub.png" (has a space), ta2deer.png`.
-- **Team photos** — `client/src/assets/team_images/` (4 JPEGs), used in `About.tsx`: `founder.jpeg`, `headofdesign.jpeg`, `headofsoftware.jpeg`, `headofmarketing.jpeg`.
-  - ⚠ `headofmarketing.jpeg` is imported as `MarketingImage` and used for "Faris Sallam / Growth Strategist"; naming vs. role is a bit mismatched but functional.
-- **Favicon** — `client/public/favicon.svg`: orange (`#f97316`) hexagon (Lucide-style), 1200×1200. Referenced in `index.html` as `type="image/png"` (⚠ wrong MIME).
-- **Icons** — all via `lucide-react` (and `react-icons` is installed but I found no usage in pages).
+- **Client logos** — `client/src/assets/clients/`, **34 files on disk, 32 imported** into the Home marquee:
+  `Petra, Reliance Hub, Madrid, Ipec, electromeca, n2oosh, Dar-ELmaaly, elkhateer, Beit_el3tara, elmodhsh, Decork, Princess, naas, ta2deer, Gzour, mashareeb, Cutz, kayan, darat, rafeek, 5minutes, alforat, arcade, cleaning, elgabry, gewiss, imagehome, jotun, majarrah, oem, pioneer, thaki`
+- **Team photo** — `client/src/assets/team_images/omniflowai-team.webp` (one group photo, used in the About story section). The four individual portraits from the previous version are gone, along with the team grid.
+- **Favicon** — `client/public/favicon.svg`, correctly referenced as `type="image/svg+xml"` (the old wrong `image/png` MIME is fixed).
+- **Icons** — all `lucide-react`.
+- **`scripts/optimize-logos.mjs`** — a one-off utility for compressing the logo set.
 
-### Present but NOT used (orphaned)
-- `attached_assets/generated_images/` — 3 PNGs, **not referenced anywhere in `client/src`**:
-  `hero_workspace_collaboration_scene.png`, `ai_automation_visual_concept.png`, `website_dashboard_mockup_showcase.png`. (These match the "hero image / dashboard mockup" the design guidelines call for — they were generated but never wired in; the hero uses a CSS card instead.)
-- `attached_assets/Pasted-*.txt` — 4 raw text dumps of prompts / pasted code (development scratch, not shipped).
+### Present but NOT used
+- `client/src/assets/clients/elmodhesh.png` — a near-duplicate of `elmodhsh.png`; only the latter is imported.
+- `client/src/assets/clients/Plugin talents.png` — not imported (filename contains a space).
+- `attached_assets/generated_images/` — 3 PNGs (`hero_workspace_collaboration_scene`, `ai_automation_visual_concept`, `website_dashboard_mockup_showcase`), **still referenced nowhere**.
+- `attached_assets/Pasted-*.txt` — 4 raw prompt/code dumps (development scratch).
 
-### Placeholder / external image behavior
-- Every project image has an `onError` fallback to `https://placehold.co/600x400?text=No+Image` (external placeholder service).
-- Hero/marquee noise texture loaded from external `https://grainy-gradients.vercel.app/noise.svg`.
-- No hero photograph is used on Home despite the design guidelines specifying one — replaced by the coded "Results Dashboard" card.
+### Image handling
+- Every DB-sourced image uses `loading="lazy" decoding="async"` plus `onError={onImageError}` → a **local inline-SVG "No image" fallback**. No external placeholder service, and the old `grainy-gradients.vercel.app/noise.svg` texture is gone — there are now **no external image requests** beyond Google Fonts.
 
 ---
 
 ## 11. Forms & Integrations
 
-### Contact form
-- Client: `Contact.tsx`, React Hook Form + Zod (`contactFormSchema`), submits **POST `/api/contact`** via `apiRequest` (TanStack mutation). Fields: name, email, phone?, company?, service (enum), message.
-- Server: `routes.ts` `/api/contact` **validates with Zod and returns `{ success: true, message: "Thank you for your inquiry." }` — it does NOT persist, email, or forward the submission anywhere.** ⚠ **Leads go into the void.** No email service, no DB table for contacts, no webhook.
-- On success the UI shows a toast (with a literal missing-key title, see §7/§12).
+### Contact form → real lead capture
+- **Client**: `Contact.tsx`, React Hook Form + `zodResolver(contactFormSchema)`. Fields: name, email, phone?, company?, service (enum = the three pillars + `other`), message. Default service is `PILLARS[2]` (`software`).
+- **Server** (`POST /api/contact`): validates with Zod → `storage.createLead(...)` → **persists to the `leads` table** → `void notifyNewLead(lead)` (fire-and-forget) → `{ success: true }`.
+- **Failure is honest**: if the insert throws, the endpoint returns **500** with `{ success: false }`. It never fakes success.
+- **Email**: Resend, `from: "OmniflowAI Leads <onboarding@resend.dev>"`, `to: NOTIFY_EMAIL || CONTACT_EMAIL`. Skipped with a log line when `RESEND_API_KEY` is absent; a send failure is caught and logged, never surfaced to the user (the lead is already saved).
 
-### Newsletter (footer)
-- Input + send button exist but have **no `onSubmit`/handler and no state** — purely decorative. ⚠ Non-functional.
+### Newsletter (footer) → also a lead
+`POST /api/subscribe` validates an email with `newsletterSchema`, then `storage.createNewsletterLead(email)` inserts a `leads` row with `source: "newsletter"` and `name`/`service`/`message` left **null** (genuinely absent, not faked). Same fire-and-forget notification. Surfaces in `/admin/leads` with a distinct source badge.
 
-### Admin auth
-- POST `/api/login` (passport-local), `/api/logout`, GET `/api/user`. Passwords hashed with **scrypt** (`crypto`), timing-safe compare.
-- **Seeded admin** on server boot: username `admin`, password `Admin@admin1234` (hardcoded in `routes.ts` `seedAdminUser`, and documented in `replit.md`). ⚠ Hardcoded credentials in source/docs.
-- Session: `express-session` + **in-memory** `memorystore`, **hardcoded secret `"omniflow-secret-key"`**, cookie `maxAge` 24h, `saveUninitialized:false`. ⚠ Sessions reset on restart; secret in source; cookie not marked `secure`/`httpOnly` explicitly.
+> ⚠ **`CLAUDE.md` drift**: the project instructions mention a `subscribers` table and a `Subscriber` type. Neither exists in `shared/schema.ts` — newsletter signups live in `leads`. The instruction file should be corrected.
 
-### Project CRUD API (`/api/projects`)
-- `GET /api/projects` (public; optional `?category=&showOnServicePage=`), `GET /api/projects/showcase`, `GET /api/projects/:id`.
-- `POST/PATCH/DELETE /api/projects` — **auth-required** (`isAuthenticated`).
-- Validation on POST via `insertProjectSchema` (drizzle-zod).
+### Leads admin (`/admin/leads`)
+`GET /api/leads` (newest first), `PATCH /api/leads/:id` (status ∈ `new | read | archived`, validated server-side), `DELETE /api/leads/:id`. All `isAuthenticated`.
+
+### Project CRUD (`/api/projects`)
+- Public: `GET /api/projects` (optional `?category=`), `GET /api/projects/showcase`, `GET /api/projects/:id`.
+- Auth-required: `POST` (validated by `insertProjectSchema`), `PATCH`, `DELETE`.
 
 ### Image upload
-- `POST /api/objects/upload` (auth-required, multer 5MB) → converts to **base64 data-URI**, returns `{ url }`, saved into DB text column. No cloud bucket. Client cap 4MB, accepts png/jpeg/jpg/webp.
+`POST /api/objects/upload` — auth-required, multer memory storage, 5 MB server cap (client rejects >4 MB), accepts png/jpeg/jpg/webp → `sharp` → base64 WebP data URI → `{ url }` → saved into the DB text column.
+
+### Auth & session
+- `POST /api/login` (passport-local), `POST /api/logout`, `GET /api/user`.
+- Passwords hashed with **scrypt** + random salt, compared with `timingSafeEqual`.
+- An `admin` user is seeded on boot from `ADMIN_PASSWORD`; a warning is logged if the env var is unset and the built-in default is used.
+- Session: `connect-pg-simple` over the Neon pool, `tableName: "session"`, secret from `SESSION_SECRET` (warned fallback), cookie `maxAge` 24 h, `httpOnly: true`, `sameSite: "lax"`, `secure` in production.
+- The client `ProtectedRoute` is **UX only** — `isAuthenticated` on the server is the real boundary, and it covers every mutating project route plus all of `/api/leads`.
 
 ### Analytics
-- **GA4** via `VITE_GA_MEASUREMENT_ID`. `initGA()` injects gtag scripts; `useAnalytics` tracks page views on route change. **Gracefully no-ops when the env var is absent** (and it is absent locally). No other analytics/chat widgets (the "chat" is just a WhatsApp deep-link button).
+GA4 via `VITE_GA_MEASUREMENT_ID`; `initGA()` is wrapped in try/catch in `App.tsx` and `useAnalytics()` is wrapped again in `Router`. Absent env var → complete no-op. No other analytics or chat widgets; the "chat" is a WhatsApp deep link.
 
-### API keys referenced
-- None committed. Only env-var names (`DATABASE_URL`, `VITE_GA_MEASUREMENT_ID`). The WhatsApp number `201092849400` and emails are hardcoded but not secrets.
+### Secrets
+None committed. Only env-var names. The WhatsApp number `201119936014` and `CONTACT_EMAIL` are in source but are not secrets.
 
 ---
 
-## 12. Incomplete / Broken / Placeholder — the Punch List
+## 12. Punch List — Incomplete / Orphaned / Inconsistent
 
-**Broken / non-functional**
-1. **Contact form submissions go nowhere** — `/api/contact` validates and returns success without storing/emailing. No lead capture despite the form working end-to-end visually.
-2. **Contact page missing i18n keys render as raw keys**: the "Response Time" value shows literally **`contact.info.hours`**; success/error toast titles show **`contact.success`** / **`contact.error`**. (Other Contact labels like "Name"/"Email" happen to read fine only because the missing key equals the English word.)
-3. **ServiceDetail "Proven Results" section never renders.** Its query uses `apiRequest("GET", …)` which returns a raw `Response` object (not parsed JSON); `relatedProjects.length` is therefore `undefined`, so the guarded section is always hidden. Related projects will never appear on service pages even if `showOnServicePage` is set.
-4. **Newsletter signup (footer)** — input + button with no handler/state. Dead.
-5. **Footer social icons** (`Twitter`, `Github`, `Linkedin`) all `href="#"` — dead links.
-6. **Footer/bottom legal links `/privacy`, `/terms`, `/sitemap`** and Company-column `/privacy` — routes don't exist → land on the 404 page.
-7. **NotFound page shows developer copy** to end users: "Did you forget to add the page to the router?" (also light-themed, clashing with the dark site).
+### Deliberately frozen (do not "fix" without being asked)
+1. **`TODO(team-final)`** — the About team grid is not rendered and the founder/team attribution is frozen pending a dedicated content pass. Its i18n keys (`about.team.heading`, `about.team.sub`) exist but are unused in both languages.
+2. **`TODO(email-final)`** — `CONTACT_EMAIL = "contact@omniflowai.net"` is a placeholder.
+3. **`TODO(social-final)`** — `SOCIAL_LINKS` are all empty strings; the footer renders no social icons by design.
+4. **`TODO(legal-final)`** — no `/privacy`, `/terms`, or `/sitemap` pages; the footer links were removed rather than left dead.
+5. **`TODO(Layer3-proof)`** — the Home proof section reserves space for an aggregate stat strip, deliberately empty until real aggregate metrics exist.
 
-**Dead / orphaned code & assets**
-8. **`ROICalculator.tsx`** — a full interactive component (sliders, Recharts, savings calc) **imported nowhere**. Not on any page.
-9. **`client/src/pages/admin/ProjectEditor.tsx`** — **0 bytes / empty file**.
-10. **i18n dictionary is ~90% orphaned** — only `nav.*` + `hero.cta.secondary` are used. All hero/problem/systems/footer/testimonials keys (EN + AR) are unused, and describe a *different, older positioning* ("Revenue Infrastructure / Operational System").
-11. **`framer-motion`** installed, imported nowhere. **`react-icons`** installed, no usage found. `next-themes`, `@tailwindcss/vite`, `tw-animate-css`, GCS `objectAcl.ts` — present but effectively unused/dead.
-12. **`attached_assets/generated_images/`** — 3 generated hero/dashboard PNGs never referenced; `attached_assets/*.txt` are prompt scratch files.
+### Orphaned code / content
+6. **17 orphaned i18n keys** (× 2 languages = 34 strings), all leftovers from superseded layouts:
+   - `home.trust` — the generic "Trusted by teams shaping the future." line, replaced by the concrete reach headline.
+   - `services.learnMore`, `services.featuredProject`, `services.viewCaseStudy`, `services.together.{title,sub,capture.*,attract.*,automate.*}`, `services.cta.{title,body,button}` — from the old card-list Services page, replaced by the pillar tablist + pain router.
+   - `about.team.heading`, `about.team.sub` — see item 1.
+7. **`isServiceShowcase` is orphaned in the UI.** The CMS exposes the toggle, `storage.ensureUniqueShowcase` enforces one-per-category, and `GET /api/projects/showcase` exists — but **no client code calls that endpoint or reads the flag**. The Services page it was built for no longer renders project cards. Either wire it back in or retire it; right now admins can set a flag that changes nothing.
+8. **`components/systems/`: `SystemMap`, `HexNode`, `FlowLine`, and `ProductFrame` are not on any page.** `SystemMap` and `ProductFrame` are exported with no consumer; `FlowLine` is reachable only through the unused `SystemMap`; **`HexNode` is imported by nothing at all** — both maps draw their hexagons directly via `hexPath` from `primitives.ts`, so the node component was superseded. This is a partially-built design-system module rather than accidental dead code, but it still ships in the bundle.
+9. **Unused assets**: `attached_assets/generated_images/` (3 PNGs), `clients/elmodhesh.png` (duplicate), `clients/Plugin talents.png`.
+10. **Unused dependencies**: `memorystore`, `date-fns`, `zod-validation-error`, `@jridgewell/trace-mapping` have no import anywhere. `@types/multer` sits in `dependencies` rather than `devDependencies`.
 
-**Bilingual is largely non-functional**
-13. Switching to **Arabic** only: (a) changes the 5 nav labels + nav CTA, and (b) sets `dir="rtl"` + `lang`. **All page body content (Home, About, Services, ServiceDetail, Portfolio, ProjectDetail, Contact, Footer) stays hardcoded English.** The site is not actually bilingual in content, despite `replit.md`/design docs claiming "Full English and Arabic translations." `About.tsx` even imports `t` but never calls it.
+### Content / config inconsistencies
+11. **Footer address vs. registration**: " Wilmington, DE, USA" alongside "Registered in Wyoming, USA" — two states, reads as a contradiction. Also note the **leading space** in the `footer.location` string.
+12. **`--font-mono` is referenced but never defined.** `tailwind.config.ts` maps `mono: ["var(--font-mono)"]`; the variable exists in no stylesheet, so `font-mono` (used on the admin results/technologies textareas) resolves to the browser default.
+13. **Design-token drift** — `ServiceDetail.tsx` and the three admin pages still use raw `orange-*` / `amber-*` utilities and `bg-[#0a0a0b]` instead of the `brand-*` / `bg-primary` / `bg-surface` tokens the config exposes. Several pages also keep decorative `from-orange-950/…` gradients. P5 ("single accent, one token set") is not yet fully enforced outside the swept pages.
+14. **Residual physical-direction classes on public pages** (minor RTL drift): `ProjectDetail.tsx` uses `pl-6 border-l-2` for the three narrative blocks and `border-l … pl-4` for the client divider — in Arabic these sit on the wrong side. Also `Contact.tsx` submit arrow `ml-2`, the Home carousel item `pl-6`, the Portfolio hover badge `top-4 right-4`, and the WhatsApp float `right-8 / pr-2`. (Admin pages use physical classes too, but they are English-only by design.)
+15. **`AdminNav` is duplicated** — defined as a component in `Leads.tsx` and inlined again in `Dashboard.tsx`.
 
-**Content / data inconsistencies**
-14. **Trust stat conflict**: "Trusted by 50+ Businesses" (hero) vs "Trusted by 21+ teams" (logos, derived from array length).
-15. **Contact email mismatch**: Footer says **hello@omniflow.ai**; Contact page says **contact@omniflowai.agency**. Two different domains.
-16. **Founder name likely typo**: "**Mosatafa Hekal**" (Mostafa?). Founder in story is unnamed-in-first-person then attributed to Mosatafa Hekal ("Founder & Technical Lead"), while the team grid lists three different people — no overlap, slightly confusing.
-17. **`/services/ai-agents`** detail content exists but is unreachable from the UI (Services page never links it); the Contact form offers "AI Agents" as a separate option while Services groups it under "AI & Automation."
-18. **Placeholder portfolio**: ships with an **empty projects DB**; Home falls back to 3 placeholder cards that reuse client *logos* as project *images*. Portfolio/ProjectDetail are empty until an admin populates them. Testimonials & the Petra case study are hardcoded, not real records.
+### Config smells (state, not judgment)
+16. `ADMIN_PASSWORD` and `SESSION_SECRET` both fall back to built-in defaults (`Admin@admin1234`, `omniflow-secret-key`) with a logged warning. Safe for local dev; **must** be set in production.
+17. `server/app.ts`'s error handler re-`throw`s after responding, which will surface as an unhandled rejection in the request lifecycle.
+18. `server/objectStorage.ts` keeps two no-op methods (`getObjectEntityFile`, `downloadObject`) "for compatibility with routes" — no route calls them.
 
-**Security / config smells (state, not judgments)**
-19. Hardcoded admin credentials (`admin` / `Admin@admin1234`) in `routes.ts` **and** `replit.md`. Hardcoded session secret `omniflow-secret-key`. In-memory sessions (lost on restart). Local `.env` has empty `DATABASE_URL` (app throws on boot without it).
-
-**Doc drift**
-20. `replit.md` and `design_guidelines.md` describe features that differ from the build: guidelines call for a hero photo, pricing tiers, FAQ accordion (ServiceDetail FAQ is plain divs, not an accordion), "Trusted by 500+ businesses", Heroicons via CDN (actually Lucide), Tajawal/Cairo Arabic font (not loaded). `replit.md` overview claims full bilingual translations and lists routes accurately but overstates i18n coverage.
-21. Favicon declared `type="image/png"` but file is SVG.
+### Verified working (previously broken)
+- ✅ Contact form persists leads and returns a real error on failure.
+- ✅ Footer newsletter submits to a real endpoint.
+- ✅ ServiceDetail "Proven Results" renders correctly (it now uses the default JSON query fn instead of the raw-`Response` `apiRequest`).
+- ✅ Sessions survive restarts (Postgres-backed).
+- ✅ The 404 page shows translated user-facing copy, not developer text.
+- ✅ No dead footer links, no dead social icons, no external placeholder image service.
+- ✅ EN/AR dictionary parity: 296 = 296, verified programmatically.
+- ✅ `npm run check` and `npm run build` are both green at `381fe70`.
 
 ---
 
 ## Completeness Summary
 
-**Rough completeness: ~70% of a polished marketing-site + light CMS.** The information architecture, routing, page designs, and a working portfolio CMS (auth, CRUD, image-as-base64 upload, feature-flag visibility) are genuinely built and coherent, and the dark UI is consistent and modern across the public pages. However, several load-bearing pieces are unfinished or wired wrong: the **contact form captures nothing** (biggest functional gap), the **"bilingual" promise is essentially cosmetic** (only nav translates; the entire i18n dictionary is stale/orphaned and mismatched to the shipped copy), the **service-detail "related projects" block silently never renders** due to an `apiRequest` return-type bug, and there's meaningful dead weight (unused ROI calculator, empty ProjectEditor, unused framer-motion, orphaned generated images, dead footer links, 404 with developer copy). Content also ships thin — the portfolio DB is empty, and case studies/testimonials/stats are hardcoded and internally inconsistent (50+ vs 21, two contact emails). It reads as a strong front-end shell with a functional admin backend, but with backend integrations (lead delivery), i18n, and content population still to finish before launch.
+**Rough completeness: ~90% of a launch-ready bilingual marketing site + CMS.** Every functional gap from the previous audit has been closed: leads are captured, stored, and notified; the newsletter works; the site is genuinely bilingual with verified EN/AR key parity and real RTL handling; the positioning is consolidated into three pillars with a single source of truth; the design system has a named brand token set and a deliberate dark/light rhythm; performance was actively engineered (route splitting, lazy images, local SVG fallbacks, a trimmed font set, no external image hosts); and — notably — **every fabricated metric, testimonial, and guarantee has been removed** rather than replaced with better fiction.
+
+What remains is mostly content and tidy-up, not engineering. The portfolio database ships empty, so the two DB-driven homepage sections and the whole `/portfolio` route render nothing until an admin populates them — that is the single biggest thing standing between the current build and a launch. Behind it: the frozen team/founder section, a placeholder contact email, no legal pages, an orphaned showcase flag, 17 stale i18n keys, and incomplete token migration on `ServiceDetail` and the admin pages. None of those block a launch; all of them are visible to someone looking closely.
