@@ -23,29 +23,36 @@ import { onImageError } from '@/lib/placeholder';
 type SolutionId = 'foundation' | 'growth-engine' | 'scale-infrastructure' | 'custom';
 
 // The three solutions, in order. `key` is the i18n namespace; `id` is both the
-// DOM id and the deep-link anchor. `priceFloor` is null until the Phase 2
-// pricing decision lands (spec §10.1) — the card then reads "Pricing on
-// request" rather than showing an invented figure.
+// DOM id and the deep-link anchor.
+//
+// `priceFloor` is the FLOOR, not the price — the card frames it with
+// "Starting from" and the final number comes with the proposal (spec §0.8,
+// FAQ q3). USD, written out in full rather than abbreviated: "k" is an English
+// abbreviation with no clean Arabic equivalent, and §12.7 requires the same
+// Western figure to render identically in both languages. Setting one of these
+// back to null falls the card through to "Pricing on request" (§10.1).
+// Custom Transformation carries no figure at all — it is priced after the
+// business diagnosis (solutions.custom.price).
 const SOLUTIONS = [
   {
     id: 'foundation',
     key: 'foundation',
     includes: [1, 2, 3, 4],
-    priceFloor: null as string | null,
+    priceFloor: '$1,000' as string | null,
     priceNoteKey: 'solutions.grid.priceNote1',
   },
   {
     id: 'growth-engine',
     key: 'growth',
     includes: [1, 2, 3],
-    priceFloor: null as string | null,
+    priceFloor: '$7,000' as string | null,
     priceNoteKey: 'solutions.grid.priceNote2',
   },
   {
     id: 'scale-infrastructure',
     key: 'scale',
     includes: [1, 2, 3],
-    priceFloor: null as string | null,
+    priceFloor: '$30,000' as string | null,
     priceNoteKey: 'solutions.grid.priceNote2',
   },
 ] as const;
@@ -848,9 +855,9 @@ function SolutionCard({
             </p>
           </>
         ) : (
-          // TODO(Phase2-pricing): set `priceFloor` on each solution once the
-          // three floors are decided; the "Starting from $X" branch above then
-          // renders. Until then no figure is shown (spec §10.1).
+          // Dormant since the floors landed. Kept as the §10.1 escape hatch:
+          // if a floor ever has to be pulled, null its priceFloor rather than
+          // inventing a placeholder figure.
           <p className="font-display text-xl font-bold tracking-tight text-white">
             {t('solutions.grid.priceOnRequest')}
           </p>
