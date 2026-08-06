@@ -208,7 +208,7 @@ export default function Solutions() {
             </div>
           </div>
 
-          <SystemVisual reduced={reduced} />
+          <SystemVisual reduced={reduced} isRTL={isRTL} />
         </div>
       </section>
 
@@ -885,142 +885,78 @@ function Field({ label, body }: { label: string; body: ReactNode }) {
 }
 
 /**
- * Hero transformation map: where you are → business diagnosis → where you scale.
+ * Hero system visual: five disconnected nodes resolving into one growth system.
+ * Pure line art — every label is HTML outside the SVG, so the drawing mirrors
+ * wholesale in RTL without any counter-transform on text.
  *
- * Deliberately NOT a network diagram. A converging node graph reads as "we
- * integrate your tools", which is the positioning this page argues against —
- * the enemy is complexity and founder dependency, not the tools themselves. So
- * there are no hexagon nodes and no long connector edges here; hexagons stay on
- * the solution and capability card glyphs, where §12.6 puts them. What is left
- * is a layered business architecture: functions under pressure, a diagnosis
- * band, then a stack.
- *
- * Built from HTML rather than one SVG: the stages reflow and the labels stay
- * real text, so Arabic can run 15–20% longer without a viewBox to overflow, and
- * nothing needs mirroring — the flow runs top-to-bottom in both languages.
- * Only the connectors are SVG, so they can draw themselves in once on load.
+ * The connectors draw themselves in once, over ~2.5s, and stop. Under reduced
+ * motion they render already-drawn.
  */
-function SystemVisual({ reduced }: { reduced: boolean }) {
+function SystemVisual({ reduced, isRTL }: { reduced: boolean; isRTL: boolean }) {
   const { t } = useI18n();
-  const functions = [1, 2, 3, 4, 5];
-  const findings = [1, 2, 3, 4, 5];
-  // Stage 3 names come from the How-we-work keys, so the capabilities are
-  // spelled out in exactly one place.
-  const layers = [
-    'solutions.work.strategy.label',
-    'solutions.work.marketing.title',
-    'solutions.work.tech.title',
-    'solutions.work.ai.title',
-  ];
+  const nodes = [28, 72, 116, 160, 204];
+  const hubTargets = [104, 110, 116, 122, 128];
 
   return (
-    <figure className="rounded-xl border border-slate-800 bg-slate-900/40 p-5">
-      <figcaption className="sr-only">{t('solutions.viz.aria')}</figcaption>
-
-      {/* ---- 01 · Where you are: the functions you already run ---- */}
-      <StageLabel index={1}>{t('solutions.viz.stage1')}</StageLabel>
-      <div className="mt-3 flex flex-wrap gap-1.5">
-        {functions.map((n) => (
-          <span
-            key={n}
-            className="rounded border border-slate-700 px-2.5 py-1 text-xs text-slate-300"
-          >
-            {t(`solutions.viz.fn${n}`)}
-          </span>
-        ))}
+    <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-5">
+      <div className="mb-3.5 flex justify-between gap-4 font-mono text-[10px] uppercase tracking-[0.13em]">
+        <span className="text-slate-400">{t('solutions.viz.before')}</span>
+        <span className="text-primary">{t('solutions.viz.after')}</span>
       </div>
-      <p className="mt-3 flex flex-wrap justify-between gap-x-4 gap-y-1 font-mono text-[9px] uppercase tracking-[0.12em] text-slate-400">
-        <span>
-          {t('solutions.viz.growth')} <span aria-hidden="true">&uarr;</span>
-        </span>
-        <span>
-          {t('solutions.viz.complexity')} <span aria-hidden="true">&uarr;</span>
-        </span>
-      </p>
 
-      <StageConnector reduced={reduced} delay={0} />
-
-      {/* ---- 02 · Business diagnosis: the differentiator ---- */}
-      <div className="rounded-lg border border-primary/30 bg-primary/[0.13] p-3.5">
-        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-primary">
-          {t('solutions.viz.stage2')}
-        </p>
-        <p className="mt-2 text-xs leading-relaxed text-slate-300">
-          {findings.map((n, i) => (
-            <span key={n}>
-              {i > 0 && (
-                <span aria-hidden="true" className="text-slate-500">
-                  {' · '}
-                </span>
-              )}
-              {t(`solutions.viz.find${n}`)}
-            </span>
+      <svg
+        viewBox="0 0 300 240"
+        width="100%"
+        role="img"
+        aria-label={t('solutions.viz.aria')}
+        className={isRTL ? '-scale-x-100' : ''}
+      >
+        {/* Disconnected nodes */}
+        <g fill="none" stroke="#64748b" strokeWidth="1" opacity="0.55">
+          {nodes.map((cy) => (
+            <path key={cy} d={`M34 ${cy - 6} l10 -6 10 6 v12 l-10 6 -10 -6 z`} />
           ))}
-        </p>
-      </div>
+          {/* Fragments that go nowhere — the "before" state. */}
+          <path d="M56 28 L86 50" />
+          <path d="M56 116 L84 110" />
+          <path d="M52 196 L74 166" />
+        </g>
 
-      <StageConnector reduced={reduced} delay={0.9} />
+        {/* Connectors into the hub */}
+        <g fill="none" stroke="#FF6B1F" strokeWidth="1.4">
+          {nodes.map((cy, i) => (
+            <path
+              key={cy}
+              d={`M56 ${cy} L216 ${hubTargets[i]}`}
+              style={
+                reduced
+                  ? undefined
+                  : {
+                      strokeDasharray: 220,
+                      strokeDashoffset: 220,
+                      animation: `connector-draw 2.5s var(--ease-standard) ${i * 0.25}s forwards`,
+                    }
+              }
+            />
+          ))}
+        </g>
 
-      {/* ---- 03 · Where you scale: an operating model, stated as layers ---- */}
-      <StageLabel index={3}>{t('solutions.viz.stage3')}</StageLabel>
-      <div className="relative mt-3 overflow-hidden rounded-lg border border-slate-800">
-        {/* One rail down the stack: these are layers of a single system. */}
-        <span aria-hidden="true" className="absolute inset-y-0 start-0 w-[2px] bg-primary" />
-        <p className="border-b border-slate-800 bg-slate-900/60 px-3.5 py-2 font-display text-sm font-semibold text-white">
-          {t('solutions.viz.hub')}
-        </p>
-        {layers.map((key, i) => (
-          <p
-            key={key}
-            className={`px-3.5 py-2 text-xs text-slate-300 ${
-              i < layers.length - 1 ? 'border-b border-slate-800/60' : ''
-            }`}
-          >
-            {t(key)}
-          </p>
-        ))}
-      </div>
-      <p className="mt-2.5 text-end font-mono text-[10px] uppercase tracking-[0.14em] text-primary">
-        {t('solutions.shift.next5')} <span aria-hidden="true">&uarr;</span>
-      </p>
-    </figure>
-  );
-}
-
-/** Numbered stage heading, matching the 01–06 treatment used down the page. */
-function StageLabel({ index, children }: { index: number; children: ReactNode }) {
-  return (
-    <p className="flex items-center gap-2.5 font-mono text-[10px] uppercase tracking-[0.14em] text-slate-400">
-      <span aria-hidden="true" className="text-primary">
-        {pad2(index)}
-      </span>
-      {children}
-      <span aria-hidden="true" className="h-px flex-1 bg-slate-800" />
-    </p>
-  );
-}
-
-/**
- * The step between two stages. Short and vertical — a flow marker, not a
- * network edge. Draws itself once on load and stops; under reduced motion it
- * renders already-drawn. Points downward, so nothing mirrors in RTL.
- */
-function StageConnector({ reduced, delay }: { reduced: boolean; delay: number }) {
-  const draw = (length: number, offset: number) =>
-    reduced
-      ? undefined
-      : {
-          strokeDasharray: length,
-          strokeDashoffset: length,
-          animation: `connector-draw 0.8s var(--ease-standard) ${delay + offset}s forwards`,
-        };
-
-  return (
-    <div className="flex justify-center py-3" aria-hidden="true">
-      <svg width="12" height="24" viewBox="0 0 12 24" fill="none" className="text-primary">
-        <path d="M6 0 V17" stroke="currentColor" strokeWidth="1.2" style={draw(20, 0)} />
-        <path d="M2 13 L6 18 L10 13" stroke="currentColor" strokeWidth="1.2" style={draw(14, 0.5)} />
+        {/* The one growth system */}
+        <path
+          d="M226 103 l22 -13 22 13 v26 l-22 13 -22 -13 z"
+          fill="none"
+          stroke="#FF6B1F"
+          strokeWidth="1.5"
+        />
+        <circle cx="248" cy="116" r="3.5" fill="#FF6B1F" />
       </svg>
+
+      <div className="mt-3 text-end">
+        <p className="font-display text-sm font-semibold text-white">{t('solutions.viz.hub')}</p>
+        <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.12em] text-slate-400">
+          {t('solutions.viz.attr1')} · {t('solutions.viz.attr2')} · {t('solutions.viz.attr3')}
+        </p>
+      </div>
     </div>
   );
 }
