@@ -140,7 +140,27 @@ const translations: Record<Language, Record<string, string>> = {
     "home.finalCta.button": "Book your strategy call",
     "home.finalCta.sub": "No sales pitch. Just clarity.",
 
-    // --- SERVICES ---
+    // =========================================================================
+    // --- SERVICES --- @deprecated (Phase 1 — Solutions cutover)
+    //
+    // Superseded by the `solutions.*` prefix above. This whole block — from
+    // "services.eyebrow" down to "services.painRouter.all" — is dead copy from
+    // the old three-capability Services page and must not be referenced by any
+    // new component.
+    //
+    // NOT deleted yet, deliberately: it stays through this deploy so the old
+    // page can be restored if /services has to be rolled back.
+    //
+    // Removal condition (ticketed in THIS phase, not "later" — spec §7.1):
+    //   1. /services live and verified in both EN and AR, and
+    //   2. `grep -rn "t(['\"\`]services\." client/src` returns zero hits.
+    // When both hold, delete this block in both dictionaries in one commit.
+    //
+    // Note: several keys here (services.learnMore, services.featuredProject,
+    // services.viewCaseStudy, services.together.*, services.cta.*) were already
+    // orphaned before this phase — no component has referenced them for some
+    // time. They go out with the rest of the block.
+    // =========================================================================
     "services.eyebrow": "What we do",
     "services.title.lead": "Three capabilities.",
     "services.title.highlight": "One transformation partner.",
@@ -209,6 +229,7 @@ const translations: Record<Language, Record<string, string>> = {
     "services.painRouter.ops": "Messy operations & tools",
     "services.painRouter.aiAdoption": "Team AI adoption",
     "services.painRouter.all": "All of the above",
+    // --- END deprecated services.* block ---
 
     // =========================================================================
     // --- SOLUTIONS PAGE (/services) — Phase 1 ---
@@ -805,7 +826,12 @@ const translations: Record<Language, Record<string, string>> = {
     "home.finalCta.button": "احجز مكالمتك الاستراتيجية",
     "home.finalCta.sub": "بلا عروض بيعية. وضوح فقط.",
 
-    // --- SERVICES ---
+    // =========================================================================
+    // --- SERVICES --- @deprecated (Phase 1 — Solutions cutover)
+    // Superseded by `solutions.*`. Kept through this deploy only; removed once
+    // /services is verified in both languages and nothing references the prefix.
+    // See the full note on the EN block above.
+    // =========================================================================
     "services.eyebrow": "ما الذي نقدّمه",
     "services.title.lead": "ثلاث قدرات.",
     "services.title.highlight": "شريك تحوّل رقمي واحد.",
@@ -874,6 +900,7 @@ const translations: Record<Language, Record<string, string>> = {
     "services.painRouter.ops": "عمليات وأدوات مبعثرة",
     "services.painRouter.aiAdoption": "تبنّي الفريق للذكاء الاصطناعي",
     "services.painRouter.all": "كل ما سبق",
+    // --- END deprecated services.* block ---
 
     // =========================================================================
     // --- SOLUTIONS PAGE (/services) — Phase 1 ---
