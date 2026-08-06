@@ -35,10 +35,10 @@ export function Footer() {
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-brand-700/5 rounded-full blur-[60px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-6 md:px-8 pt-12 md:pt-24 pb-10 relative z-10">
-        <div className="grid grid-cols-3 md:grid-cols-2 lg:grid-cols-4 gap-y-8 gap-x-4 md:gap-12 mb-12 md:mb-16">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-8 gap-x-4 md:gap-12 mb-12 md:mb-16">
 
           {/* Column 1: Brand (Full width on mobile) */}
-          <div className="col-span-3 md:col-span-1 space-y-4 md:space-y-6 text-center md:text-start">
+          <div className="col-span-2 md:col-span-1 space-y-4 md:space-y-6 text-center md:text-start">
             <Link href="/">
               <span className="text-2xl font-bold font-display text-white cursor-pointer flex items-center justify-center md:justify-start gap-2">
                 OmniflowAI
@@ -79,28 +79,29 @@ export function Footer() {
           </div>
 
           {/* Column 4: Stay Connected */}
-          <div className="col-span-1 space-y-4 md:space-y-6">
+          <div className="col-span-2 md:col-span-1 space-y-4 md:space-y-6">
             <h3 className="font-bold text-white mb-4 md:mb-6 text-xs md:text-base uppercase md:normal-case">
               <span className="md:hidden">{t("footer.connectShort")}</span>
               <span className="hidden md:inline">{t("footer.stayConnected")}</span>
             </h3>
 
-            {/* Newsletter - Hidden on mobile to save space */}
-            <div className="hidden md:block bg-slate-900/50 p-6 rounded-xl border border-slate-800 space-y-4">
+            {/* Newsletter — renders at every width. It is a lead capture
+                element; hiding it on mobile lost that traffic entirely. */}
+            <div className="bg-slate-900/50 p-6 rounded-xl border border-slate-800 space-y-4">
               <p className="text-xs text-slate-400">
                 {t("footer.newsletter.text")}
               </p>
               <NewsletterForm />
             </div>
 
-            {/* Contact Links - Simplified for mobile */}
+            {/* Contact links — full row at every width, icons included. */}
             <div className="space-y-3 pt-0 md:pt-2">
-              <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3 text-xs md:text-sm text-slate-400">
-                <Mail className="w-4 h-4 text-brand-500 hidden md:block" />
+              <div className="flex items-center gap-3 text-xs md:text-sm text-slate-400">
+                <Mail className="w-4 h-4 text-brand-500 flex-shrink-0" />
                 <span className="break-all">{CONTACT_EMAIL}</span>
               </div>
-              <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3 text-xs md:text-sm text-slate-400">
-                <MapPin className="w-4 h-4 text-brand-500 hidden md:block" />
+              <div className="flex items-center gap-3 text-xs md:text-sm text-slate-400">
+                <MapPin className="w-4 h-4 text-brand-500 flex-shrink-0" />
                 <span>{t("footer.location")}</span>
               </div>
             </div>
