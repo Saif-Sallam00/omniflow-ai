@@ -83,6 +83,31 @@ const FAQ_ITEMS = [1, 2, 3, 4, 5, 6, 7] as const;
 // Western numerals in both languages (spec §12.7).
 const pad2 = (n: number) => String(n).padStart(2, '0');
 
+// Solution names stay Latin in both languages, so in Arabic they are LTR runs
+// inside an RTL sentence. Longest-first so "Scale Infrastructure" is matched
+// before a bare "Foundation" style prefix could ever partially match.
+const SOLUTION_NAMES = /(Custom Transformation|Scale Infrastructure|Growth Engine|Foundation)/;
+
+/**
+ * Wraps any solution name occurring inside a translated sentence in
+ * `dir="ltr"`, which the UA stylesheet gives `unicode-bidi: isolate` — the
+ * name can never be reordered against the Arabic text around it. Returns the
+ * plain string untouched when there is nothing to isolate.
+ */
+function ltrNames(text: string): ReactNode {
+  const parts = text.split(SOLUTION_NAMES);
+  if (parts.length === 1) return text;
+  return parts.map((part, i) =>
+    i % 2 === 1 ? (
+      <span key={i} dir="ltr">
+        {part}
+      </span>
+    ) : (
+      part
+    ),
+  );
+}
+
 export default function Solutions() {
   const { t, isRTL } = useI18n();
   useDocumentTitle('Solutions');
@@ -354,7 +379,7 @@ export default function Solutions() {
                   </p>
                 </div>
                 <p className="min-w-[15rem] flex-1 text-sm leading-relaxed text-slate-400">
-                  {t(`solutions.router.r${selected + 1}`)}
+                  {ltrNames(t(`solutions.router.r${selected + 1}`))}
                 </p>
               </div>
             )}
@@ -410,7 +435,7 @@ export default function Solutions() {
             {t('solutions.custom.heading')}
           </h2>
           <p className="mt-4 max-w-[62ch] leading-relaxed text-slate-950/80">
-            {t('solutions.custom.body')}
+            {ltrNames(t('solutions.custom.body'))}
           </p>
           <p
             dir="ltr"
@@ -523,11 +548,11 @@ export default function Solutions() {
               <Disclosure
                 key={n}
                 id={`faq-${n}`}
-                label={t(`solutions.faq.q${n}`)}
+                label={ltrNames(t(`solutions.faq.q${n}`))}
                 labelClassName="font-display text-base font-medium text-white"
               >
                 <p className="max-w-[80ch] pb-4 text-sm leading-relaxed text-slate-400">
-                  {t(`solutions.faq.a${n}`)}
+                  {ltrNames(t(`solutions.faq.a${n}`))}
                 </p>
               </Disclosure>
             ))}
@@ -639,7 +664,7 @@ function Disclosure({
   children,
 }: {
   id: string;
-  label: string;
+  label: ReactNode;
   labelClassName?: string;
   children: ReactNode;
 }) {
@@ -772,11 +797,11 @@ function SolutionCard({
         <Disclosure id={`inc-${id}`} label={t('solutions.grid.included')}>
           <div className="space-y-4 py-4">
             <p className="text-sm leading-relaxed text-slate-300">
-              {t(`solutions.${key}.tagline`)}
+              {ltrNames(t(`solutions.${key}.tagline`))}
             </p>
 
-            <Field label={t('solutions.grid.bestFor')} body={t(`solutions.${key}.bestFor`)} />
-            <Field label={t('solutions.grid.problem')} body={t(`solutions.${key}.problem`)} />
+            <Field label={t('solutions.grid.bestFor')} body={ltrNames(t(`solutions.${key}.bestFor`))} />
+            <Field label={t('solutions.grid.problem')} body={ltrNames(t(`solutions.${key}.problem`))} />
 
             {isScale && (
               <p className="text-xs leading-relaxed text-slate-400">
@@ -797,11 +822,11 @@ function SolutionCard({
               ))}
             </ul>
 
-            <Field label={t('solutions.grid.outcome')} body={t(`solutions.${key}.outcome`)} />
+            <Field label={t('solutions.grid.outcome')} body={ltrNames(t(`solutions.${key}.outcome`))} />
 
             {isFoundation && (
               <p className="text-xs leading-relaxed text-slate-400">
-                {t('solutions.foundation.note')}
+                {ltrNames(t('solutions.foundation.note'))}
               </p>
             )}
           </div>
@@ -835,7 +860,7 @@ function SolutionCard({
         {/* The single non-accent highlight on the page (§12.6). Never collapsed. */}
         {isFoundation && (
           <p className="mt-3 rounded-lg border border-[#7DDBA3]/30 bg-[#7DDBA3]/[0.08] p-3 text-[11px] leading-relaxed text-[#7DDBA3]">
-            {t('solutions.foundation.credit')}
+            {ltrNames(t('solutions.foundation.credit'))}
           </p>
         )}
       </div>
@@ -843,7 +868,7 @@ function SolutionCard({
   );
 }
 
-function Field({ label, body }: { label: string; body: string }) {
+function Field({ label, body }: { label: string; body: ReactNode }) {
   return (
     <div>
       <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-slate-400">{label}</p>
