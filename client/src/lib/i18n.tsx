@@ -210,6 +210,249 @@ const translations: Record<Language, Record<string, string>> = {
     "services.painRouter.aiAdoption": "Team AI adoption",
     "services.painRouter.all": "All of the above",
 
+    // =========================================================================
+    // --- SOLUTIONS PAGE (/services) — Phase 1 ---
+    // Spec: docs/PHASE-1-SOLUTIONS-PAGE-SPEC-v2.md §2, as amended by §12 (v2.1).
+    // Where §12 revises a §2 string, the §12 wording is the one that lives here.
+    // Solution names (Foundation / Growth Engine / Scale Infrastructure /
+    // Custom Transformation) are product names: identical in both languages and
+    // rendered inside dir="ltr" so they never reorder inside an Arabic sentence.
+    // =========================================================================
+
+    // Hero
+    "solutions.eyebrow": "Solutions",
+    "solutions.h1.lead": "Build the systems behind",
+    "solutions.h1.accent": "your next stage of growth.",
+    "solutions.subhead":
+      "Your business already works. What it needs now is the infrastructure to scale. We find what's blocking growth, then build the marketing, technology, and AI systems that remove it.",
+    "solutions.hero.secondary": "Find your constraint",
+
+    // Trust strip. Stat VALUES reuse the existing home.reach.* keys — no new
+    // numbers are invented for this page (spec §12.3).
+    "solutions.trust.label":
+      "Trusted by brands across the US, the GCC and Egypt",
+
+    // Problem recognition
+    "solutions.problem.heading": "Growth creates new problems.",
+    "solutions.problem.sub":
+      "You built a successful business. The systems that got you here aren't always the systems that take you further.",
+    "solutions.problem.item1": "Growth depends on a few people.",
+    "solutions.problem.item2": "Your tools don't talk to each other.",
+    "solutions.problem.item3": "Teams repeat the same manual work.",
+    "solutions.problem.item4": "You can't see what's actually driving revenue.",
+    "solutions.problem.item5":
+      "AI is everywhere, but nobody on the team really uses it.",
+    "solutions.problem.close":
+      "None of these is a tool problem. They're system problems — and they get diagnosed before they get built.",
+
+    // The shift (before → after chain)
+    "solutions.shift.nowLabel": "What you're running on",
+    "solutions.shift.now1": "Founder judgement",
+    "solutions.shift.now2": "More people",
+    "solutions.shift.now3": "Manual handoffs",
+    "solutions.shift.now4": "Spreadsheets",
+    "solutions.shift.now5": "A ceiling",
+    "solutions.shift.arrow": "Diagnosis",
+    "solutions.shift.nextLabel": "What it becomes",
+    "solutions.shift.next1": "Defined process",
+    "solutions.shift.next2": "Automation",
+    "solutions.shift.next3": "Connected data",
+    "solutions.shift.next4": "Visibility",
+    "solutions.shift.next5": "Scale",
+
+    // Diagnostic router
+    "solutions.router.eyebrow": "Business diagnostic",
+    "solutions.router.heading": "Find your growth constraint.",
+    "solutions.router.sub":
+      "Pick what sounds closest to your business. We'll point you to the right starting point.",
+    "solutions.router.q1": "We have customers, but growth is inconsistent.",
+    "solutions.router.q2":
+      "Our growth depends on adding more people instead of better systems.",
+    "solutions.router.q3": "We have tools, but nothing is connected.",
+    "solutions.router.q4": "We know AI matters but don't know where to start.",
+    "solutions.router.q5": "We're not sure what's actually broken.",
+    "solutions.router.q6":
+      "We have a unique challenge that needs a tailored approach.",
+    "solutions.router.resultLabel": "Recommended starting point",
+    "solutions.router.r1":
+      "Your acquisition needs to become a system before more technology gets built on top of it.",
+    "solutions.router.r2":
+      "Headcount-driven growth is an infrastructure limit. The systems have to carry that load instead.",
+    "solutions.router.r3":
+      "Disconnected tools is an infrastructure problem, not a marketing one.",
+    "solutions.router.r4":
+      "Start by finding where AI actually pays off inside your workflows.",
+    "solutions.router.r5":
+      "That's exactly what the diagnosis is for. Nobody should build before that answer exists.",
+    "solutions.router.r6":
+      "Then the answer is a system designed around your constraints, not a predefined scope.",
+    "solutions.router.unsure":
+      "Rather just talk it through? Book a strategy call.",
+
+    // Solutions — section frame
+    "solutions.grid.heading":
+      "Three ways in. One business diagnosis behind all of them.",
+    "solutions.grid.sub":
+      "These aren't tiers. They're different starting points for different constraints. The business diagnosis decides which one fits.",
+    "solutions.grid.bestFor": "Best for",
+    "solutions.grid.problem": "The problem",
+    "solutions.grid.included": "What's included",
+    "solutions.grid.outcome": "Outcome",
+    "solutions.grid.outcomeLabel": "Outcome",
+    "solutions.grid.priceFrom": "Starting from",
+    // The three price floors are a Phase 2 decision (spec §10.1). Until a real
+    // number exists the cards read "Pricing on request" — never a fake figure.
+    "solutions.grid.priceOnRequest": "Pricing on request",
+    "solutions.grid.priceNote1":
+      "Final scope is determined after the business diagnosis.",
+    "solutions.grid.priceNote2":
+      "Not a monthly retainer. A system your business owns.",
+    "solutions.grid.detailLink": "See the full solution",
+
+    // Foundation — promises DIAGNOSIS, never implementation. Do not reintroduce
+    // "build", "create" or "deliver" into this block (spec §2.5).
+    "solutions.foundation.name": "Foundation",
+    "solutions.foundation.statement":
+      "You know growth is stuck. You don't yet know why.",
+    "solutions.foundation.outcomeShort":
+      "Find the constraint before spending on solutions.",
+    "solutions.foundation.tagline":
+      "Discover what's blocking your next stage of growth.",
+    "solutions.foundation.bestFor":
+      "Companies that know something is limiting growth but can't name it — and don't want to commit to a build before they can.",
+    "solutions.foundation.problem":
+      "Your business is growing, but the reason it's slowing isn't obvious from the inside. Every proposal you receive assumes an answer nobody has actually verified.",
+    "solutions.foundation.inc1.title": "Business Diagnosis",
+    "solutions.foundation.inc1.body":
+      "How the business actually runs today — processes, handoffs, and where work stops moving.",
+    "solutions.foundation.inc2.title": "Workflow and bottleneck assessment",
+    "solutions.foundation.inc2.body":
+      "The specific points where growth is being limited, and what each one is costing.",
+    "solutions.foundation.inc3.title": "Growth and technology opportunity map",
+    "solutions.foundation.inc3.body":
+      "Where marketing, systems, and automation create measurable impact — and in what order.",
+    "solutions.foundation.inc4.title": "AI opportunity identification",
+    "solutions.foundation.inc4.body":
+      "Which workflows are genuinely worth applying AI to, and which aren't.",
+    "solutions.foundation.outcome":
+      "A clear roadmap showing where technology, AI, and systems create measurable business impact.",
+    "solutions.foundation.note":
+      "Foundation produces a decision, not a deliverable. If you build with us afterwards, the work carries forward.",
+    "solutions.foundation.credit":
+      "Move forward with implementation within 90 days and your Foundation fee is credited toward the project.",
+
+    // Growth Engine
+    "solutions.growth.name": "Growth Engine",
+    "solutions.growth.statement": "You have demand. Growth is unpredictable.",
+    "solutions.growth.outcomeShort":
+      "Build a measurable acquisition system your team runs with AI.",
+    "solutions.growth.tagline": "Turn growth into a system you can measure.",
+    "solutions.growth.bestFor":
+      "Companies with real demand, held back by inconsistent acquisition, scattered marketing, and manual follow-through.",
+    "solutions.growth.problem":
+      "Revenue is growing, but growth depends on disconnected campaigns, manual processes, and people pushing everything forward.",
+    "solutions.growth.inc1.title": "Marketing Systems",
+    "solutions.growth.inc1.body":
+      "SEO, paid acquisition, conversion optimization, funnel tracking, and performance measurement — wired together as one engine.",
+    "solutions.growth.inc2.title": "AI Enablement",
+    "solutions.growth.inc2.body":
+      "Department-specific use cases, workflow adoption, and practical team enablement — so AI ends up in daily work, not in a training deck.",
+    "solutions.growth.inc3.title": "Business Automation",
+    "solutions.growth.inc3.body":
+      "CRM improvements, workflow automation, and data connection across the tools you already use.",
+    "solutions.growth.outcome":
+      "More qualified opportunities, clearer visibility, and a team operating with AI inside real workflows.",
+
+    // Scale Infrastructure — inherits the VISIBILITY LAYER only (spec §0.3).
+    "solutions.scale.name": "Scale Infrastructure",
+    "solutions.scale.statement":
+      "Your business has outgrown the systems running it.",
+    "solutions.scale.outcomeShort":
+      "Build the operating infrastructure for scale.",
+    "solutions.scale.tagline":
+      "Build the systems required for operational scale.",
+    "solutions.scale.bestFor":
+      "Companies where growth has outgrown the operation — complexity is rising and the current systems can't carry it.",
+    "solutions.scale.problem":
+      "Growth creates complexity. Disconnected tools, manual operations, and limited visibility start slowing the business down — and adding people stops helping.",
+    "solutions.scale.alwaysLabel": "Always included",
+    "solutions.scale.always":
+      "The visibility layer: measurement, reporting, and business data connection — so the decisions after the build are made on evidence, not instinct.",
+    "solutions.scale.expandsLabel":
+      "Then expands, based on the business diagnosis, into:",
+    "solutions.scale.inc1.title": "Business Technology",
+    "solutions.scale.inc1.body":
+      "CRM and ERP platforms, internal systems, and customer-facing platforms — built to own, integrate, and scale.",
+    "solutions.scale.inc2.title": "Advanced automation and AI",
+    "solutions.scale.inc2.body":
+      "AI-powered workflows, process automation, and cross-department systems that remove manual handoffs.",
+    "solutions.scale.inc3.title": "Operational enablement",
+    "solutions.scale.inc3.body":
+      "Process redesign, adoption support, and the change work that makes new systems stick after handover.",
+    "solutions.scale.outcome":
+      "A scalable business infrastructure built around how your company actually operates.",
+
+    // Custom Transformation — an exception path, not a fourth product.
+    // `composed` is retained for the Phase 1b detail copy; it is not on the band.
+    "solutions.custom.eyebrow": "The escape hatch",
+    "solutions.custom.heading": "Not every business fits a pattern.",
+    "solutions.custom.name": "Custom Transformation",
+    "solutions.custom.body":
+      "Strong sales with broken operations. AI adoption across every department at once. A combination no standard scope covers. When the business diagnosis points somewhere none of the three fit, the answer isn't a package — it's a system designed around your reality.",
+    "solutions.custom.composed":
+      "Built from the same four parts — strategy, marketing systems, business technology, and AI enablement — in whatever proportion the business diagnosis calls for.",
+    "solutions.custom.price": "Priced after the business diagnosis.",
+
+    // How we work. AI Enablement copy states CAPABILITY ONLY — no results
+    // claim, no client count, no "proven" framing (spec §2.9 honesty constraint).
+    "solutions.work.heading": "How we work",
+    "solutions.work.strategy.label": "Strategy",
+    "solutions.work.strategy.body":
+      "We diagnose the business, identify the constraints, and define the roadmap. Strategy isn't something we sell — it's how everything else gets decided.",
+    "solutions.work.divider": "Three capabilities deliver the transformation",
+    "solutions.work.marketing.title": "Marketing Systems",
+    "solutions.work.marketing.body":
+      "Build measurable acquisition systems — search, paid, conversion, and tracking wired together instead of run separately.",
+    "solutions.work.tech.title": "Business Technology",
+    "solutions.work.tech.body":
+      "Build and connect the systems the business runs on — ERP, CRM, web and mobile platforms, and the automation between them.",
+    "solutions.work.ai.title": "AI Enablement",
+    "solutions.work.ai.body":
+      "Embed AI into real workflows so teams actually use it, inside the work they already do.",
+
+    // Proof — reuses the featured-projects data; hidden entirely when empty.
+    "solutions.proof.heading": "What this looks like in practice",
+    "solutions.proof.sub": "Real engagements, and what changed in the business.",
+
+    // FAQ
+    "solutions.faq.heading": "Common questions",
+    "solutions.faq.q1": "How do we know which solution we need?",
+    "solutions.faq.a1":
+      "Most companies don't, and that's fine. The business diagnosis exists to answer that question before anyone commits to a build.",
+    "solutions.faq.q2": "Do we have to start with Foundation?",
+    "solutions.faq.a2":
+      "No. Foundation is for companies that can't yet name the constraint. If it's already clear, we start where the problem is. Every solution includes a business diagnosis phase either way.",
+    "solutions.faq.q3": "Why is pricing “starting from”?",
+    "solutions.faq.a3":
+      "Because scope depends on what the business diagnosis finds. The figure shown is the floor. The final number comes with the proposal.",
+    "solutions.faq.q4": "Is this a monthly retainer?",
+    "solutions.faq.a4":
+      "No. These are systems you own — source code, platforms, and data. Ongoing support is a separate agreement if you want one.",
+    "solutions.faq.q5": "Do we own what you build?",
+    "solutions.faq.a5":
+      "Yes. Full source code and IP transfer on completion. No lock-in, no fee to access your own system.",
+    "solutions.faq.q6": "What happens to the Foundation fee if we implement?",
+    "solutions.faq.a6":
+      "It's credited toward the project, provided implementation starts within 90 days and is based on that diagnosis. It isn't a refund — you bought a roadmap, and you keep it whether you build with us or not.",
+    "solutions.faq.q7": "Is AI training sold separately?",
+    "solutions.faq.a7":
+      "No. AI enablement is built into every solution, because training that isn't attached to a real workflow doesn't survive the month after it ends.",
+
+    // Final CTA
+    "solutions.cta.heading": "Not sure what's blocking you?",
+    "solutions.cta.body":
+      "Book a strategy call. We'll tell you honestly where the constraint is — and if we're not the right partner, we'll say that too.",
+
     // --- SERVICE DETAIL (shared labels) ---
     "serviceDetail.backAll": "← All services",
     "serviceDetail.seeExamples": "See examples",
@@ -631,6 +874,234 @@ const translations: Record<Language, Record<string, string>> = {
     "services.painRouter.ops": "عمليات وأدوات مبعثرة",
     "services.painRouter.aiAdoption": "تبنّي الفريق للذكاء الاصطناعي",
     "services.painRouter.all": "كل ما سبق",
+
+    // =========================================================================
+    // --- SOLUTIONS PAGE (/services) — Phase 1 ---
+    // مطابق للمفاتيح الإنجليزية مفتاحاً بمفتاح. أسماء الحلول (Foundation /
+    // Growth Engine / Scale Infrastructure / Custom Transformation) أسماء منتجات
+    // لا تُترجم، وتُعرض داخل dir="ltr" حتى لا يختلّ ترتيبها داخل الجملة العربية.
+    // الأرقام غربية (0–9) في اللغتين (spec §12.7).
+    // =========================================================================
+
+    // Hero
+    "solutions.eyebrow": "الحلول",
+    "solutions.h1.lead": "ابنِ الأنظمة التي يقوم عليها",
+    "solutions.h1.accent": "نموك في المرحلة القادمة.",
+    "solutions.subhead":
+      "أعمالك تعمل بالفعل. ما تحتاجه الآن هو البنية التي تتيح لها التوسّع. نكتشف ما الذي يعيق النمو، ثم نبني أنظمة التسويق والتقنية والذكاء الاصطناعي التي تزيله.",
+    "solutions.hero.secondary": "حدّد القيد لديك",
+
+    // Trust strip
+    "solutions.trust.label":
+      "موثوقون من علاماتٍ تجارية في الولايات المتحدة ودول الخليج ومصر",
+
+    // Problem recognition
+    "solutions.problem.heading": "النمو يخلق مشكلات جديدة.",
+    "solutions.problem.sub":
+      "لقد بنيت عملاً ناجحاً. لكن الأنظمة التي أوصلتك إلى هنا ليست دائماً الأنظمة التي تأخذك إلى أبعد.",
+    "solutions.problem.item1": "النمو يعتمد على عدد قليل من الأشخاص.",
+    "solutions.problem.item2": "أدواتك لا تتحدّث إلى بعضها.",
+    "solutions.problem.item3": "الفِرق تكرّر العمل اليدوي نفسه.",
+    "solutions.problem.item4": "لا ترى ما الذي يقود الإيرادات فعلاً.",
+    "solutions.problem.item5":
+      "الذكاء الاصطناعي في كل مكان، لكن لا أحد في الفريق يستخدمه فعلاً.",
+    "solutions.problem.close":
+      "لا شيء من هذا مشكلة أداة. كلها مشكلات أنظمة — تُشخَّص قبل أن تُبنى.",
+
+    // The shift
+    "solutions.shift.nowLabel": "ما تعمل به الآن",
+    "solutions.shift.now1": "تقدير المؤسّس",
+    "solutions.shift.now2": "مزيد من الموظفين",
+    "solutions.shift.now3": "تسليم يدوي",
+    "solutions.shift.now4": "جداول بيانات",
+    "solutions.shift.now5": "سقف لا يُتجاوز",
+    "solutions.shift.arrow": "التشخيص",
+    "solutions.shift.nextLabel": "ما الذي تصبح عليه",
+    "solutions.shift.next1": "عملية محدّدة",
+    "solutions.shift.next2": "أتمتة",
+    "solutions.shift.next3": "بيانات مترابطة",
+    "solutions.shift.next4": "رؤية واضحة",
+    "solutions.shift.next5": "توسّع",
+
+    // Diagnostic router
+    "solutions.router.eyebrow": "تشخيص الأعمال",
+    "solutions.router.heading": "حدّد القيد الذي يعيق نموك.",
+    "solutions.router.sub":
+      "اختر ما يقترب أكثر من وضع أعمالك، وسنوجّهك إلى نقطة البداية المناسبة.",
+    "solutions.router.q1": "لدينا عملاء، لكن النمو غير منتظم.",
+    "solutions.router.q2":
+      "نموّنا يعتمد على زيادة عدد الموظفين بدلاً من أنظمة أفضل.",
+    "solutions.router.q3": "لدينا أدوات، لكن لا شيء مترابط.",
+    "solutions.router.q4":
+      "نعلم أن الذكاء الاصطناعي مهم، لكن لا نعرف من أين نبدأ.",
+    "solutions.router.q5": "لسنا متأكدين ما الذي تعطّل فعلاً.",
+    "solutions.router.q6": "لدينا تحدٍّ فريد يحتاج إلى نهج مصمَّم خصيصاً.",
+    "solutions.router.resultLabel": "نقطة البداية المقترحة",
+    "solutions.router.r1":
+      "يجب أن يتحوّل الاستقطاب لديك إلى نظام قبل بناء مزيد من التقنية فوقه.",
+    "solutions.router.r2":
+      "النمو المعتمد على زيادة الموظفين هو حدٌّ في البنية التحتية. الأنظمة هي ما يجب أن يحمل هذا العبء بدلاً من ذلك.",
+    "solutions.router.r3":
+      "الأدوات غير المترابطة مشكلة بنية تحتية، لا مشكلة تسويق.",
+    "solutions.router.r4":
+      "ابدأ بتحديد أين يحقّق الذكاء الاصطناعي عائداً فعلياً داخل سير عملك.",
+    "solutions.router.r5":
+      "هذا بالضبط ما وُجد التشخيص من أجله. لا ينبغي لأحد أن يبني قبل أن تتوفّر هذه الإجابة.",
+    "solutions.router.r6":
+      "إذن الإجابة نظام مصمَّم حول قيودك، لا نطاق مُعدّ مسبقاً.",
+    "solutions.router.unsure": "تفضّل الحديث مباشرة؟ احجز مكالمة استراتيجية.",
+
+    // Solutions — section frame
+    "solutions.grid.heading": "ثلاث نقاط دخول. وتشخيص أعمال واحد وراءها جميعاً.",
+    "solutions.grid.sub":
+      "هذه ليست مستويات. بل نقاط بداية مختلفة لقيود مختلفة. وتشخيص الأعمال هو ما يحدّد الملائم منها.",
+    "solutions.grid.bestFor": "مناسب لـ",
+    "solutions.grid.problem": "المشكلة",
+    "solutions.grid.included": "ما الذي يشمله",
+    "solutions.grid.outcome": "النتيجة",
+    "solutions.grid.outcomeLabel": "النتيجة",
+    "solutions.grid.priceFrom": "يبدأ من",
+    "solutions.grid.priceOnRequest": "السعر عند الطلب",
+    "solutions.grid.priceNote1": "يُحدَّد النطاق النهائي بعد تشخيص الأعمال.",
+    "solutions.grid.priceNote2": "ليس اشتراكاً شهرياً. بل نظام تملكه أعمالك.",
+    "solutions.grid.detailLink": "تفاصيل الحل كاملة",
+
+    // Foundation
+    "solutions.foundation.name": "Foundation",
+    "solutions.foundation.statement":
+      "تعرف أن النمو متوقّف، لكنك لا تعرف السبب بعد.",
+    "solutions.foundation.outcomeShort": "حدّد القيد قبل الإنفاق على الحلول.",
+    "solutions.foundation.tagline":
+      "اكتشف ما الذي يعيق مرحلتك التالية من النمو.",
+    "solutions.foundation.bestFor":
+      "شركات تعرف أن شيئاً ما يحدّ من نموها لكنها لا تستطيع تسميته — ولا تريد الالتزام ببناء قبل أن تستطيع.",
+    "solutions.foundation.problem":
+      "أعمالك تنمو، لكن سبب تباطؤها ليس واضحاً من الداخل. وكل عرض يصلك يفترض إجابة لم يتحقّق منها أحد فعلاً.",
+    "solutions.foundation.inc1.title": "تشخيص الأعمال",
+    "solutions.foundation.inc1.body":
+      "كيف تعمل الأعمال فعلاً اليوم — العمليات وعمليات التسليم وأين يتوقّف العمل.",
+    "solutions.foundation.inc2.title": "تقييم سير العمل والاختناقات",
+    "solutions.foundation.inc2.body":
+      "النقاط المحدّدة التي يُقيَّد عندها النمو، وكلفة كلٍّ منها.",
+    "solutions.foundation.inc3.title": "خريطة فرص النمو والتقنية",
+    "solutions.foundation.inc3.body":
+      "أين يصنع التسويق والأنظمة والأتمتة أثراً قابلاً للقياس — وبأي ترتيب.",
+    "solutions.foundation.inc4.title": "تحديد فرص الذكاء الاصطناعي",
+    "solutions.foundation.inc4.body":
+      "أي مسارات العمل تستحق فعلاً تطبيق الذكاء الاصطناعي عليها، وأيها لا.",
+    "solutions.foundation.outcome":
+      "خارطة طريق واضحة تُبيّن أين تصنع التقنية والذكاء الاصطناعي والأنظمة أثراً قابلاً للقياس.",
+    "solutions.foundation.note":
+      "‏Foundation يُنتج قراراً لا مخرجاً. وإن بنيت معنا بعده، فإن العمل ينتقل إلى ما يليه.",
+    "solutions.foundation.credit":
+      "إن مضيت في التنفيذ خلال 90 يوماً، تُخصم قيمة Foundation من قيمة المشروع.",
+
+    // Growth Engine
+    "solutions.growth.name": "Growth Engine",
+    "solutions.growth.statement": "لديك طلب. لكن النمو غير قابل للتوقّع.",
+    "solutions.growth.outcomeShort":
+      "ابنِ نظام استقطاب قابلاً للقياس يديره فريقك بالذكاء الاصطناعي.",
+    "solutions.growth.tagline": "حوّل النمو إلى نظام يمكن قياسه.",
+    "solutions.growth.bestFor":
+      "شركات لديها طلب حقيقي، يعيقها استقطاب غير منتظم وتسويق متفرّق ومتابعة يدوية.",
+    "solutions.growth.problem":
+      "الإيرادات تنمو، لكن النمو يعتمد على حملات غير مترابطة وعمليات يدوية وأشخاص يدفعون كل شيء إلى الأمام.",
+    "solutions.growth.inc1.title": "أنظمة التسويق",
+    "solutions.growth.inc1.body":
+      "تحسين محركات البحث، والاستقطاب المدفوع، وتحسين التحويل، وتتبّع المسار، وقياس الأداء — مترابطة معاً كمحرّك واحد.",
+    "solutions.growth.inc2.title": "تمكين الذكاء الاصطناعي",
+    "solutions.growth.inc2.body":
+      "استخدامات خاصة بكل قسم، وتبنٍّ داخل سير العمل، وتمكين عملي للفريق — ليصبح الذكاء الاصطناعي جزءاً من العمل اليومي لا شريحة في عرض تدريبي.",
+    "solutions.growth.inc3.title": "أتمتة الأعمال",
+    "solutions.growth.inc3.body":
+      "تحسين إدارة العملاء، وأتمتة سير العمل، وربط البيانات عبر الأدوات التي تستخدمها بالفعل.",
+    "solutions.growth.outcome":
+      "فرص أكثر تأهيلاً، ورؤية أوضح، وفريق يعمل بالذكاء الاصطناعي داخل مسارات عمل حقيقية.",
+
+    // Scale Infrastructure
+    "solutions.scale.name": "Scale Infrastructure",
+    "solutions.scale.statement": "أعمالك تجاوزت الأنظمة التي تديرها.",
+    "solutions.scale.outcomeShort": "ابنِ البنية التشغيلية اللازمة للتوسّع.",
+    "solutions.scale.tagline": "ابنِ الأنظمة اللازمة للتوسّع التشغيلي.",
+    "solutions.scale.bestFor":
+      "شركات تجاوز نموّها تشغيلها — التعقيد يتصاعد والأنظمة الحالية لا تستطيع حمله.",
+    "solutions.scale.problem":
+      "النمو يولّد التعقيد. الأدوات غير المترابطة والعمليات اليدوية والرؤية المحدودة تبدأ في إبطاء الأعمال — وزيادة الموظفين تتوقّف عن الإفادة.",
+    "solutions.scale.alwaysLabel": "مشمول دائماً",
+    "solutions.scale.always":
+      "طبقة الرؤية: القياس والتقارير وربط بيانات الأعمال — لتُتّخذ القرارات بعد البناء على أدلة لا على حدس.",
+    "solutions.scale.expandsLabel":
+      "ثم يتوسّع، بناءً على تشخيص الأعمال، ليشمل:",
+    "solutions.scale.inc1.title": "تقنية الأعمال",
+    "solutions.scale.inc1.body":
+      "منصّات إدارة العملاء وتخطيط الموارد، والأنظمة الداخلية، والمنصّات الموجّهة للعملاء — مبنية لتملكها وتربطها وتوسّعها.",
+    "solutions.scale.inc2.title": "أتمتة وذكاء اصطناعي متقدّم",
+    "solutions.scale.inc2.body":
+      "مسارات عمل مدعومة بالذكاء الاصطناعي، وأتمتة العمليات، وأنظمة عابرة للأقسام تزيل عمليات التسليم اليدوية.",
+    "solutions.scale.inc3.title": "التمكين التشغيلي",
+    "solutions.scale.inc3.body":
+      "إعادة تصميم العمليات، ودعم التبنّي، وعمل التغيير الذي يجعل الأنظمة الجديدة تستمر بعد التسليم.",
+    "solutions.scale.outcome":
+      "بنية أعمال قابلة للتوسّع مبنية حول الطريقة التي تعمل بها شركتك فعلاً.",
+
+    // Custom Transformation
+    "solutions.custom.eyebrow": "المسار الاستثنائي",
+    "solutions.custom.heading": "ليست كل الأعمال تناسبها الأنماط الجاهزة.",
+    "solutions.custom.name": "Custom Transformation",
+    "solutions.custom.body":
+      "مبيعات قوية مع عمليات مكسورة. تبنٍّ للذكاء الاصطناعي عبر كل الأقسام دفعة واحدة. تركيبة لا يغطّيها أي نطاق جاهز. حين يشير تشخيص الأعمال إلى ما لا يناسبه أيٌّ من الثلاثة، فالإجابة ليست باقة — بل نظام مصمَّم حول واقعك.",
+    "solutions.custom.composed":
+      "مبني من الأجزاء الأربعة نفسها — الاستراتيجية وأنظمة التسويق وتقنية الأعمال وتمكين الذكاء الاصطناعي — بالنِّسَب التي يستدعيها تشخيص الأعمال.",
+    "solutions.custom.price": "يُسعَّر بعد تشخيص الأعمال.",
+
+    // How we work
+    "solutions.work.heading": "كيف نعمل",
+    "solutions.work.strategy.label": "الاستراتيجية",
+    "solutions.work.strategy.body":
+      "نُشخّص الأعمال، ونحدّد القيود، ونضع خارطة الطريق. الاستراتيجية ليست شيئاً نبيعه، بل الطريقة التي تُتّخذ بها كل القرارات الأخرى.",
+    "solutions.work.divider": "وثلاث قدرات تُنفّذ التحوّل",
+    "solutions.work.marketing.title": "أنظمة التسويق",
+    "solutions.work.marketing.body":
+      "بناء أنظمة استقطاب قابلة للقياس — بحث وإعلانات مدفوعة وتحويل وقياس مترابطة معاً بدلاً من تشغيلها منفصلة.",
+    "solutions.work.tech.title": "تقنية الأعمال",
+    "solutions.work.tech.body":
+      "بناء وربط الأنظمة التي تدير بها الأعمال — تخطيط الموارد وإدارة العملاء ومنصّات الويب والجوال والأتمتة بينها.",
+    "solutions.work.ai.title": "تمكين الذكاء الاصطناعي",
+    "solutions.work.ai.body":
+      "دمج الذكاء الاصطناعي في مسارات العمل الحقيقية ليستخدمه الفريق فعلاً، ضمن العمل الذي يؤدّيه أصلاً.",
+
+    // Proof
+    "solutions.proof.heading": "كيف يبدو هذا على أرض الواقع",
+    "solutions.proof.sub": "تعاونات حقيقية، وما الذي تغيّر في الأعمال.",
+
+    // FAQ
+    "solutions.faq.heading": "أسئلة شائعة",
+    "solutions.faq.q1": "كيف نعرف أي حل نحتاج؟",
+    "solutions.faq.a1":
+      "معظم الشركات لا تعرف، وهذا طبيعي. تشخيص الأعمال موجود للإجابة عن هذا السؤال قبل الالتزام بأي تنفيذ.",
+    "solutions.faq.q2": "هل يجب أن نبدأ بـ Foundation؟",
+    "solutions.faq.a2":
+      "لا. Foundation مخصّص للشركات التي لا تستطيع بعد تسمية القيد. وإن كان واضحاً بالفعل، فنبدأ من حيث المشكلة. وكل حل يشمل مرحلة تشخيص أعمال في الحالتين.",
+    "solutions.faq.q3": "لماذا السعر «يبدأ من»؟",
+    "solutions.faq.a3":
+      "لأن النطاق يعتمد على ما يكشفه تشخيص الأعمال. الرقم المعروض هو الحد الأدنى، والرقم النهائي يأتي مع العرض.",
+    "solutions.faq.q4": "هل هذا اشتراك شهري؟",
+    "solutions.faq.a4":
+      "لا. هذه أنظمة تملكها — الشيفرة المصدرية والمنصّات والبيانات. أما الدعم المستمر فاتفاق منفصل إن أردته.",
+    "solutions.faq.q5": "هل نملك ما تبنونه؟",
+    "solutions.faq.a5":
+      "نعم. تُنقل الملكية الفكرية وكامل الشيفرة المصدرية عند الإنجاز. لا تقييد، ولا رسوم للوصول إلى نظامك.",
+    "solutions.faq.q6": "ماذا يحدث لقيمة Foundation إن مضينا في التنفيذ؟",
+    "solutions.faq.a6":
+      "تُخصم من قيمة المشروع، شريطة أن يبدأ التنفيذ خلال 90 يوماً وأن يستند إلى ذلك التشخيص. وهي ليست استرداداً — لقد اشتريت خارطة طريق، وتبقى لك سواء بنيت معنا أم لا.",
+    "solutions.faq.q7": "هل يُباع التدريب على الذكاء الاصطناعي بشكل منفصل؟",
+    "solutions.faq.a7":
+      "لا. تمكين الذكاء الاصطناعي مدمج في كل حل، لأن التدريب غير المرتبط بسير عمل حقيقي لا يصمد بعد انتهائه بشهر.",
+
+    // Final CTA
+    "solutions.cta.heading": "لست متأكداً ما الذي يعيقك؟",
+    "solutions.cta.body":
+      "احجز مكالمة استراتيجية. سنخبرك بصراحة أين يقع القيد — وإن لم نكن الشريك المناسب، فسنقول ذلك أيضاً.",
 
     // --- SERVICE DETAIL (shared labels) ---
     "serviceDetail.backAll": "جميع الخدمات →",
