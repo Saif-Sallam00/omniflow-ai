@@ -57,14 +57,13 @@ const translations: Record<Language, Record<string, string>> = {
     "serviceOpt.other": "Other",
 
     // --- PILLARS (shared by Home + Services) ---
-    "pillars.aiTraining.title": "AI training that turns tools into capability",
+    "pillars.aiTraining.title": "AI Enablement",
     "pillars.aiTraining.body":
       "We run structured AI adoption programs for teams and leadership — from executive strategy sessions to hands-on workflow integration. The goal isn't awareness, it's operational capability: your people using AI on real work, not watching a demo.",
-    "pillars.digitalMarketing.title":
-      "Marketing built as an acquisition system",
+    "pillars.digitalMarketing.title": "Marketing Systems",
     "pillars.digitalMarketing.body":
       "SEO, paid campaigns, and conversion strategy wired into one engine that targets qualified buyers — not vanity traffic. Every stage is tracked, so you know what a lead actually costs and where revenue comes from.",
-    "pillars.software.title": "Software that becomes your operational backbone",
+    "pillars.software.title": "Business Technology",
     "pillars.software.body":
       "The systems your business runs on — ERP and CRM platforms, customer-facing web, mobile apps, and the automation that connects them. Built to own, integrate, and scale, not to rent.",
     "pillars.software.subcaps":
@@ -72,14 +71,14 @@ const translations: Record<Language, Record<string, string>> = {
 
     // --- HERO SYSTEM MAP (interactive; real capability labels) ---
     "systemMap.center": "Business System",
-    "systemMap.node.aiTraining": "AI Training",
-    "systemMap.node.marketing": "Digital Marketing",
-    "systemMap.node.software": "Software",
+    "systemMap.node.aiTraining": "AI Enablement",
+    "systemMap.node.marketing": "Marketing Systems",
+    "systemMap.node.software": "Business Technology",
     "systemMap.node.automation": "Automation",
     "systemMap.node.crm": "CRM",
     "systemMap.node.strategy": "Strategy",
     "systemMap.aria":
-      "A connected business system: AI training, digital marketing, software, automation, CRM and strategy all connecting into one central system.",
+      "A connected business system: AI enablement, marketing systems, business technology, automation, CRM and strategy all connecting into one central system.",
 
     // --- HOME ---
     "home.hero.h1.lead": "Most teams buy the tool first.",
@@ -674,9 +673,9 @@ const translations: Record<Language, Record<string, string>> = {
     "footer.company": "Company",
     "footer.connectShort": "Connect",
     "footer.stayConnected": "Stay Connected",
-    "footer.link.aiTraining": "AI Training",
-    "footer.link.digitalMarketing": "Digital Marketing",
-    "footer.link.software": "Software",
+    "footer.link.aiTraining": "AI Enablement",
+    "footer.link.digitalMarketing": "Marketing Systems",
+    "footer.link.software": "Business Technology",
     "footer.link.about": "About",
     "footer.link.work": "Work",
     "footer.link.contact": "Contact",
@@ -756,15 +755,13 @@ const translations: Record<Language, Record<string, string>> = {
     "serviceOpt.other": "أخرى",
 
     // --- PILLARS (shared by Home + Services) ---
-    "pillars.aiTraining.title":
-      "تدريب على الذكاء الاصطناعي يحوّل الأدوات إلى قدرات فعلية",
+    "pillars.aiTraining.title": "تمكين الذكاء الاصطناعي",
     "pillars.aiTraining.body":
       "نقدّم برامج منظّمة لتبنّي الذكاء الاصطناعي للفرق والقيادات — من جلسات استراتيجية للمدراء إلى دمج عملي في سير العمل. الهدف ليس مجرد المعرفة، بل قدرة تشغيلية حقيقية: أن يستخدم فريقك الذكاء الاصطناعي في عمل حقيقي، لا أن يشاهد عرضاً توضيحياً فحسب.",
-    "pillars.digitalMarketing.title": "تسويق مبني كنظام لاستقطاب العملاء",
+    "pillars.digitalMarketing.title": "أنظمة التسويق",
     "pillars.digitalMarketing.body":
       "تحسين محركات البحث والحملات المدفوعة واستراتيجية التحويل، مدمجة في محرك واحد يستهدف المشترين المؤهّلين — لا الزيارات الشكلية. كل مرحلة قابلة للقياس، لتعرف كم يكلّفك العميل المحتمل فعلاً ومن أين تأتي الإيرادات.",
-    "pillars.software.title":
-      "برمجيات تتحوّل إلى العمود الفقري التشغيلي لأعمالك",
+    "pillars.software.title": "تقنية الأعمال",
     "pillars.software.body":
       "الأنظمة التي تدير أعمالك — منصّات تخطيط موارد المؤسسات (ERP) وإدارة علاقات العملاء (CRM)، ومواقع موجّهة للعملاء، وتطبيقات الجوال، والأتمتة التي تربطها معاً. مبنية لتملكها وتدمجها وتوسّعها، لا لتستأجرها.",
     "pillars.software.subcaps":
@@ -772,14 +769,14 @@ const translations: Record<Language, Record<string, string>> = {
 
     // --- HERO SYSTEM MAP (interactive; real capability labels) ---
     "systemMap.center": "نظام الأعمال",
-    "systemMap.node.aiTraining": "تدريب الذكاء الاصطناعي",
-    "systemMap.node.marketing": "التسويق الرقمي",
-    "systemMap.node.software": "البرمجيات",
+    "systemMap.node.aiTraining": "تمكين الذكاء الاصطناعي",
+    "systemMap.node.marketing": "أنظمة التسويق",
+    "systemMap.node.software": "تقنية الأعمال",
     "systemMap.node.automation": "الأتمتة",
     "systemMap.node.crm": "إدارة العملاء",
     "systemMap.node.strategy": "الاستراتيجية",
     "systemMap.aria":
-      "نظام أعمال مترابط: التدريب على الذكاء الاصطناعي، والتسويق الرقمي، والبرمجيات، والأتمتة، وإدارة العملاء، والاستراتيجية، تترابط جميعها في نظام مركزي واحد.",
+      "نظام أعمال مترابط: تمكين الذكاء الاصطناعي، وأنظمة التسويق، وتقنية الأعمال، والأتمتة، وإدارة العملاء، والاستراتيجية، تترابط جميعها في نظام مركزي واحد.",
 
     // --- HOME ---
     "home.hero.h1.lead": "معظم الفِرق تبدأ باختيار الأداة.",
@@ -1335,9 +1332,9 @@ const translations: Record<Language, Record<string, string>> = {
     "footer.company": "الشركة",
     "footer.connectShort": "تواصل",
     "footer.stayConnected": "ابقَ على تواصل",
-    "footer.link.aiTraining": "التدريب على الذكاء الاصطناعي",
-    "footer.link.digitalMarketing": "التسويق الرقمي",
-    "footer.link.software": "البرمجيات",
+    "footer.link.aiTraining": "تمكين الذكاء الاصطناعي",
+    "footer.link.digitalMarketing": "أنظمة التسويق",
+    "footer.link.software": "تقنية الأعمال",
     "footer.link.about": "من نحن",
     "footer.link.work": "الأعمال",
     "footer.link.contact": "تواصل",

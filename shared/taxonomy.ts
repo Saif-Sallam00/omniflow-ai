@@ -9,10 +9,14 @@
 export const PILLARS = ["ai-training", "digital-marketing", "software"] as const;
 export type Pillar = (typeof PILLARS)[number];
 
+// Display labels only. SLUGS ABOVE DO NOT CHANGE — /services/<slug> URLs,
+// ?service=<pillar> deep links and CATEGORY_TO_PILLAR all key off the slugs.
+// (Phase 1 §5: AI Training → AI Enablement, Digital Marketing → Marketing
+// Systems, Software → Business Technology.)
 export const PILLAR_LABELS: Record<Pillar, string> = {
-  "ai-training": "AI Training",
-  "digital-marketing": "Digital Marketing",
-  software: "Software",
+  "ai-training": "AI Enablement",
+  "digital-marketing": "Marketing Systems",
+  software: "Business Technology",
 };
 
 // --- PORTFOLIO CATEGORIES (capability-level; projects are tagged with these) ---
