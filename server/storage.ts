@@ -1,10 +1,11 @@
 import {
-  users, projects, leads,
+  users, projects, leads, articles,
   type User, type InsertUser, type Project, type InsertProject,
   type Lead, type LeadStatus, type ContactFormData,
+  type Article, type ArticleCard, type InsertArticle,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, ne, desc } from "drizzle-orm";
+import { eq, and, ne, desc, sql } from "drizzle-orm";
 import type { Category } from "@shared/taxonomy";
 
 export interface IStorage {
@@ -30,6 +31,17 @@ export interface IStorage {
   listLeads(): Promise<Lead[]>;
   updateLeadStatus(id: number, status: LeadStatus): Promise<Lead | undefined>;
   deleteLead(id: number): Promise<boolean>;
+
+  // --- Articles ---
+  // The list methods return ArticleCard, never the body: bodies carry base64
+  // images, so selecting them to render a grid of cards would move megabytes.
+  listPublishedArticles(): Promise<ArticleCard[]>;
+  listAllArticles(): Promise<ArticleCard[]>;
+  getArticleBySlug(slug: string): Promise<Article | undefined>;
+  getArticle(id: number): Promise<Article | undefined>;
+  createArticle(article: InsertArticle): Promise<Article>;
+  updateArticle(id: number, article: Partial<InsertArticle>): Promise<Article | undefined>;
+  deleteArticle(id: number): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -154,6 +166,95 @@ export class DatabaseStorage implements IStorage {
     const [deleted] = await db.delete(leads).where(eq(leads.id, id)).returning();
     return !!deleted;
   }
+
+  // --- Articles ---
+
+  /** Card columns only — deliberately never `body`. See IStorage. */
+  private static readonly cardColumns = {
+    id: articles.id,
+    slug: articles.slug,
+    title: articles.title,
+    excerpt: articles.excerpt,
+    coverImage: articles.coverImage,
+    language: articles.language,
+    published: articles.published,
+    publishedAt: articles.publishedAt,
+  };
+
+  async listPublishedArticles(): Promise<ArticleCard[]> {
+    return await db
+      .select(DatabaseStorage.cardColumns)
+      .from(articles)
+      .where(eq(articles.published, true))
+      .orderBy(desc(articles.publishedAt));
+  }
+
+  /** Admin list: drafts included, newest activity first. */
+  async listAllArticles(): Promise<ArticleCard[]> {
+    return await db
+      .select(DatabaseStorage.cardColumns)
+      .from(articles)
+      .orderBy(desc(articles.updatedAt));
+  }
+
+  async getArticleBySlug(slug: string): Promise<Article | undefined> {
+    const [article] = await db.select().from(articles).where(eq(articles.slug, slug));
+    return article;
+  }
+
+  async getArticle(id: number): Promise<Article | undefined> {
+    const [article] = await db.select().from(articles).where(eq(articles.id, id));
+    return article;
+  }
+
+  async createArticle(insertArticle: InsertArticle): Promise<Article> {
+    const [article] = await db
+      .insert(articles)
+      .values({ ...insertArticle, publishedAt: stampPublishedAt(insertArticle) })
+      .returning();
+    return article;
+  }
+
+  async updateArticle(
+    id: number,
+    articleUpdate: Partial<InsertArticle>,
+  ): Promise<Article | undefined> {
+    // Only stamp publishedAt on the transition to published — re-publishing an
+    // edited article must not move it back to the top of the index.
+    const current = await this.getArticle(id);
+    if (!current) return undefined;
+
+    const [article] = await db
+      .update(articles)
+      .set({
+        ...articleUpdate,
+        publishedAt: stampPublishedAt(articleUpdate, current),
+        updatedAt: sql`now()`,
+      })
+      .where(eq(articles.id, id))
+      .returning();
+    return article;
+  }
+
+  async deleteArticle(id: number): Promise<boolean> {
+    const [deleted] = await db.delete(articles).where(eq(articles.id, id)).returning();
+    return !!deleted;
+  }
+}
+
+/**
+ * `publishedAt` is the first-publication date: it drives index ordering and the
+ * byline, so it is set once and then left alone. An explicit value from the
+ * admin always wins (back-dating an import is legitimate).
+ */
+function stampPublishedAt(
+  update: Partial<InsertArticle>,
+  current?: Article,
+): Date | null | undefined {
+  if (update.publishedAt !== undefined) return update.publishedAt;
+  const willBePublished = update.published ?? current?.published ?? false;
+  if (!willBePublished) return current ? current.publishedAt : null;
+  return current?.publishedAt ?? new Date();
 }
 
 export const storage = new DatabaseStorage();

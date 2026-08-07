@@ -30,6 +30,7 @@ const translations: Record<Language, Record<string, string>> = {
     "nav.home": "Home",
     "nav.services": "Solutions",
     "nav.portfolio": "Portfolio",
+    "nav.articles": "Articles",
     "nav.about": "About",
     "nav.contact": "Contact",
     // NOTE: nav.cta ("Let's Talk") removed — the header CTA now reads
@@ -581,6 +582,31 @@ const translations: Record<Language, Record<string, string>> = {
       "Book a strategy call. We'll tell you honestly where the constraint is — and if we're not the right partner, we'll say that too.",
 
     // --- SERVICE DETAIL (shared labels) ---
+    // =========================================================================
+    // --- ARTICLES (/articles) ---
+    // Section chrome only. Article CONTENT lives in the database and is
+    // authored one language at a time (articles.language) — the EN/AR parity
+    // rule covers this dictionary, not CMS rows.
+    // =========================================================================
+    "articles.title": "Articles",
+    "articles.eyebrow": "Articles",
+    "articles.heading": "Notes on scaling a business that already works.",
+    "articles.sub":
+      "What we see slowing growth in medium-sized companies, and the systems that remove it. Written for the people who have to decide.",
+    "articles.loading": "Loading\u2026",
+    "articles.empty":
+      "No articles published yet. The first ones are on the way.",
+    "articles.backAll": "\u2190 All articles",
+    "articles.draft": "Draft",
+    "articles.notFound.title": "Article not found",
+    "articles.notFound.button": "See all articles",
+    "articles.next": "Where to go next",
+    "articles.next.project": "See it in practice",
+    "articles.next.solution": "The solution this belongs to",
+    "articles.cta.heading": "Recognise any of this in your business?",
+    "articles.cta.body":
+      "Book a strategy call. We'll tell you honestly where the constraint is — and if we're not the right partner, we'll say that too.",
+
     // Shared across the three capability pages.
     // REMOVED with the page rewrite: `serviceDetail.included`, `.how.title`,
     // `.how.sub` and every `*.proc.*` step. The site already carries a process
@@ -860,8 +886,12 @@ const translations: Record<Language, Record<string, string>> = {
     "footer.newsletter.text":
       "Practical notes on AI, marketing, and the systems that connect them — straight to your inbox.",
     "footer.newsletter.placeholder": "Enter your email",
-    "footer.location": " Wilmington, DE, USA",
-    "footer.copyright": "Omniflowai LLC · Registered in Wyoming, USA",
+    // One location, stated once. The copyright line previously repeated it as
+    // "Registered in Wyoming, USA" while this key said Wilmington, DE — two
+    // locations, and they contradicted each other. The Arabic already said
+    // Wyoming, so EN was the side that was wrong.
+    "footer.location": "Wyoming, USA",
+    "footer.copyright": "Omniflowai LLC",
     "footer.toast.subscribed": "Thanks — you're subscribed.",
     "footer.toast.error": "Something went wrong, please try again.",
 
@@ -906,6 +936,7 @@ const translations: Record<Language, Record<string, string>> = {
     "nav.home": "الرئيسية",
     "nav.services": "الحلول",
     "nav.portfolio": "أعمالنا",
+    "nav.articles": "المقالات",
     "nav.about": "من نحن",
     "nav.contact": "تواصل معنا",
 
@@ -1389,6 +1420,25 @@ const translations: Record<Language, Record<string, string>> = {
       "احجز مكالمة استراتيجية. سنخبرك بصراحة أين يقع القيد — وإن لم نكن الشريك المناسب، فسنقول ذلك أيضاً.",
 
     // --- SERVICE DETAIL (shared labels) ---
+    // --- ARTICLES (/articles) ---
+    "articles.title": "المقالات",
+    "articles.eyebrow": "المقالات",
+    "articles.heading": "ملاحظات في توسيع عمل ناجح بالفعل.",
+    "articles.sub":
+      "ما نراه يُبطئ نمو الشركات المتوسطة، والأنظمة التي تزيله. مكتوبة لمن يقع عليهم القرار.",
+    "articles.loading": "جارٍ التحميل…",
+    "articles.empty": "لا توجد مقالات منشورة بعد. الأولى في الطريق.",
+    "articles.backAll": "جميع المقالات →",
+    "articles.draft": "مسودة",
+    "articles.notFound.title": "المقال غير موجود",
+    "articles.notFound.button": "استعرض كل المقالات",
+    "articles.next": "إلى أين بعد ذلك",
+    "articles.next.project": "شاهده على أرض الواقع",
+    "articles.next.solution": "الحل الذي ينتمي إليه",
+    "articles.cta.heading": "هل ترى شيئاً من هذا في أعمالك؟",
+    "articles.cta.body":
+      "احجز مكالمة استراتيجية. سنخبرك بصراحة أين يقع القيد — وإن لم نكن الشريك المناسب، فسنقول ذلك أيضاً.",
+
     "serviceDetail.backAll": "جميع الخدمات →",
     "serviceDetail.seeExamples": "شاهد أمثلة",
     "serviceDetail.notFound.title": "الخدمة غير موجودة",

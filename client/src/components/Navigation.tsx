@@ -22,6 +22,7 @@ export function Navigation() {
     { href: '/', label: t('nav.home') },
     { href: '/services', label: t('nav.services') },
     { href: '/portfolio', label: t('nav.portfolio') },
+    { href: '/articles', label: t('nav.articles') },
     { href: '/about', label: t('nav.about') },
     { href: '/contact', label: t('nav.contact') },
   ];

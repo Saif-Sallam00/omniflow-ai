@@ -73,6 +73,7 @@ export function Footer() {
             <ul className="space-y-3 md:space-y-4 text-xs md:text-sm">
               <FooterLink href="/about">{t("footer.link.about")}</FooterLink>
               <FooterLink href="/portfolio">{t("footer.link.work")}</FooterLink>
+              <FooterLink href="/articles">{t("nav.articles")}</FooterLink>
               <FooterLink href="/contact">{t("footer.link.contact")}</FooterLink>
               {/* TODO(legal-final): add real privacy/terms pages before/after launch */}
             </ul>

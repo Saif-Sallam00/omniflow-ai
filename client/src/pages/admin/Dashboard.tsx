@@ -7,11 +7,15 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Project } from "@shared/schema";
-import { useLocation, Link } from "wouter";
+// NOTE: `useLocation` was already unused before this change — left in place
+// rather than cleaned up as a drive-by. `Link` was removed because extracting
+// AdminNav is what orphaned it.
+import { useLocation } from "wouter";
 import { ObjectUploader } from "@/components/ObjectUploader";
 import { CATEGORIES, CATEGORY_LABELS } from "@shared/taxonomy";
 import { onImageError } from "@/lib/placeholder";
 import { useDocumentTitle } from "@/hooks/use-document-title";
+import { AdminNav } from "@/components/AdminNav";
 
 // UI Components
 import { Button } from "@/components/ui/button";
@@ -182,14 +186,7 @@ export default function Dashboard() {
     <div className="min-h-screen bg-[#0a0a0b] text-white">
       <header className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b border-slate-800 bg-[#0a0a0b]/90 backdrop-blur-sm px-6">
         <h1 className="text-xl font-bold font-display text-white">Omniflow<span className="text-primary">CMS</span></h1>
-        <nav className="hidden sm:flex items-center gap-1 ml-4">
-          <Link href="/admin/dashboard">
-            <span className="px-3 py-1.5 rounded-md text-sm font-medium bg-slate-800 text-white cursor-pointer">Portfolio</span>
-          </Link>
-          <Link href="/admin/leads">
-            <span className="px-3 py-1.5 rounded-md text-sm font-medium text-slate-400 hover:text-white cursor-pointer">Leads</span>
-          </Link>
-        </nav>
+        <AdminNav active="portfolio" />
         <div className="ml-auto flex items-center gap-4">
           <Button variant="outline" size="sm" onClick={() => logout()} className="border-slate-700 bg-transparent text-slate-300 hover:bg-slate-800 hover:text-white">
             <LogOut className="w-4 h-4 mr-2" /> Logout

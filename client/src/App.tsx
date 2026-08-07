@@ -21,10 +21,14 @@ const Services = lazy(() => import("@/pages/Services"));
 const ServiceDetail = lazy(() => import("@/pages/ServiceDetail"));
 const Portfolio = lazy(() => import("@/pages/Portfolio"));
 const ProjectDetail = lazy(() => import("@/pages/ProjectDetail"));
+const Articles = lazy(() => import("@/pages/Articles"));
+// The markdown renderer ships in this chunk only — no other page pays for it.
+const ArticleDetail = lazy(() => import("@/pages/ArticleDetail"));
 const Contact = lazy(() => import("@/pages/Contact"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 const AuthPage = lazy(() => import("@/pages/admin/Auth"));
 const Dashboard = lazy(() => import("@/pages/admin/Dashboard"));
+const AdminArticles = lazy(() => import("@/pages/admin/Articles"));
 const Leads = lazy(() => import("@/pages/admin/Leads"));
 
 // Lightweight fallback shown while a route chunk loads.
@@ -87,11 +91,14 @@ function Router() {
           <Route path="/services/:slug" component={ServiceDetail} />
           <Route path="/portfolio" component={Portfolio} />
           <Route path="/portfolio/:id" component={ProjectDetail} />
+          <Route path="/articles" component={Articles} />
+          <Route path="/articles/:slug" component={ArticleDetail} />
           <Route path="/contact" component={Contact} />
 
           {/* Admin Routes */}
           <Route path="/admin/auth" component={AuthPage} />
           <ProtectedRoute path="/admin/dashboard" component={Dashboard} />
+          <ProtectedRoute path="/admin/articles" component={AdminArticles} />
           <ProtectedRoute path="/admin/leads" component={Leads} />
 
           {/* Fallback */}

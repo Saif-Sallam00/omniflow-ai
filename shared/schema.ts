@@ -1,4 +1,4 @@
-import { pgTable, text, serial, jsonb, boolean, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, jsonb, boolean, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { CATEGORIES, CONTACT_SERVICES, type Category, type ContactService } from "./taxonomy";
@@ -104,3 +104,81 @@ export const leads = pgTable("leads", {
 export const insertLeadSchema = createInsertSchema(leads);
 export type Lead = typeof leads.$inferSelect;
 export type InsertLead = typeof leads.$inferInsert;
+
+// --- ARTICLES (/articles) ---
+// Authored one language at a time, like every other piece of DB content — the
+// EN/AR parity rule applies to the i18n dictionary, not to CMS rows. `language`
+// exists because the GTM splits content between Egypt- and Saudi-facing posts,
+// so Arabic articles are expected; the index filters to the reader's language.
+export const ARTICLE_LANGUAGES = ["en", "ar"] as const;
+export type ArticleLanguage = (typeof ARTICLE_LANGUAGES)[number];
+
+// The one funnel step out of an article, chosen per article rather than left to
+// whether the author remembered to link. Solution ids match CONTACT_SERVICES /
+// the /services deep-link anchors.
+export const ARTICLE_SOLUTIONS = [
+  "foundation",
+  "growth-engine",
+  "scale-infrastructure",
+  "custom",
+] as const;
+export type ArticleSolution = (typeof ARTICLE_SOLUTIONS)[number];
+
+export const articles = pgTable("articles", {
+  id: serial("id").primaryKey(),
+  // The URL. Immutable in practice once published — changing it drops whatever
+  // search ranking and inbound links the article has earned.
+  slug: text("slug").notNull().unique(),
+  title: text("title").notNull(),
+  // Doubles as the card summary and the meta description / LinkedIn preview
+  // text, so it is required rather than derived from the body.
+  excerpt: text("excerpt").notNull(),
+  // Base64 data URI, same as projects.image (server/objectStorage.ts).
+  coverImage: text("cover_image").notNull(),
+  // Markdown. Rendered with @tailwindcss/typography, already a dependency.
+  body: text("body").notNull(),
+  language: text("language").$type<ArticleLanguage>().default("en").notNull(),
+  published: boolean("published").default(false).notNull(),
+  // Set when the article is first published; drives ordering and the byline
+  // date. Null while it is a draft.
+  publishedAt: timestamp("published_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  // Optional end-of-article funnel hops. Both nullable: an article may point at
+  // a case study, a solution, both, or neither.
+  relatedProjectId: integer("related_project_id").references(() => projects.id, {
+    onDelete: "set null",
+  }),
+  relatedSolution: text("related_solution").$type<ArticleSolution>(),
+});
+
+const articleFields = {
+  slug: z
+    .string()
+    .min(1)
+    // Lowercase, hyphenated, no leading/trailing hyphen — the admin generates
+    // this from the title but leaves it editable, so it is validated here too.
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug must be lowercase words separated by hyphens"),
+  language: z.enum(ARTICLE_LANGUAGES),
+  relatedSolution: z.enum(ARTICLE_SOLUTIONS).nullable().optional(),
+  relatedProjectId: z.number().int().positive().nullable().optional(),
+  publishedAt: z.coerce.date().nullable().optional(),
+} as const;
+
+export const insertArticleSchema = createInsertSchema(articles, articleFields).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+export const updateArticleSchema = insertArticleSchema.partial();
+
+export type Article = typeof articles.$inferSelect;
+export type InsertArticle = typeof articles.$inferInsert;
+
+/** Index-card shape: everything the list needs, and never the body. Article
+ *  bodies carry base64 images, so selecting them for a list would move
+ *  megabytes to render a grid of cards. */
+export type ArticleCard = Pick<
+  Article,
+  "id" | "slug" | "title" | "excerpt" | "coverImage" | "language" | "published" | "publishedAt"
+>;

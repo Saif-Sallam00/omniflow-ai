@@ -6,6 +6,8 @@ import {
   contactFormSchema,
   newsletterSchema,
   insertProjectSchema,
+  insertArticleSchema,
+  updateArticleSchema,
   LEAD_STATUSES,
   type Lead,
 } from "@shared/schema";
@@ -229,6 +231,87 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const id = parseInt(req.params.id);
     const success = await storage.deleteProject(id);
     if (!success) return res.status(404).json({ message: "Project not found" });
+    res.sendStatus(204);
+  });
+
+  // --- ARTICLE ROUTES ---
+  // Public reads are published-only. `/api/articles/all` is admin-only and is
+  // registered BEFORE `/:slug` so the literal path is not swallowed by it.
+  app.get("/api/articles", async (_req, res) => {
+    res.json(await storage.listPublishedArticles());
+  });
+
+  app.get("/api/articles/all", isAuthenticated, async (_req, res) => {
+    res.json(await storage.listAllArticles());
+  });
+
+  app.get("/api/articles/:slug", async (req, res) => {
+    const article = await storage.getArticleBySlug(req.params.slug);
+    // A draft is a 404 to the public — never a redirect or an empty shell,
+    // which would leak that the slug exists.
+    if (!article || (!article.published && !req.isAuthenticated())) {
+      return res.status(404).json({ message: "Article not found" });
+    }
+    res.json(article);
+  });
+
+  // Cover image as a real, fetchable image response. Covers are stored as
+  // base64 data URIs (server/objectStorage.ts), which a social crawler cannot
+  // use as an og:image — it needs a URL. This is that URL.
+  app.get("/api/articles/:slug/cover", async (req, res) => {
+    const article = await storage.getArticleBySlug(req.params.slug);
+    if (!article || !article.published) return res.sendStatus(404);
+
+    const match = /^data:(image\/[a-z+]+);base64,(.+)$/i.exec(article.coverImage);
+    if (!match) return res.sendStatus(404);
+
+    res.type(match[1]);
+    res.setHeader("Cache-Control", "public, max-age=3600");
+    res.send(Buffer.from(match[2], "base64"));
+  });
+
+  app.post("/api/articles", isAuthenticated, async (req, res) => {
+    try {
+      const parsed = insertArticleSchema.parse(req.body);
+      if (await storage.getArticleBySlug(parsed.slug)) {
+        return res.status(409).json({ message: "That slug is already in use" });
+      }
+      res.status(201).json(await storage.createArticle(parsed));
+    } catch (error) {
+      console.error("Article Create Error:", error);
+      res.status(400).json({ message: "Invalid article data" });
+    }
+  });
+
+  app.patch("/api/articles/:id", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) return res.status(400).json({ message: "Invalid ID" });
+      const parsed = updateArticleSchema.parse(req.body);
+
+      // Slugs are URLs. Changing one to a slug another article already owns
+      // would 500 on the unique index; catch it as a real, explainable error.
+      if (parsed.slug) {
+        const clash = await storage.getArticleBySlug(parsed.slug);
+        if (clash && clash.id !== id) {
+          return res.status(409).json({ message: "That slug is already in use" });
+        }
+      }
+
+      const updated = await storage.updateArticle(id, parsed);
+      if (!updated) return res.status(404).json({ message: "Article not found" });
+      res.json(updated);
+    } catch (error) {
+      console.error("Article Update Error:", error);
+      res.status(400).json({ message: "Update failed" });
+    }
+  });
+
+  app.delete("/api/articles/:id", isAuthenticated, async (req, res) => {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ message: "Invalid ID" });
+    const success = await storage.deleteArticle(id);
+    if (!success) return res.status(404).json({ message: "Article not found" });
     res.sendStatus(204);
   });
 

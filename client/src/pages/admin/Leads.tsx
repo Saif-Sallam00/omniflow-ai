@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Link } from "wouter";
 import { useUser } from "@/hooks/use-user";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useDocumentTitle } from "@/hooks/use-document-title";
+import { AdminNav } from "@/components/AdminNav";
 import { Lead, LeadStatus, LeadSource } from "@shared/schema";
 
 import { Button } from "@/components/ui/button";
@@ -27,23 +27,6 @@ const SOURCE_STYLES: Record<LeadSource, string> = {
   contact: "bg-slate-700/40 text-slate-300 border border-slate-600/50",
   newsletter: "bg-sky-500/15 text-sky-300 border border-sky-500/30",
 };
-
-function AdminNav({ active }: { active: "portfolio" | "leads" }) {
-  return (
-    <nav className="hidden sm:flex items-center gap-1 ml-4">
-      <Link href="/admin/dashboard">
-        <span className={`px-3 py-1.5 rounded-md text-sm font-medium cursor-pointer ${active === "portfolio" ? "bg-slate-800 text-white" : "text-slate-400 hover:text-white"}`}>
-          Portfolio
-        </span>
-      </Link>
-      <Link href="/admin/leads">
-        <span className={`px-3 py-1.5 rounded-md text-sm font-medium cursor-pointer ${active === "leads" ? "bg-slate-800 text-white" : "text-slate-400 hover:text-white"}`}>
-          Leads
-        </span>
-      </Link>
-    </nav>
-  );
-}
 
 export default function Leads() {
   useDocumentTitle("Admin — Leads");
