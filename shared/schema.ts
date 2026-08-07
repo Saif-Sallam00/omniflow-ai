@@ -1,4 +1,6 @@
-import { pgTable, text, serial, integer, jsonb, boolean, timestamp } from "drizzle-orm/pg-core";
+import {
+  pgTable, text, serial, integer, jsonb, boolean, timestamp, varchar, json, index,
+} from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { CATEGORIES, CONTACT_SERVICES, type Category, type ContactService } from "./taxonomy";
@@ -20,6 +22,37 @@ export const newsletterSchema = z.object({
   email: z.string().email("Invalid email address"),
 });
 export type NewsletterData = z.infer<typeof newsletterSchema>;
+
+// --- SESSION STORE (owned by connect-pg-simple, NOT by this file) ---
+//
+// This table is created at runtime by connect-pg-simple's `createTableIfMissing`
+// and holds live admin logins. It is declared here for one reason only: without
+// it, `drizzle-kit push` sees a table in the database that is absent from the
+// schema and offers to DELETE it on every push — a data-loss prompt in front of
+// real sessions, which meant no new table could be added without either
+// dropping everyone's login or aborting the whole batch.
+//
+// The definition below mirrors connect-pg-simple's own table.sql EXACTLY
+// (node_modules/connect-pg-simple/table.sql):
+//
+//   "sid"    varchar NOT NULL COLLATE "default"  → PRIMARY KEY
+//   "sess"   json NOT NULL                        (json, not jsonb)
+//   "expire" timestamp(6) NOT NULL                (no time zone)
+//   CREATE INDEX "IDX_session_expire" ON "session" ("expire")
+//
+// Do not "improve" these types. Drizzle diffs this against the live table, so
+// any drift here turns into an ALTER against the session store on the next
+// push. Nothing in the app reads this table through Drizzle — express-session
+// owns it entirely.
+export const session = pgTable(
+  "session",
+  {
+    sid: varchar("sid").primaryKey(),
+    sess: json("sess").notNull(),
+    expire: timestamp("expire", { precision: 6 }).notNull(),
+  },
+  (table) => [index("IDX_session_expire").on(table.expire)],
+);
 
 // --- EXISTING: Admin Users ---
 export const users = pgTable("users", {
