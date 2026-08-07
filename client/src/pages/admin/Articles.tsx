@@ -84,7 +84,7 @@ export default function AdminArticles() {
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const bodyRef = useRef<HTMLTextAreaElement | null>(null);
 
-  const { data: articles, isLoading } = useQuery<ArticleCard[]>({
+  const { data: articles, isLoading, error: listError } = useQuery<ArticleCard[]>({
     queryKey: ["/api/articles/all"],
   });
   const { data: projects } = useQuery<Project[]>({ queryKey: ["/api/projects"] });
@@ -238,6 +238,19 @@ export default function AdminArticles() {
         {isLoading ? (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => <div key={i} className="h-24 animate-pulse rounded-xl bg-slate-900" />)}
+          </div>
+        ) : listError ? (
+          // A failed request must not read as an empty list. A 401 here means
+          // the session cookie is not reaching the server even though the
+          // client still has a cached user from login — which looks identical
+          // to "no articles yet" unless it is called out.
+          <div className="rounded-xl border border-red-900/60 bg-red-950/30 p-4">
+            <p className="font-medium text-red-300">Could not load articles</p>
+            <p className="mt-1 text-sm text-red-300/80">{(listError as Error).message}</p>
+            <p className="mt-2 text-sm text-slate-400">
+              If this says Unauthorized, your session is not reaching the server — sign in
+              again, and open the site in a normal browser tab rather than an embedded preview.
+            </p>
           </div>
         ) : !articles?.length ? (
           <p className="text-slate-400">No articles yet. Create the first one.</p>

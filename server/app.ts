@@ -65,13 +65,32 @@ app.use((req, res, next) => {
 export default async function runApp(
   setup: (app: Express, server: Server) => Promise<void>,
 ) {
+  // Replit (and any other TLS-terminating host) proxies HTTPS to this process
+  // over plain HTTP. Without this, Express reports req.secure === false, and
+  // express-session refuses to send a `Secure` cookie over a connection it
+  // believes is insecure — so the session cookie is never stored and every
+  // authenticated request 401s, while /api/login still returns 200.
+  //
+  // Must be set before registerRoutes, which installs the session middleware.
+  // Scoped to production so a local dev server does not trust spoofable
+  // X-Forwarded-* headers; it mirrors the `secure` cookie flag exactly.
+  if (process.env.NODE_ENV === "production") {
+    app.set("trust proxy", 1);
+  }
+
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
-    res.status(status).json({ message });
-    throw err;
+
+    // This used to `throw err` after responding. A throw inside an Express
+    // error handler is not caught by Express — it becomes an uncaught
+    // exception and kills the process, so any recoverable error (a multer
+    // rejection, a session-store blip) took the whole server down and the
+    // platform returned its own opaque 500 instead of this JSON body.
+    console.error(`[error] ${status} ${message}`, err?.stack || err);
+    if (!res.headersSent) res.status(status).json({ message });
   });
 
   await setup(app, server);
