@@ -7,15 +7,22 @@ import { useDocumentTitle } from '@/hooks/use-document-title';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { trackEvent } from '@/lib/analytics';
 import { onImageError } from '@/lib/placeholder';
+import { BusinessDiagnostic, HexGlyph } from '@/components/systems';
 
 // =============================================================================
 // SOLUTIONS PAGE — route stays /services (spec §0.5: slugs do not change).
 // Spec: docs/PHASE-1-SOLUTIONS-PAGE-SPEC-v2.md, §12.5 section order.
 // Copy lives in i18n under `solutions.*`; nothing here is a hardcoded string.
 //
+// The trust strip and the problem-recognition section were REMOVED from §12.5's
+// order: both restated arguments the homepage already makes (the trust strip
+// reused home.reach.* verbatim; the pains and the before/after shift repeated
+// the homepage's value-prop and transformation blocks). The page now assumes
+// the visitor is past the premise and gets them to the diagnostic sooner.
+//
 // Surface rhythm alternates between the two darkest surfaces (§12.6):
-//   hero 950 · trust 900 · problem 950 · router 900 · solutions 950 ·
-//   custom ORANGE · how-we-work 950 · proof 950 · faq 900 · final CTA 950.
+//   hero 950 · router 900 · solutions 950 · custom ORANGE ·
+//   how-we-work 950 · proof 950 · faq 900 · final CTA 950.
 // Proof is DB-driven and disappears when empty, so it deliberately repeats the
 // 950 of the section above it — hiding it must not break the alternation.
 // =============================================================================
@@ -33,25 +40,35 @@ type SolutionId = 'foundation' | 'growth-engine' | 'scale-infrastructure' | 'cus
 // back to null falls the card through to "Pricing on request" (§10.1).
 // Custom Transformation carries no figure at all — it is priced after the
 // business diagnosis (solutions.custom.price).
+// `includes` has one entry per component (`inc{n}`, in order); the value is how
+// many `item{k}` capability bullets that component carries. Keeping the counts
+// beside the data means the card renders exactly what exists in i18n — a
+// mismatch can never surface a raw key on the page.
+//
+// The components map the capability set onto what a company needs at each
+// stage; see docs/CAPABILITY-PACKAGE-MAP.md. Capabilities shared between Growth
+// Engine and Scale Infrastructure (CRM, websites, automation, AI, reporting)
+// appear in both at deliberately different depths — the component `body` lines
+// carry that boundary, and they are what stop the two solutions overlapping.
 const SOLUTIONS = [
   {
     id: 'foundation',
     key: 'foundation',
-    includes: [1, 2, 3, 4],
+    includes: [4, 4, 6, 3],
     priceFloor: '$1,000' as string | null,
     priceNoteKey: 'solutions.grid.priceNote1',
   },
   {
     id: 'growth-engine',
     key: 'growth',
-    includes: [1, 2, 3],
+    includes: [5, 3, 4, 3],
     priceFloor: '$7,000' as string | null,
     priceNoteKey: 'solutions.grid.priceNote2',
   },
   {
     id: 'scale-infrastructure',
     key: 'scale',
-    includes: [1, 2, 3],
+    includes: [4, 4, 4, 3],
     priceFloor: '$30,000' as string | null,
     priceNoteKey: 'solutions.grid.priceNote2',
   },
@@ -66,6 +83,19 @@ const ROUTER_OPTIONS = [
   { target: 'foundation' },
   { target: 'custom' },
 ] as const satisfies readonly { target: SolutionId }[];
+
+// The router starts answered, on q1 → Growth Engine.
+//
+// An unanswered router leaves three equal cards and no guidance at the exact
+// moment the visitor has to choose, and it is the router — not a hardcoded
+// badge — that decides which card is marked Recommended. Pre-answering keeps
+// that recommendation EARNED: it always follows a stated constraint, so it
+// stays consistent with §0 decision 1 (paths, not tiers) rather than asserting
+// a ranking. It is a starting assumption the visitor overrides in one click,
+// never a claim about them or about anyone else.
+//
+// It must never fire the GA `router_select` event — see onRouterSelect.
+const DEFAULT_ROUTER_INDEX = 0;
 
 const SOLUTION_NAME_KEY: Record<SolutionId, string> = {
   foundation: 'solutions.foundation.name',
@@ -83,8 +113,6 @@ const CAPABILITIES = [
   { key: 'ai', href: '/services/ai-training', glyph: 'ai' },
 ] as const;
 
-const SHIFT_ROWS = [1, 2, 3, 4, 5] as const;
-const PROBLEM_ITEMS = [1, 2, 3, 4, 5] as const;
 const FAQ_ITEMS = [1, 2, 3, 4, 5, 6, 7] as const;
 
 // Western numerals in both languages (spec §12.7).
@@ -116,11 +144,11 @@ function ltrNames(text: string): ReactNode {
 }
 
 export default function Solutions() {
-  const { t, isRTL } = useI18n();
+  const { t } = useI18n();
   useDocumentTitle('Solutions');
   const reduced = useReducedMotion();
 
-  const [selected, setSelected] = useState<number | null>(null);
+  const [selected, setSelected] = useState<number>(DEFAULT_ROUTER_INDEX);
   const [highlighted, setHighlighted] = useState<SolutionId | null>(null);
   const highlightTimer = useRef<number>();
   const routerRef = useRef<HTMLElement>(null);
@@ -157,6 +185,10 @@ export default function Solutions() {
 
   useEffect(() => () => window.clearTimeout(highlightTimer.current), []);
 
+  // Only ever called from a real selection, never on mount. NOTE: now that the
+  // router starts answered, this event means "changed away from the default",
+  // not "chose" — visitors who agree with q1 never fire it. Read the data with
+  // that in mind.
   const onRouterSelect = (index: number) => {
     setSelected(index);
     const target = ROUTER_OPTIONS[index].target;
@@ -168,7 +200,7 @@ export default function Solutions() {
   const { data: projects } = useQuery<Project[]>({ queryKey: ['/api/projects'] });
   const featured = (projects || []).filter((p) => p.isFeatured);
 
-  const recommended = selected === null ? null : ROUTER_OPTIONS[selected].target;
+  const recommended = ROUTER_OPTIONS[selected].target;
 
   return (
     <div className="min-h-screen pt-20 bg-slate-950 text-slate-300">
@@ -208,102 +240,13 @@ export default function Solutions() {
             </div>
           </div>
 
-          <SystemVisual reduced={reduced} isRTL={isRTL} />
+          {/* Signature visual. Self-contained — it reads its own copy and
+              handles its own motion gating, so the hero passes it nothing. */}
+          <BusinessDiagnostic />
         </div>
       </section>
 
-      {/* ================= 2. TRUST STRIP ================= */}
-      {/* Stat values reuse the homepage keys verbatim — no new figures (§12.3). */}
-      <section
-        aria-label={t('solutions.trust.label')}
-        className="border-y border-slate-800 bg-slate-900/30"
-      >
-        <div className="mx-auto flex max-w-6xl flex-col gap-5 px-6 py-6 sm:flex-row sm:items-center sm:justify-between md:px-8">
-          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-slate-400">
-            {t('solutions.trust.label')}
-          </p>
-          <dl className="flex flex-wrap gap-x-8 gap-y-3">
-            {[
-              { v: 'home.reach.stat1.value', l: 'home.reach.stat1.label', num: true },
-              { v: 'home.reach.stat2.value', l: 'home.reach.stat2.label', num: true },
-              { v: 'home.reach.stat3.value', l: 'home.reach.stat3.label', num: false },
-            ].map((s) => (
-              <div key={s.v} className="flex flex-wrap items-baseline gap-2">
-                <dd
-                  className={`font-display font-bold tracking-tight text-white ${
-                    s.num ? 'text-xl tabular-nums' : 'text-base'
-                  }`}
-                >
-                  {t(s.v)}
-                </dd>
-                <dt className="font-mono text-[10px] uppercase tracking-[0.12em] text-slate-400">
-                  {t(s.l)}
-                </dt>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </section>
-
-      {/* ================= 3. PROBLEM RECOGNITION ================= */}
-      <section className="py-16 md:py-20">
-        <div className="mx-auto max-w-6xl px-6 md:px-8">
-          <h2 className="font-display text-2xl font-bold leading-tight tracking-tight text-white sm:text-3xl md:text-4xl">
-            {t('solutions.problem.heading')}
-          </h2>
-          <p className="mt-3 max-w-[66ch] leading-relaxed text-slate-400">
-            {t('solutions.problem.sub')}
-          </p>
-
-          {/* Display-type pains on hairline rules. Never compressed on mobile. */}
-          <ul className="mt-9 border-t border-slate-800/40">
-            {PROBLEM_ITEMS.map((n) => (
-              <li
-                key={n}
-                className="flex items-baseline gap-4 border-b border-slate-800/40 py-4 font-display text-lg font-medium leading-snug tracking-tight text-white sm:text-xl"
-              >
-                <span
-                  aria-hidden="true"
-                  className="w-7 flex-none font-mono text-[11px] font-normal tracking-[0.1em] text-slate-400"
-                >
-                  {pad2(n)}
-                </span>
-                {t(`solutions.problem.item${n}`)}
-              </li>
-            ))}
-          </ul>
-
-          {/* The shift: what you're running on → what it becomes. */}
-          <div className="mt-9 grid grid-cols-1 items-center gap-6 md:grid-cols-[1fr_auto_1fr]">
-            <ShiftChain
-              label={t('solutions.shift.nowLabel')}
-              rows={SHIFT_ROWS.map((n) => t(`solutions.shift.now${n}`))}
-            />
-            <p className="text-center font-mono text-[11px] uppercase tracking-[0.14em] text-primary">
-              <span
-                aria-hidden="true"
-                className={`mb-1 block text-xl leading-none rotate-90 md:rotate-0 ${
-                  isRTL ? '-scale-x-100' : ''
-                }`}
-              >
-                &rarr;
-              </span>
-              {t('solutions.shift.arrow')}
-            </p>
-            <ShiftChain
-              accent
-              label={t('solutions.shift.nextLabel')}
-              rows={SHIFT_ROWS.map((n) => t(`solutions.shift.next${n}`))}
-            />
-          </div>
-
-          <p className="mt-8 border-t border-slate-800/40 pt-6 max-w-[66ch] leading-relaxed text-slate-400">
-            {t('solutions.problem.close')}
-          </p>
-        </div>
-      </section>
-
-      {/* ================= 4. DIAGNOSTIC ROUTER ================= */}
+      {/* ================= 2. DIAGNOSTIC ROUTER ================= */}
       <section
         ref={routerRef}
         id="router"
@@ -367,29 +310,28 @@ export default function Solutions() {
             })}
           </div>
 
-          {/* Recommendation. aria-live so the result is announced, not just seen. */}
+          {/* Recommendation. Always present — the router starts answered — so
+              aria-live announces only genuine changes, not the initial state. */}
           <div aria-live="polite">
-            {recommended && selected !== null && (
-              <div className="relative mt-4 flex flex-wrap items-center gap-6 overflow-hidden rounded-e-xl border border-primary/30 bg-slate-950/60 p-5 sm:p-6">
-                {/* Accent rule as an element, not a border side — mirrors in RTL
-                    without depending on utility ordering. */}
-                <span aria-hidden="true" className="absolute inset-y-0 start-0 w-[3px] bg-primary" />
-                <div>
-                  <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-primary">
-                    {t('solutions.router.resultLabel')}
-                  </p>
-                  <p
-                    dir="ltr"
-                    className="mt-1 font-display text-2xl font-bold tracking-tight text-white rtl:text-end"
-                  >
-                    {t(SOLUTION_NAME_KEY[recommended])}
-                  </p>
-                </div>
-                <p className="min-w-[15rem] flex-1 text-sm leading-relaxed text-slate-400">
-                  {ltrNames(t(`solutions.router.r${selected + 1}`))}
+            <div className="relative mt-4 flex flex-wrap items-center gap-6 overflow-hidden rounded-e-xl border border-primary/30 bg-slate-950/60 p-5 sm:p-6">
+              {/* Accent rule as an element, not a border side — mirrors in RTL
+                  without depending on utility ordering. */}
+              <span aria-hidden="true" className="absolute inset-y-0 start-0 w-[3px] bg-primary" />
+              <div>
+                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-primary">
+                  {t('solutions.router.resultLabel')}
+                </p>
+                <p
+                  dir="ltr"
+                  className="mt-1 font-display text-2xl font-bold tracking-tight text-white rtl:text-end"
+                >
+                  {t(SOLUTION_NAME_KEY[recommended])}
                 </p>
               </div>
-            )}
+              <p className="min-w-[15rem] flex-1 text-sm leading-relaxed text-slate-400">
+                {ltrNames(t(`solutions.router.r${selected + 1}`))}
+              </p>
+            </div>
           </div>
 
           <p className="mt-5 text-sm text-slate-400">
@@ -402,7 +344,7 @@ export default function Solutions() {
         </div>
       </section>
 
-      {/* ================= 5. THE THREE SOLUTIONS ================= */}
+      {/* ================= 3. THE THREE SOLUTIONS ================= */}
       <section className="py-16 md:py-20">
         <div className="mx-auto max-w-6xl px-6 md:px-8">
           <h2 className="font-display text-2xl font-bold leading-tight tracking-tight text-white sm:text-3xl md:text-4xl">
@@ -411,22 +353,30 @@ export default function Solutions() {
           <p className="mt-3 max-w-[66ch] leading-relaxed text-slate-400">
             {t('solutions.grid.sub')}
           </p>
+          {/* Explains the badge for anyone who scrolled past the router, and
+              keeps it honest: the mark follows the selected constraint. */}
+          <p className="mt-2 max-w-[66ch] text-sm leading-relaxed text-slate-400">
+            {t('solutions.grid.recommendedNote')}
+          </p>
 
-          {/* Equal visual weight: no badge, no highlighted card, no size
-              difference. That is what says "paths, not tiers" (§3.1). */}
-          <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
+          {/* §3.1 called for three cards of equal weight and no badge. That is
+              superseded here: one card is marked Recommended, driven by the
+              router's answer rather than by a fixed ranking, so the mark moves
+              with the constraint and never asserts a tier. */}
+          <div className="mt-9 grid grid-cols-1 gap-4 md:grid-cols-3">
             {SOLUTIONS.map((s) => (
               <SolutionCard
                 key={s.id}
                 solution={s}
                 highlighted={highlighted === s.id}
+                recommended={recommended === s.id}
               />
             ))}
           </div>
         </div>
       </section>
 
-      {/* ================= 6. CUSTOM TRANSFORMATION ================= */}
+      {/* ================= 4. CUSTOM TRANSFORMATION ================= */}
       {/* The single inverted section on the page — a band, not a fourth card. */}
       <section
         id="custom"
@@ -435,6 +385,13 @@ export default function Solutions() {
         }`}
       >
         <div className="mx-auto max-w-6xl px-6 md:px-8">
+          {/* q6 routes here, so the band carries the same mark as the cards —
+              inverted for the accent background. */}
+          {recommended === 'custom' && (
+            <p className="mb-4 inline-block rounded-full bg-slate-950 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-primary">
+              {t('solutions.grid.recommended')}
+            </p>
+          )}
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-slate-950/80">
             {t('solutions.custom.eyebrow')}
           </p>
@@ -451,7 +408,7 @@ export default function Solutions() {
             {t('solutions.custom.name')}
           </p>
           <div className="mt-6 flex flex-col flex-wrap items-stretch gap-4 sm:flex-row sm:items-center">
-            <Link href="/contact" className="w-full sm:w-auto">
+            <Link href="/contact?service=custom" className="w-full sm:w-auto">
               <span className="block w-full rounded-lg border border-slate-950 bg-slate-950 px-6 py-3 text-center text-sm font-semibold text-white transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 focus-visible:ring-offset-primary">
                 {t('common.cta.bookCall')}
               </span>
@@ -463,7 +420,7 @@ export default function Solutions() {
         </div>
       </section>
 
-      {/* ================= 7. HOW WE WORK ================= */}
+      {/* ================= 5. HOW WE WORK ================= */}
       <section className="py-16 md:py-20">
         <div className="mx-auto max-w-6xl px-6 md:px-8">
           <h2 className="font-display text-2xl font-bold leading-tight tracking-tight text-white sm:text-3xl md:text-4xl">
@@ -503,7 +460,7 @@ export default function Solutions() {
         </div>
       </section>
 
-      {/* ================= 8. PROOF (hidden entirely when empty) ================= */}
+      {/* ================= 6. PROOF (hidden entirely when empty) ================= */}
       {featured.length > 0 && (
         <section className="border-t border-slate-800/40 py-16 md:py-20">
           <div className="mx-auto max-w-6xl px-6 md:px-8">
@@ -544,7 +501,7 @@ export default function Solutions() {
         </section>
       )}
 
-      {/* ================= 9. FAQ ================= */}
+      {/* ================= 7. FAQ ================= */}
       <section className="border-y border-slate-800 bg-slate-900/30 py-16 md:py-20">
         <div className="mx-auto max-w-6xl px-6 md:px-8">
           <h2 className="font-display text-2xl font-bold leading-tight tracking-tight text-white sm:text-3xl md:text-4xl">
@@ -567,7 +524,7 @@ export default function Solutions() {
         </div>
       </section>
 
-      {/* ================= 10. FINAL CTA ================= */}
+      {/* ================= 8. FINAL CTA ================= */}
       <section className="relative overflow-hidden py-20 text-center md:py-24">
         <div className="pointer-events-none absolute -bottom-52 left-1/2 h-[420px] w-[640px] -translate-x-1/2 rounded-full bg-primary/[0.13] blur-3xl" />
         <div className="relative mx-auto max-w-3xl px-6 md:px-8">
@@ -599,64 +556,6 @@ function Eyebrow({ children }: { children: ReactNode }) {
       {children}
       <span aria-hidden="true" className="h-px flex-1 bg-slate-800" />
     </span>
-  );
-}
-
-/**
- * Hexagon line-art marks — the only iconography on this page (§12.6). Stroke
- * only, no fill, no icon library.
- */
-function HexGlyph({ size = 34, glyph }: { size?: number; glyph: string }) {
-  const marks: Record<string, ReactNode> = {
-    // Foundation — a magnifier: diagnosis, not implementation.
-    foundation: (
-      <>
-        <circle cx="17" cy="19" r="4.5" stroke="currentColor" strokeWidth="1.4" />
-        <path d="M20.5 22.5 L25 27" stroke="currentColor" strokeWidth="1.4" />
-      </>
-    ),
-    // Growth Engine — a rising line.
-    'growth-engine': (
-      <>
-        <path d="M9 24 L15 17 L20 21 L26 13" stroke="currentColor" strokeWidth="1.4" />
-        <circle cx="26" cy="13" r="2" fill="currentColor" />
-      </>
-    ),
-    // Scale Infrastructure — stacked connected layers.
-    'scale-infrastructure': (
-      <>
-        <path d="M10 15 h14 M10 19 h14 M10 23 h14" stroke="currentColor" strokeWidth="1.4" />
-        <circle cx="10" cy="15" r="1.6" fill="currentColor" />
-        <circle cx="24" cy="23" r="1.6" fill="currentColor" />
-      </>
-    ),
-    marketing: <path d="M11 22 l5 -6 4 4 5 -7" stroke="currentColor" strokeWidth="1.5" />,
-    tech: (
-      <>
-        <rect x="11" y="14" width="12" height="10" stroke="currentColor" strokeWidth="1.5" />
-        <path d="M11 18 h12" stroke="currentColor" strokeWidth="1.5" />
-      </>
-    ),
-    ai: (
-      <>
-        <circle cx="17" cy="19" r="5" stroke="currentColor" strokeWidth="1.5" />
-        <path d="M17 11 v3 M17 24 v3 M9 19 h3 M22 19 h3" stroke="currentColor" strokeWidth="1.5" />
-      </>
-    ),
-  };
-
-  return (
-    <svg
-      width={size}
-      height={Math.round((size * 38) / 34)}
-      viewBox="0 0 34 38"
-      fill="none"
-      aria-hidden="true"
-      className="text-primary"
-    >
-      <path d="M17 2 L31 10 v18 L17 36 L3 28 V10 z" stroke="currentColor" strokeWidth="1.4" />
-      {marks[glyph]}
-    </svg>
   );
 }
 
@@ -698,51 +597,6 @@ function Disclosure({
   );
 }
 
-/** One column of the before → after chain in the problem section. */
-function ShiftChain({
-  label,
-  rows,
-  accent = false,
-}: {
-  label: string;
-  rows: string[];
-  accent?: boolean;
-}) {
-  return (
-    <div
-      className={`rounded-xl border p-5 ${
-        accent ? 'border-primary/30 bg-slate-900/50' : 'border-slate-800'
-      }`}
-    >
-      <p
-        className={`mb-3.5 font-mono text-[10px] uppercase tracking-[0.14em] ${
-          accent ? 'text-primary' : 'text-slate-400'
-        }`}
-      >
-        {label}
-      </p>
-      <ul>
-        {rows.map((row) => (
-          <li
-            key={row}
-            className={`flex items-baseline gap-3 py-1.5 text-sm ${
-              accent ? 'text-white' : 'text-slate-400'
-            }`}
-          >
-            <span
-              aria-hidden="true"
-              className={`mt-1 h-2 w-[7px] flex-none [clip-path:polygon(50%_0,100%_25%,100%_75%,50%_100%,0_75%,0_25%)] ${
-                accent ? 'bg-primary' : 'bg-slate-500'
-              }`}
-            />
-            {row}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
 /**
  * One solution card. Statement, outcome and price are always visible; Best for,
  * The problem and the inclusion list live in the collapsed disclosure (§4).
@@ -752,9 +606,11 @@ function ShiftChain({
 function SolutionCard({
   solution,
   highlighted,
+  recommended,
 }: {
   solution: (typeof SOLUTIONS)[number];
   highlighted: boolean;
+  recommended: boolean;
 }) {
   const { t } = useI18n();
   const { id, key, includes, priceFloor, priceNoteKey } = solution;
@@ -764,10 +620,24 @@ function SolutionCard({
   return (
     <div
       id={id}
-      className={`flex scroll-mt-24 flex-col rounded-xl border bg-slate-900/50 p-6 transition-colors duration-300 ${
-        highlighted ? 'border-primary ring-2 ring-primary/60' : 'border-slate-800'
+      className={`relative flex scroll-mt-24 flex-col rounded-xl border p-6 transition-colors duration-300 ${
+        recommended ? 'bg-primary/[0.05]' : 'bg-slate-900/50'
+      } ${
+        highlighted
+          ? 'border-primary ring-2 ring-primary/60'
+          : recommended
+            ? 'border-primary/60'
+            : 'border-slate-800'
       }`}
     >
+      {/* Straddles the top border so the badge reads as part of the frame and
+          costs the other two cards no vertical alignment. */}
+      {recommended && (
+        <p className="absolute -top-px start-6 -translate-y-1/2 rounded-full border border-primary bg-slate-950 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-primary">
+          {t('solutions.grid.recommended')}
+        </p>
+      )}
+
       <HexGlyph glyph={id} />
 
       <p
@@ -816,17 +686,37 @@ function SolutionCard({
               </p>
             )}
 
-            <ul className="space-y-3">
-              {includes.map((n) => (
-                <li key={n}>
-                  <p className="text-sm font-medium text-white">
-                    {t(`solutions.${key}.inc${n}.title`)}
-                  </p>
-                  <p className="mt-0.5 text-xs leading-relaxed text-slate-400">
-                    {t(`solutions.${key}.inc${n}.body`)}
-                  </p>
-                </li>
-              ))}
+            <ul className="space-y-4">
+              {includes.map((itemCount, idx) => {
+                const n = idx + 1;
+                return (
+                  <li key={n}>
+                    <p className="text-sm font-medium text-white">
+                      {t(`solutions.${key}.inc${n}.title`)}
+                    </p>
+                    <p className="mt-0.5 text-xs leading-relaxed text-slate-400">
+                      {t(`solutions.${key}.inc${n}.body`)}
+                    </p>
+                    {/* Named capabilities. The marker is the hexagon bullet from
+                        the existing visual language — §12.6 keeps iconography to
+                        the hexagon glyphs, so no per-component icons. */}
+                    <ul className="mt-2 space-y-1.5">
+                      {Array.from({ length: itemCount }, (_, i) => (
+                        <li
+                          key={i}
+                          className="flex items-start gap-2.5 text-xs leading-relaxed text-slate-300"
+                        >
+                          <span
+                            aria-hidden="true"
+                            className="mt-[6px] h-1.5 w-[5px] flex-none bg-primary/70 [clip-path:polygon(50%_0,100%_25%,100%_75%,50%_100%,0_75%,0_25%)]"
+                          />
+                          {t(`solutions.${key}.inc${n}.item${i + 1}`)}
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                );
+              })}
             </ul>
 
             <Field label={t('solutions.grid.outcome')} body={ltrNames(t(`solutions.${key}.outcome`))} />
@@ -870,6 +760,23 @@ function SolutionCard({
             {ltrNames(t('solutions.foundation.credit'))}
           </p>
         )}
+
+        {/* Per-solution CTA. Same label as every other CTA site-wide (§0.10);
+            the `service` param lands the solution on the lead record, so which
+            card produced the enquiry is recorded rather than inferred.
+            Filled on the recommended card, outlined on the others — hierarchy
+            without three competing fills. */}
+        <Link href={`/contact?service=${id}`} className="mt-5 block">
+          <span
+            className={`block w-full rounded-lg border px-5 py-3 text-center text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 ${
+              recommended
+                ? 'border-primary bg-primary text-slate-950 hover:bg-brand-400'
+                : 'border-slate-700 text-white hover:border-slate-600 hover:bg-white/5'
+            }`}
+          >
+            {t('common.cta.bookCall')}
+          </span>
+        </Link>
       </div>
     </div>
   );
@@ -880,83 +787,6 @@ function Field({ label, body }: { label: string; body: ReactNode }) {
     <div>
       <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-slate-400">{label}</p>
       <p className="mt-1 text-xs leading-relaxed text-slate-400">{body}</p>
-    </div>
-  );
-}
-
-/**
- * Hero system visual: five disconnected nodes resolving into one growth system.
- * Pure line art — every label is HTML outside the SVG, so the drawing mirrors
- * wholesale in RTL without any counter-transform on text.
- *
- * The connectors draw themselves in once, over ~2.5s, and stop. Under reduced
- * motion they render already-drawn.
- */
-function SystemVisual({ reduced, isRTL }: { reduced: boolean; isRTL: boolean }) {
-  const { t } = useI18n();
-  const nodes = [28, 72, 116, 160, 204];
-  const hubTargets = [104, 110, 116, 122, 128];
-
-  return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-5">
-      <div className="mb-3.5 flex justify-between gap-4 font-mono text-[10px] uppercase tracking-[0.13em]">
-        <span className="text-slate-400">{t('solutions.viz.before')}</span>
-        <span className="text-primary">{t('solutions.viz.after')}</span>
-      </div>
-
-      <svg
-        viewBox="0 0 300 240"
-        width="100%"
-        role="img"
-        aria-label={t('solutions.viz.aria')}
-        className={isRTL ? '-scale-x-100' : ''}
-      >
-        {/* Disconnected nodes */}
-        <g fill="none" stroke="#64748b" strokeWidth="1" opacity="0.55">
-          {nodes.map((cy) => (
-            <path key={cy} d={`M34 ${cy - 6} l10 -6 10 6 v12 l-10 6 -10 -6 z`} />
-          ))}
-          {/* Fragments that go nowhere — the "before" state. */}
-          <path d="M56 28 L86 50" />
-          <path d="M56 116 L84 110" />
-          <path d="M52 196 L74 166" />
-        </g>
-
-        {/* Connectors into the hub */}
-        <g fill="none" stroke="#FF6B1F" strokeWidth="1.4">
-          {nodes.map((cy, i) => (
-            <path
-              key={cy}
-              d={`M56 ${cy} L216 ${hubTargets[i]}`}
-              style={
-                reduced
-                  ? undefined
-                  : {
-                      strokeDasharray: 220,
-                      strokeDashoffset: 220,
-                      animation: `connector-draw 2.5s var(--ease-standard) ${i * 0.25}s forwards`,
-                    }
-              }
-            />
-          ))}
-        </g>
-
-        {/* The one growth system */}
-        <path
-          d="M226 103 l22 -13 22 13 v26 l-22 13 -22 -13 z"
-          fill="none"
-          stroke="#FF6B1F"
-          strokeWidth="1.5"
-        />
-        <circle cx="248" cy="116" r="3.5" fill="#FF6B1F" />
-      </svg>
-
-      <div className="mt-3 text-end">
-        <p className="font-display text-sm font-semibold text-white">{t('solutions.viz.hub')}</p>
-        <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.12em] text-slate-400">
-          {t('solutions.viz.attr1')} · {t('solutions.viz.attr2')} · {t('solutions.viz.attr3')}
-        </p>
-      </div>
     </div>
   );
 }

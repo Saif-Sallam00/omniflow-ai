@@ -75,9 +75,14 @@ export function Navigation() {
             >
               <Globe className="w-5 h-5" />
             </Button>
+            {/* The one primary CTA site-wide (§0.10) — same key as every other
+                one, so the label can only ever be changed in one place.
+                whitespace-nowrap + tighter padding below lg: the label is twice
+                the length of the old "Let's Talk" and the header is already
+                narrow at md with the display-size logo. */}
             <Link href="/contact">
-              <Button className="bg-primary text-primary-foreground font-semibold rounded-full px-6">
-                {t('nav.cta')}
+              <Button className="whitespace-nowrap bg-primary text-primary-foreground font-semibold rounded-full px-4 lg:px-6">
+                {t('common.cta.bookCall')}
                 <ArrowRight className={`w-4 h-4 ${isRTL ? 'mr-2' : 'ml-2'}`} />
               </Button>
             </Link>
@@ -107,15 +112,19 @@ export function Navigation() {
                 </span>
               </Link>
             ))}
-            <div className="flex gap-3 mt-8">
-              <Button variant="outline" className="flex-1 border-slate-700 text-slate-300 h-12" onClick={toggleLanguage}>
-                <Globe className="w-4 h-4 mr-2" /> {language === 'en' ? 'العربية' : 'English'}
-              </Button>
-              <Link href="/contact" className="flex-1">
+            {/* Stacked full-width, primary first (§4). Previously these shared
+                a row at flex-1 each; "Book a strategy call" does not fit half a
+                phone width, and the primary CTA should not be sharing a row
+                with a language toggle in any case. */}
+            <div className="mt-8 space-y-3">
+              <Link href="/contact" className="block">
                 <Button className="w-full bg-primary text-primary-foreground font-bold h-12 rounded-full" onClick={() => setIsMobileMenuOpen(false)}>
-                  {t('nav.cta')}
+                  {t('common.cta.bookCall')}
                 </Button>
               </Link>
+              <Button variant="outline" className="w-full border-slate-700 text-slate-300 h-12" onClick={toggleLanguage}>
+                <Globe className="w-4 h-4 mr-2" /> {language === 'en' ? 'العربية' : 'English'}
+              </Button>
             </div>
           </div>
         </div>

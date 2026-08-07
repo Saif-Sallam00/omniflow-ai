@@ -25,8 +25,26 @@ import { useToast } from "@/hooks/use-toast";
 import { useI18n } from "@/lib/i18n";
 import { apiRequest } from "@/lib/queryClient";
 import { contactFormSchema, type ContactFormData } from "@shared/schema";
-import { CONTACT_SERVICES, CONTACT_EMAIL } from "@shared/taxonomy";
+import { CONTACT_SERVICES, CONTACT_EMAIL, type ContactService } from "@shared/taxonomy";
 import { useDocumentTitle } from "@/hooks/use-document-title";
+
+/**
+ * `?service=<id>` — set by the per-solution CTAs on the Solutions page so the
+ * lead record carries which card produced the enquiry instead of it having to
+ * be inferred from the message.
+ *
+ * Anything absent or unrecognised falls back to "not-sure". §6's rule stands:
+ * the form must never pre-select a service on its own, because that silently
+ * biases every lead. This only honours a choice the visitor actually made by
+ * clicking a specific solution.
+ */
+function requestedService(): ContactService {
+  if (typeof window === "undefined") return "not-sure";
+  const param = new URLSearchParams(window.location.search).get("service");
+  return CONTACT_SERVICES.includes(param as ContactService)
+    ? (param as ContactService)
+    : "not-sure";
+}
 
 export default function Contact() {
   const { t } = useI18n();
@@ -40,8 +58,7 @@ export default function Contact() {
       email: "",
       phone: "",
       company: "",
-      // "not-sure" — the pre-selection must not bias the lead record (§6).
-      service: "not-sure",
+      service: requestedService(),
       message: "",
     },
   });

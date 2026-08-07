@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OmniFlowAI — Solutions Page Mockup v3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink-950:#08090A; --ink-900:#0C0D0F; --ink-850:#101216; --ink-800:#14171B; --ink-750:#181C21; --ink-700:#1D2127;
+  --line-soft:rgba(255,255,255,.055); --line:rgba(255,255,255,.10); --line-str:rgba(255,255,255,.17);
+  --orange:#FF6B1F; --orange-600:#E8580F; --orange-400:#FF9457; --orange-glow:rgba(255,107,31,.13);
+  --tx-hi:#F4F5F6; --tx:#C7CBD1; --tx-mut:#878E97; --tx-faint:#565D66;
+  --green:#7DDBA3;
+  --f-sans:"Inter",system-ui,sans-serif;
+  --f-disp:"Inter Tight","Inter",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --f-ar:"IBM Plex Sans Arabic","Inter",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--ink-950);color:var(--tx);font-family:var(--f-sans);font-size:16px;line-height:1.72;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1160px;margin:0 auto;padding:56px 24px 96px}
+.docmeta{border-bottom:1px solid var(--line);padding-bottom:28px;margin-bottom:44px}
+.eyebrow{font-family:var(--f-mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);display:flex;gap:12px;align-items:center;margin-bottom:16px}
+.eyebrow::after{content:"";flex:1;height:1px;background:var(--line)}
+.docmeta h1{font-family:var(--f-disp);font-weight:700;font-size:38px;line-height:1.06;letter-spacing:-.022em;color:var(--tx-hi)}
+.docmeta p{color:var(--tx-mut);font-size:14px;margin-top:10px;max-width:680px}
+.seclabel{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx-faint);margin:0 0 12px;display:flex;align-items:center;gap:10px}
+.seclabel .n{color:var(--orange)}
+.seclabel::after{content:"";flex:1;height:1px;background:var(--line-soft)}
+.frame{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:32px}
+
+.chrome{display:flex;align-items:center;justify-content:space-between;padding:13px 26px;border-bottom:1px solid var(--line);background:var(--ink-850)}
+.brand{display:flex;align-items:center;gap:9px;font-family:var(--f-disp);font-weight:700;font-size:15px;color:var(--tx-hi);letter-spacing:-.01em}
+.hexmark{width:15px;height:17px;background:var(--orange);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);flex:none}
+.navlinks{display:flex;gap:22px;font-size:12.5px;color:var(--tx-mut)}
+.navlinks .on{color:var(--tx-hi)}
+.chrome .right{display:flex;align-items:center;gap:14px;font-size:12px;color:var(--tx-mut)}
+.pill{border:1px solid var(--line-str);border-radius:6px;padding:6px 12px;font-size:12px;color:var(--tx-hi)}
+
+.s-hero{background:var(--ink-950);padding:58px 44px 44px;position:relative;overflow:hidden}
+.s-hero::before{content:"";position:absolute;top:-160px;right:-120px;width:520px;height:520px;background:radial-gradient(circle,var(--orange-glow) 0%,transparent 65%);pointer-events:none}
+.herogrid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;position:relative}
+h2.hero{font-family:var(--f-disp);font-weight:700;font-size:46px;line-height:1.04;letter-spacing:-.028em;color:var(--tx-hi)}
+h2.hero em{font-style:normal;color:var(--orange)}
+.lede{color:var(--tx);font-size:15.5px;line-height:1.7;max-width:46ch;margin-top:18px}
+.btnrow{display:flex;gap:10px;margin-top:28px;flex-wrap:wrap}
+.btn{font-size:13.5px;padding:12px 22px;border-radius:6px;background:var(--orange);color:#0C0D0F;font-weight:600;border:1px solid var(--orange);display:inline-block}
+.btn.ghost{background:transparent;color:var(--tx-hi);border-color:var(--line-str);font-weight:500}
+
+.sysviz{background:var(--ink-900);border:1px solid var(--line);border-radius:12px;padding:20px}
+.vizhead{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--tx-faint);margin-bottom:14px}
+.vizhead .aft{color:var(--orange)}
+.dash{animation:draw 2.6s ease-out forwards;stroke-dasharray:200;stroke-dashoffset:200}
+.dash.d2{animation-delay:.25s}.dash.d3{animation-delay:.5s}.dash.d4{animation-delay:.75s}.dash.d5{animation-delay:1s}
+@keyframes draw{to{stroke-dashoffset:0}}
+.pulse{animation:pl 3s ease-in-out infinite}
+@keyframes pl{0%,100%{opacity:.35}50%{opacity:1}}
+
+.trust{background:var(--ink-900);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 44px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.trust .k{font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx-faint)}
+.trust .stats{display:flex;gap:34px;flex-wrap:wrap}
+.trust .st b{font-family:var(--f-disp);font-weight:700;font-size:19px;color:var(--tx-hi);letter-spacing:-.01em}
+.trust .st span{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--tx-faint);margin-left:7px}
+
+.s-prob{background:var(--ink-900);padding:56px 44px}
+h3.big{font-family:var(--f-disp);font-weight:700;font-size:34px;line-height:1.1;letter-spacing:-.022em;color:var(--tx-hi)}
+.sub{color:var(--tx-mut);font-size:14px;margin-top:10px;max-width:66ch}
+.pains{margin-top:34px;border-top:1px solid var(--line-soft)}
+.pain{display:flex;gap:18px;align-items:baseline;padding:16px 0;border-bottom:1px solid var(--line-soft);font-family:var(--f-disp);font-weight:500;font-size:21px;color:var(--tx-hi);letter-spacing:-.012em;line-height:1.35}
+.pain .idx{font-family:var(--f-mono);font-size:10.5px;font-weight:400;letter-spacing:.1em;color:var(--tx-faint);flex:none;width:26px}
+.shift{display:grid;grid-template-columns:1fr auto 1fr;gap:24px;align-items:center;margin-top:36px}
+.chain{border:1px solid var(--line);border-radius:10px;padding:20px}
+.chain.now{background:transparent}
+.chain.next{background:var(--ink-850);border-color:rgba(255,107,31,.28)}
+.chain .k{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px}
+.chain.now .k{color:var(--tx-faint)}.chain.next .k{color:var(--orange)}
+.step{font-size:14px;padding:7px 0;position:relative;padding-left:20px}
+.chain.now .step{color:var(--tx-mut)}
+.chain.next .step{color:var(--tx-hi)}
+.step::before{content:"";position:absolute;left:0;top:15px;width:7px;height:8px;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
+.chain.now .step::before{background:var(--tx-faint)}
+.chain.next .step::before{background:var(--orange)}
+.arrowmid{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);text-align:center;white-space:nowrap}
+.arrowmid .ar{display:block;font-size:22px;line-height:1;margin-bottom:6px}
+
+.s-router{background:var(--ink-950);padding:56px 44px}
+.rgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:30px}
+.ropt{border:1px solid var(--line);border-radius:8px;padding:18px 20px;display:flex;gap:16px;align-items:flex-start;background:var(--ink-900)}
+.ropt .no{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;color:var(--tx-faint);flex:none;padding-top:3px}
+.ropt .txt{font-family:var(--f-disp);font-weight:500;font-size:16px;color:var(--tx);line-height:1.4;letter-spacing:-.008em}
+.ropt.sel{border-color:var(--orange);background:var(--orange-glow)}
+.ropt.sel .no{color:var(--orange)}
+.ropt.sel .txt{color:var(--tx-hi)}
+.result{margin-top:16px;border:1px solid rgba(255,107,31,.3);border-left:3px solid var(--orange);border-radius:0 10px 10px 0;padding:22px 26px;background:var(--ink-900);display:flex;gap:28px;align-items:center;flex-wrap:wrap}
+.result .lbl{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--orange);margin-bottom:5px}
+.result .nm{font-family:var(--f-disp);font-weight:700;font-size:26px;color:var(--tx-hi);letter-spacing:-.018em}
+.result .why{font-size:13.5px;color:var(--tx-mut);flex:1;min-width:240px;line-height:1.6}
+
+.s-sol{background:var(--ink-900);padding:56px 44px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:32px}
+.card{background:var(--ink-850);border:1px solid var(--line);border-radius:12px;padding:26px;display:flex;flex-direction:column}
+.card .glyph{margin-bottom:18px}
+.card .nm{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--orange)}
+.card .say{font-family:var(--f-disp);font-weight:600;font-size:20px;line-height:1.28;letter-spacing:-.015em;color:var(--tx-hi);margin-top:10px;min-height:78px}
+.card .oc{font-size:13.5px;color:var(--tx-mut);line-height:1.6;margin-top:12px;padding-top:14px;border-top:1px solid var(--line-soft)}
+.card .oc b{color:var(--tx);font-weight:500;display:block;font-family:var(--f-mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx-faint);margin-bottom:5px}
+.acc{display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding:12px 0;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);font-size:12.5px;color:var(--tx-mut)}
+.acc span{color:var(--orange);font-size:15px}
+.price{margin-top:auto;padding-top:18px}
+.price .from{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--tx-faint)}
+.price .amt{font-family:var(--f-disp);font-weight:700;font-size:30px;color:var(--tx-hi);letter-spacing:-.022em;line-height:1.15;margin-top:3px}
+.price .note{font-size:11.5px;color:var(--tx-faint);line-height:1.5;margin-top:7px}
+.credit{margin-top:12px;border:1px solid rgba(125,219,163,.3);background:rgba(125,219,163,.08);border-radius:8px;padding:11px 13px;font-size:11.5px;color:var(--green);line-height:1.5}
+.alw{border:1px solid rgba(255,107,31,.28);background:var(--orange-glow);border-radius:8px;padding:12px 14px;margin-top:14px}
+.alw .k{font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);margin-bottom:5px}
+.alw .v{font-size:12px;color:var(--tx);line-height:1.5}
+
+.s-custom{background:var(--orange);color:#0C0D0F;padding:56px 44px}
+.s-custom .k{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(12,13,15,.62);margin-bottom:16px}
+.s-custom h3{font-family:var(--f-disp);font-weight:700;font-size:36px;line-height:1.08;letter-spacing:-.026em;color:#0C0D0F;max-width:19ch}
+.s-custom p{font-size:15px;line-height:1.65;color:rgba(12,13,15,.78);max-width:62ch;margin-top:16px}
+.s-custom .nmx{font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#0C0D0F;margin-top:22px}
+.cfoot{display:flex;gap:20px;align-items:center;margin-top:24px;flex-wrap:wrap}
+.btn.dark{background:#0C0D0F;border-color:#0C0D0F;color:var(--tx-hi)}
+.cfoot .pr{font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(12,13,15,.6)}
+
+.s-work{background:var(--ink-950);padding:56px 44px}
+.strat{background:var(--ink-900);border:1px solid var(--line);border-left:2px solid var(--orange);border-radius:0 10px 10px 0;padding:24px 26px;margin-top:26px}
+.strat .nm{font-family:var(--f-disp);font-weight:600;font-size:19px;color:var(--tx-hi)}
+.strat p{font-size:14px;color:var(--tx-mut);line-height:1.65;margin-top:8px;max-width:80ch}
+.divider{text-align:center;font-family:var(--f-mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--tx-faint);margin:24px 0 18px}
+.caps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.cap{border:1px solid var(--line);border-radius:10px;padding:20px 22px;background:var(--ink-900)}
+.cap .ic{margin-bottom:14px}
+.cap .nm{font-family:var(--f-disp);font-weight:600;font-size:16px;color:var(--tx-hi)}
+.cap p{font-size:12.5px;color:var(--tx-mut);line-height:1.6;margin-top:8px}
+
+.s-faq{background:var(--ink-900);padding:56px 44px}
+.faq{margin-top:24px;border-top:1px solid var(--line-soft)}
+.faq .q{display:flex;justify-content:space-between;align-items:center;padding:17px 0;border-bottom:1px solid var(--line-soft);font-size:15px;color:var(--tx-hi);font-family:var(--f-disp);font-weight:500}
+.faq .q i{color:var(--orange);font-style:normal;font-size:17px}
+.faq .a{font-size:13.5px;color:var(--tx-mut);line-height:1.7;padding:2px 0 17px;border-bottom:1px solid var(--line-soft);max-width:80ch}
+
+.finale{background:var(--ink-950);text-align:center;padding:64px 44px;position:relative;overflow:hidden}
+.finale::before{content:"";position:absolute;bottom:-200px;left:50%;transform:translateX(-50%);width:640px;height:420px;background:radial-gradient(circle,var(--orange-glow) 0%,transparent 65%);pointer-events:none}
+.finale h3{font-family:var(--f-disp);font-weight:700;font-size:34px;color:var(--tx-hi);letter-spacing:-.024em;position:relative}
+.finale p{color:var(--tx-mut);font-size:14.5px;margin:14px auto 26px;max-width:56ch;position:relative}
+.finale .btn{position:relative}
+
+.twoup{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.phone{background:var(--ink-900);border:1px solid var(--line);border-radius:20px;padding:10px}
+.pscreen{background:var(--ink-950);border:1px solid var(--line-soft);border-radius:14px;padding:18px;overflow:hidden}
+.pchrome{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--line-soft);margin-bottom:16px}
+.ph1{font-family:var(--f-disp);font-weight:700;font-size:22px;line-height:1.14;letter-spacing:-.022em;color:var(--tx-hi)}
+.ph1 em{font-style:normal;color:var(--orange)}
+.plede{font-size:12.5px;color:var(--tx-mut);line-height:1.65;margin-top:9px}
+.pbtns{display:grid;gap:7px;margin:16px 0 20px}
+.pbtn{text-align:center;padding:11px;border-radius:6px;font-size:12.5px;background:var(--orange);color:#0C0D0F;font-weight:600}
+.pbtn.ghost{background:transparent;border:1px solid var(--line-str);color:var(--tx-hi);font-weight:500}
+.ptrust{display:flex;gap:18px;padding:12px 0;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);margin-bottom:20px;font-family:var(--f-mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--tx-faint)}
+.ptrust b{font-family:var(--f-disp);font-size:14px;color:var(--tx-hi);letter-spacing:-.01em;display:block;margin-bottom:2px}
+.ph2{font-family:var(--f-disp);font-weight:600;font-size:17px;color:var(--tx-hi);margin-bottom:12px;letter-spacing:-.014em}
+.ppain{padding:11px 0;border-bottom:1px solid var(--line-soft);font-family:var(--f-disp);font-weight:500;font-size:14.5px;color:var(--tx-hi);display:flex;gap:12px}
+.ppain .idx{font-family:var(--f-mono);font-size:9.5px;color:var(--tx-faint);font-weight:400;padding-top:3px}
+.propt{border:1px solid var(--line);border-radius:8px;padding:13px 14px;font-size:13px;display:flex;gap:12px;background:var(--ink-900);margin-top:7px;line-height:1.4}
+.propt .no{font-family:var(--f-mono);font-size:10px;color:var(--tx-faint);flex:none;padding-top:2px}
+.propt.sel{border-color:var(--orange);background:var(--orange-glow)}
+.pcard{border:1px solid var(--line);border-radius:10px;padding:18px;margin-top:18px;background:var(--ink-900)}
+.pacc{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);font-size:12.5px;color:var(--tx-mut);margin-top:14px}
+.pacc span{color:var(--orange)}
+.ar{direction:rtl;font-family:var(--f-ar)}
+.ar .ph1,.ar .ph2,.ar .ppain{font-family:var(--f-ar);letter-spacing:0;line-height:1.5}
+.ltr{direction:ltr;unicode-bidi:isolate;display:inline-block}
+
+.notes{margin-top:44px;border-top:1px solid var(--line);padding-top:28px}
+.notes h4{font-family:var(--f-disp);font-weight:600;font-size:16px;color:var(--tx-hi);margin-bottom:14px}
+.notes ul{list-style:none;display:grid;gap:11px}
+.notes li{position:relative;padding-left:20px;font-size:13.5px;color:var(--tx-mut);line-height:1.6}
+.notes li::before{content:"";position:absolute;left:0;top:9px;width:6px;height:7px;background:var(--orange);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
+.notes b{color:var(--tx-hi);font-weight:500}
+.foot{margin-top:40px;padding-top:20px;border-top:1px solid var(--line-soft);font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--tx-faint);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+
+@media(max-width:940px){
+  .herogrid,.cards,.caps,.rgrid,.twoup,.shift{grid-template-columns:1fr}
+  .s-hero,.s-prob,.s-router,.s-sol,.s-custom,.s-work,.s-faq,.finale,.trust{padding-left:24px;padding-right:24px}
+  h2.hero{font-size:32px}h3.big{font-size:26px}.s-custom h3{font-size:27px}
+  .arrowmid{transform:rotate(90deg);margin:6px 0}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="docmeta">
+  <div class="eyebrow">Phase 1 · Mockup v3 — experience layer</div>
+  <h1>Solutions page — with narrative and rhythm</h1>
+  <p>Same information architecture and strategy as spec v2. What changed is the experience layer: a system visual in the hero, a trust strip immediately after it, the problem section rebuilt as a transition, a numbered diagnostic, cards cut to a single problem statement, and Custom Transformation as a full-contrast break.</p>
+</div>
+
+<div class="seclabel"><span class="n">01</span> Desktop — full page</div>
+
+<div class="frame">
+
+<div class="chrome">
+  <div class="brand"><span class="hexmark"></span>Omniflow<span style="color:var(--orange)">AI</span></div>
+  <div class="navlinks"><span>Home</span><span class="on">Solutions</span><span>Portfolio</span><span>About</span><span>Contact</span></div>
+  <div class="right"><span>العربية</span><span class="pill">Let's talk</span></div>
+</div>
+
+<div class="s-hero">
+  <div class="herogrid">
+    <div>
+      <div class="eyebrow" style="margin-bottom:20px">Solutions</div>
+      <h2 class="hero">Build the systems behind <em>your next stage of growth.</em></h2>
+      <p class="lede">Your business already works. What it needs now is the infrastructure to scale. We find what's blocking growth, then build the marketing, technology, and AI systems that remove it.</p>
+      <div class="btnrow"><span class="btn">Book a strategy call</span><span class="btn ghost">Find your constraint</span></div>
+    </div>
+    <div class="sysviz">
+      <div class="vizhead"><span>Disconnected tools</span><span class="aft">One growth system</span></div>
+      <svg viewBox="0 0 420 250" width="100%" role="img" aria-label="Five disconnected business functions on the left resolving into one connected growth system on the right">
+        <g fill="none" stroke="var(--line-str)" stroke-width="1">
+          <path d="M40 40 L92 96"/><path d="M34 118 L88 106"/><path d="M56 196 L96 130"/>
+        </g>
+        <g font-family="JetBrains Mono, monospace" font-size="8.5" fill="#565D66" letter-spacing="1">
+          <text x="18" y="34">MARKETING</text><text x="14" y="122">CRM</text><text x="20" y="212">OPS</text>
+          <text x="16" y="72">SALES</text><text x="22" y="168">AI</text>
+        </g>
+        <g fill="none" stroke="#565D66" stroke-width="1" opacity=".55">
+          <path d="M28 26 l10 -6 10 6 v12 l-10 6 -10 -6 z"/>
+          <path d="M22 64 l10 -6 10 6 v12 l-10 6 -10 -6 z"/>
+          <path d="M20 110 l10 -6 10 6 v12 l-10 6 -10 -6 z"/>
+          <path d="M26 158 l10 -6 10 6 v12 l-10 6 -10 -6 z"/>
+          <path d="M24 202 l10 -6 10 6 v12 l-10 6 -10 -6 z"/>
+        </g>
+        <g fill="none" stroke="#FF6B1F" stroke-width="1.4">
+          <path class="dash" d="M120 32 L232 108"/>
+          <path class="dash d2" d="M120 70 L232 116"/>
+          <path class="dash d3" d="M120 116 L232 124"/>
+          <path class="dash d4" d="M120 164 L232 132"/>
+          <path class="dash d5" d="M120 208 L232 140"/>
+        </g>
+        <g fill="none" stroke="#FF6B1F" stroke-width="1.5">
+          <path d="M236 96 l22 -13 22 13 v26 l-22 13 -22 -13 z" class="pulse"/>
+        </g>
+        <circle cx="258" cy="122" r="3" fill="#FF6B1F" class="pulse"/>
+        <g font-family="Inter Tight, sans-serif" font-size="13" font-weight="600" fill="#F4F5F6">
+          <text x="298" y="112">Growth</text><text x="298" y="130">system</text>
+        </g>
+        <g font-family="JetBrains Mono, monospace" font-size="8" fill="#878E97" letter-spacing="1.2">
+          <text x="298" y="152">MEASURED</text><text x="298" y="166">CONNECTED</text><text x="298" y="180">OWNED</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<div class="trust">
+  <div class="k">Trusted by brands across the US, the GCC &amp; Egypt</div>
+  <div class="stats">
+    <div class="st"><b>50+</b><span>Projects</span></div>
+    <div class="st"><b>8</b><span>Countries</span></div>
+    <div class="st"><b>3</b><span>Capabilities, one system</span></div>
+  </div>
+</div>
+
+<div class="s-prob">
+  <h3 class="big">Growth creates new problems.</h3>
+  <p class="sub">You built a successful business. The systems that got you here aren't always the systems that take you further.</p>
+  <div class="pains">
+    <div class="pain"><span class="idx">01</span>Growth depends on a few people.</div>
+    <div class="pain"><span class="idx">02</span>Your tools don't talk to each other.</div>
+    <div class="pain"><span class="idx">03</span>Teams repeat the same manual work.</div>
+    <div class="pain"><span class="idx">04</span>You can't see what's actually driving revenue.</div>
+    <div class="pain"><span class="idx">05</span>AI is everywhere, but nobody on the team really uses it.</div>
+  </div>
+  <div class="shift">
+    <div class="chain now">
+      <div class="k">What you're running on</div>
+      <div class="step">Founder judgement</div>
+      <div class="step">More people</div>
+      <div class="step">Manual handoffs</div>
+      <div class="step">Spreadsheets</div>
+      <div class="step">A ceiling</div>
+    </div>
+    <div class="arrowmid"><span class="ar">→</span>Diagnosis</div>
+    <div class="chain next">
+      <div class="k">What it becomes</div>
+      <div class="step">Defined process</div>
+      <div class="step">Automation</div>
+      <div class="step">Connected data</div>
+      <div class="step">Visibility</div>
+      <div class="step">Scale</div>
+    </div>
+  </div>
+  <p class="sub" style="margin-top:30px;padding-top:22px;border-top:1px solid var(--line-soft)">None of these is a tool problem. They're system problems — and they get diagnosed before they get built.</p>
+</div>
+
+<div class="s-router">
+  <div class="eyebrow" style="margin-bottom:18px">Business diagnostic</div>
+  <h3 class="big">Find your growth constraint.</h3>
+  <p class="sub">Pick what sounds closest to your business. We'll point you to the right starting point.</p>
+  <div class="rgrid">
+    <div class="ropt"><span class="no">01</span><span class="txt">We have customers, but growth is inconsistent.</span></div>
+    <div class="ropt"><span class="no">02</span><span class="txt">Our growth depends on adding more people instead of better systems.</span></div>
+    <div class="ropt"><span class="no">03</span><span class="txt">We have tools, but nothing is connected.</span></div>
+    <div class="ropt"><span class="no">04</span><span class="txt">We know AI matters but don't know where to start.</span></div>
+    <div class="ropt sel"><span class="no">05</span><span class="txt">We're not sure what's actually broken.</span></div>
+    <div class="ropt"><span class="no">06</span><span class="txt">We have a unique challenge that needs a tailored approach.</span></div>
+  </div>
+  <div class="result">
+    <div>
+      <div class="lbl">Recommended starting point</div>
+      <div class="nm">Foundation</div>
+    </div>
+    <div class="why">That's exactly what the business diagnosis is for. Nobody should build before that answer exists.</div>
+  </div>
+</div>
+
+<div class="s-sol">
+  <h3 class="big">Three ways in. One business diagnosis behind all of them.</h3>
+  <p class="sub">These aren't tiers. They're different starting points for different constraints.</p>
+  <div class="cards">
+
+    <div class="card">
+      <div class="glyph"><svg width="34" height="38" viewBox="0 0 34 38" fill="none"><path d="M17 2 L31 10 v18 L17 36 L3 28 V10 z" stroke="#FF6B1F" stroke-width="1.4"/><circle cx="17" cy="19" r="4.5" stroke="#FF6B1F" stroke-width="1.4"/><path d="M20.5 22.5 L25 27" stroke="#FF6B1F" stroke-width="1.4"/></svg></div>
+      <div class="nm">Foundation</div>
+      <div class="say">You know growth is stuck. You don't yet know why.</div>
+      <div class="oc"><b>Outcome</b>Find the constraint before spending on solutions.</div>
+      <div class="acc">What's included <span>+</span></div>
+      <div class="price">
+        <div class="from">Starting from</div>
+        <div class="amt">$X</div>
+        <div class="note">Final scope is determined after the business diagnosis.</div>
+        <div class="credit">Credited toward implementation started within 90 days.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="glyph"><svg width="34" height="38" viewBox="0 0 34 38" fill="none"><path d="M17 2 L31 10 v18 L17 36 L3 28 V10 z" stroke="#FF6B1F" stroke-width="1.4"/><path d="M9 24 L15 17 L20 21 L26 13" stroke="#FF6B1F" stroke-width="1.4"/><circle cx="26" cy="13" r="2" fill="#FF6B1F"/></svg></div>
+      <div class="nm">Growth Engine</div>
+      <div class="say">You have demand. Growth is unpredictable.</div>
+      <div class="oc"><b>Outcome</b>Build a measurable acquisition system your team runs with AI.</div>
+      <div class="acc">What's included <span>+</span></div>
+      <div class="price">
+        <div class="from">Starting from</div>
+        <div class="amt">$X</div>
+        <div class="note">Not a monthly retainer. A system your business owns.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="glyph"><svg width="34" height="38" viewBox="0 0 34 38" fill="none"><path d="M17 2 L31 10 v18 L17 36 L3 28 V10 z" stroke="#FF6B1F" stroke-width="1.4"/><path d="M10 15 h14 M10 19 h14 M10 23 h14" stroke="#FF6B1F" stroke-width="1.4"/><circle cx="10" cy="15" r="1.6" fill="#FF6B1F"/><circle cx="24" cy="23" r="1.6" fill="#FF6B1F"/></svg></div>
+      <div class="nm">Scale Infrastructure</div>
+      <div class="say">Your business has outgrown the systems running it.</div>
+      <div class="oc"><b>Outcome</b>Build the operating infrastructure for scale.</div>
+      <div class="alw"><div class="k">Always included</div><div class="v">The visibility layer: measurement, reporting, and business data connection.</div></div>
+      <div class="acc">What's included <span>+</span></div>
+      <div class="price">
+        <div class="from">Starting from</div>
+        <div class="amt">$X</div>
+        <div class="note">Not a monthly retainer. A system your business owns.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="s-custom">
+  <div class="k">The escape hatch</div>
+  <h3>Not every business fits a pattern.</h3>
+  <p>Strong sales with broken operations. AI adoption across every department at once. A combination no standard scope covers. When the business diagnosis points somewhere none of the three fit, the answer isn't a package — it's a system designed around your reality.</p>
+  <div class="nmx">Custom Transformation</div>
+  <div class="cfoot">
+    <span class="btn dark">Book a strategy call</span>
+    <span class="pr">Priced after the business diagnosis</span>
+  </div>
+</div>
+
+<div class="s-work">
+  <h3 class="big">How we work</h3>
+  <div class="strat">
+    <div class="nm">Strategy</div>
+    <p>We diagnose the business, identify the constraints, and define the roadmap. Strategy isn't something we sell — it's how everything else gets decided.</p>
+  </div>
+  <div class="divider">Three capabilities deliver the transformation</div>
+  <div class="caps">
+    <div class="cap">
+      <div class="ic"><svg width="26" height="29" viewBox="0 0 34 38" fill="none"><path d="M17 2 L31 10 v18 L17 36 L3 28 V10 z" stroke="#FF6B1F" stroke-width="1.5"/><path d="M11 22 l5 -6 4 4 5 -7" stroke="#FF6B1F" stroke-width="1.5"/></svg></div>
+      <div class="nm">Marketing Systems</div>
+      <p>Build measurable acquisition systems — search, paid, conversion, and tracking wired together instead of run separately.</p>
+    </div>
+    <div class="cap">
+      <div class="ic"><svg width="26" height="29" viewBox="0 0 34 38" fill="none"><path d="M17 2 L31 10 v18 L17 36 L3 28 V10 z" stroke="#FF6B1F" stroke-width="1.5"/><rect x="11" y="14" width="12" height="10" stroke="#FF6B1F" stroke-width="1.5"/><path d="M11 18 h12" stroke="#FF6B1F" stroke-width="1.5"/></svg></div>
+      <div class="nm">Business Technology</div>
+      <p>Build and connect the systems the business runs on — ERP, CRM, web and mobile platforms, and the automation between them.</p>
+    </div>
+    <div class="cap">
+      <div class="ic"><svg width="26" height="29" viewBox="0 0 34 38" fill="none"><path d="M17 2 L31 10 v18 L17 36 L3 28 V10 z" stroke="#FF6B1F" stroke-width="1.5"/><circle cx="17" cy="19" r="5" stroke="#FF6B1F" stroke-width="1.5"/><path d="M17 11 v3 M17 24 v3 M9 19 h3 M22 19 h3" stroke="#FF6B1F" stroke-width="1.5"/></svg></div>
+      <div class="nm">AI Enablement</div>
+      <p>Embed AI into real workflows so teams actually use it, inside the work they already do.</p>
+    </div>
+  </div>
+</div>
+
+<div class="s-faq">
+  <h3 class="big">Common questions</h3>
+  <div class="faq">
+    <div class="q">How do we know which solution we need?<i>−</i></div>
+    <div class="a">Most companies don't, and that's fine. The business diagnosis exists to answer that question before anyone commits to a build.</div>
+    <div class="q">Do we have to start with Foundation?<i>+</i></div>
+    <div class="q">Why is pricing "starting from"?<i>+</i></div>
+    <div class="q">Is this a monthly retainer?<i>+</i></div>
+    <div class="q">Do we own what you build?<i>+</i></div>
+    <div class="q">What happens to the Foundation fee if we implement?<i>+</i></div>
+    <div class="q">Is AI training sold separately?<i>+</i></div>
+  </div>
+</div>
+
+<div class="finale">
+  <h3>Not sure what's blocking you?</h3>
+  <p>Book a strategy call. We'll tell you honestly where the constraint is — and if we're not the right partner, we'll say that too.</p>
+  <span class="btn">Book a strategy call</span>
+</div>
+
+</div>
+
+<div class="seclabel"><span class="n">02</span> Mobile — English and Arabic</div>
+
+<div class="twoup">
+
+  <div class="phone"><div class="pscreen">
+    <div class="pchrome">
+      <div class="brand" style="font-size:13px"><span class="hexmark" style="width:12px;height:14px"></span>Omniflow<span style="color:var(--orange)">AI</span></div>
+      <div style="display:flex;gap:12px;align-items:center;font-size:11px;color:var(--tx-mut)"><span>العربية</span><span style="color:var(--tx-hi)">☰</span></div>
+    </div>
+    <div class="ph1">Build the systems behind <em>your next stage of growth.</em></div>
+    <div class="plede">Your business already works. What it needs now is the infrastructure to scale.</div>
+    <svg viewBox="0 0 300 90" width="100%" style="margin-top:16px" role="img" aria-label="Disconnected functions resolving into one growth system">
+      <g fill="none" stroke="#565D66" stroke-width="1" opacity=".5"><path d="M14 12 l7 -4 7 4 v9 l-7 4 -7 -4 z"/><path d="M14 40 l7 -4 7 4 v9 l-7 4 -7 -4 z"/><path d="M14 68 l7 -4 7 4 v9 l-7 4 -7 -4 z"/></g>
+      <g fill="none" stroke="#FF6B1F" stroke-width="1.2"><path class="dash" d="M40 16 L150 42"/><path class="dash d2" d="M40 44 L150 45"/><path class="dash d3" d="M40 72 L150 48"/><path d="M154 32 l16 -9 16 9 v18 l-16 9 -16 -9 z" class="pulse"/></g>
+      <g font-family="Inter Tight, sans-serif" font-size="11" font-weight="600" fill="#F4F5F6"><text x="200" y="42">Growth</text><text x="200" y="55">system</text></g>
+    </svg>
+    <div class="pbtns"><span class="pbtn">Book a strategy call</span><span class="pbtn ghost">Find your constraint</span></div>
+    <div class="ptrust"><div><b>50+</b>Projects</div><div><b>8</b>Countries</div><div><b>US · GCC · EG</b></div></div>
+    <div class="ph2">Growth creates new problems.</div>
+    <div class="ppain"><span class="idx">01</span>Growth depends on a few people.</div>
+    <div class="ppain"><span class="idx">02</span>Your tools don't talk to each other.</div>
+    <div class="ppain"><span class="idx">03</span>Teams repeat the same manual work.</div>
+    <div class="ph2" style="margin-top:24px">Find your growth constraint.</div>
+    <div class="propt"><span class="no">01</span>We have customers, but growth is inconsistent.</div>
+    <div class="propt sel"><span class="no">05</span>We're not sure what's actually broken.</div>
+    <div class="pcard">
+      <div style="font-family:var(--f-mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--orange)">Foundation</div>
+      <div style="font-family:var(--f-disp);font-weight:600;font-size:17px;color:var(--tx-hi);line-height:1.3;margin-top:8px;letter-spacing:-.012em">You know growth is stuck. You don't yet know why.</div>
+      <div class="pacc">What's included <span>+</span></div>
+      <div style="font-family:var(--f-mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--tx-faint);margin-top:14px">Starting from</div>
+      <div style="font-family:var(--f-disp);font-weight:700;font-size:26px;color:var(--tx-hi);letter-spacing:-.022em">$X</div>
+      <div class="credit" style="margin-top:11px">Credited toward implementation started within 90 days.</div>
+    </div>
+  </div></div>
+
+  <div class="phone"><div class="pscreen ar">
+    <div class="pchrome">
+      <div class="brand ltr" style="font-size:13px"><span class="hexmark" style="width:12px;height:14px"></span>Omniflow<span style="color:var(--orange)">AI</span></div>
+      <div style="display:flex;gap:12px;align-items:center;font-size:11px;color:var(--tx-mut)"><span>English</span><span style="color:var(--tx-hi)">☰</span></div>
+    </div>
+    <div class="ph1">ابنِ الأنظمة التي يقوم عليها <em>نموك في المرحلة القادمة.</em></div>
+    <div class="plede">أعمالك تعمل بالفعل. ما تحتاجه الآن هو البنية التي تتيح لها التوسّع.</div>
+    <svg viewBox="0 0 300 90" width="100%" style="margin-top:16px;transform:scaleX(-1)" role="img" aria-label="رسم يوضح تحوّل الأدوات المتفرّقة إلى نظام نمو واحد">
+      <g fill="none" stroke="#565D66" stroke-width="1" opacity=".5"><path d="M14 12 l7 -4 7 4 v9 l-7 4 -7 -4 z"/><path d="M14 40 l7 -4 7 4 v9 l-7 4 -7 -4 z"/><path d="M14 68 l7 -4 7 4 v9 l-7 4 -7 -4 z"/></g>
+      <g fill="none" stroke="#FF6B1F" stroke-width="1.2"><path class="dash" d="M40 16 L150 42"/><path class="dash d2" d="M40 44 L150 45"/><path class="dash d3" d="M40 72 L150 48"/><path d="M154 32 l16 -9 16 9 v18 l-16 9 -16 -9 z" class="pulse"/></g>
+      <g font-family="IBM Plex Sans Arabic, sans-serif" font-size="11" font-weight="600" fill="#F4F5F6" transform="scale(-1,1) translate(-300,0)"><text x="200" y="48">نظام النمو</text></g>
+    </svg>
+    <div class="pbtns"><span class="pbtn">احجز مكالمة استراتيجية</span><span class="pbtn ghost">حدّد القيد لديك</span></div>
+    <div class="ptrust"><div><b>+50</b>مشروع</div><div><b>8</b>دول</div><div><b>الخليج · مصر · أمريكا</b></div></div>
+    <div class="ph2">النمو يخلق مشكلات جديدة.</div>
+    <div class="ppain"><span class="idx">٠١</span>النمو يعتمد على عدد قليل من الأشخاص.</div>
+    <div class="ppain"><span class="idx">٠٢</span>أدواتك لا تتحدّث إلى بعضها.</div>
+    <div class="ppain"><span class="idx">٠٣</span>الفِرق تكرّر العمل اليدوي نفسه.</div>
+    <div class="ph2" style="margin-top:24px">حدّد القيد الذي يعيق نموك.</div>
+    <div class="propt"><span class="no">٠١</span>لدينا عملاء، لكن النمو غير منتظم.</div>
+    <div class="propt sel"><span class="no">٠٥</span>لسنا متأكدين ما الذي تعطّل فعلاً.</div>
+    <div class="pcard">
+      <div class="ltr" style="font-family:var(--f-mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--orange)">Foundation</div>
+      <div style="font-family:var(--f-ar);font-weight:600;font-size:16px;color:var(--tx-hi);line-height:1.55;margin-top:8px">تعرف أن النمو متوقّف، لكنك لا تعرف السبب بعد.</div>
+      <div class="pacc">ما الذي يشمله <span>+</span></div>
+      <div style="font-family:var(--f-mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--tx-faint);margin-top:14px">يبدأ من</div>
+      <div class="ltr" style="font-family:var(--f-disp);font-weight:700;font-size:26px;color:var(--tx-hi);letter-spacing:-.022em">$X</div>
+      <div class="credit" style="margin-top:11px;line-height:1.7">إن مضيت في التنفيذ خلال 90 يوماً، تُخصم قيمة <span class="ltr">Foundation</span> من قيمة المشروع.</div>
+    </div>
+  </div></div>
+
+</div>
+
+<div class="notes">
+  <h4>What changed, and why</h4>
+  <ul>
+    <li><b>Hero system visual.</b> Disconnected hexagon nodes on the left, orange connectors drawing into a single growth system on the right. It states the thesis before a word is read — and it's line art, not illustration, so it stays inside the engineering positioning.</li>
+    <li><b>Trust strip immediately after the hero</b>, answering "who are these people" at the moment the question forms. Compact, mono, no logos — the logo wall stays on the homepage.</li>
+    <li><b>Problem section rebuilt.</b> The five pains are now large display type on hairline rules, not small bullets. Below them, a before → after chain makes the transition visible instead of implied.</li>
+    <li><b>Router numbered 01–06</b> with display-weight statements. It reads as a diagnostic instrument rather than a form, and the selected state is the only orange fill in the section.</li>
+    <li><b>Cards cut to roughly half their previous first-view text.</b> Each opens with the problem in the client's words, then one outcome line, then price. Best for, the problem detail, and the inclusion list move into the accordion.</li>
+    <li><b>Custom Transformation is now a full orange inversion</b> — the single highest-contrast moment on the page, and the only section that breaks the dark surface. It reads as a deliberate break, which is exactly what an escape hatch should feel like.</li>
+    <li><b>Section rhythm alternates surfaces</b> — ink-950, ink-900, ink-950, ink-900, orange, ink-950, ink-900 — so scrolling has cadence instead of one continuous dark field.</li>
+    <li><b>Restraint held.</b> No new colours beyond the existing palette, no illustration, no stock photography, no gradients except two radial accent glows, and one small hero animation that runs once.</li>
+  </ul>
+</div>
+
+<div class="foot">
+  <span>OmniFlowAI · Solutions page mockup v3</span>
+  <span>Spec v2 + experience layer</span>
+  <span>omniflowai.net</span>
+</div>
+
+</div>
+</body>
+</html>

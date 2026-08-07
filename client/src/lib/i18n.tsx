@@ -32,7 +32,9 @@ const translations: Record<Language, Record<string, string>> = {
     "nav.portfolio": "Portfolio",
     "nav.about": "About",
     "nav.contact": "Contact",
-    "nav.cta": "Let's Talk",
+    // NOTE: nav.cta ("Let's Talk") removed — the header CTA now reads
+    // common.cta.bookCall like every other CTA on the site, so the one primary
+    // CTA label (§0.10) exists in exactly one place and cannot drift.
 
     // --- COMMON ---
     "common.cta.bookCall": "Book a strategy call",
@@ -249,50 +251,68 @@ const translations: Record<Language, Record<string, string>> = {
       "Your business already works. What it needs now is the infrastructure to scale. We find what's blocking growth, then build the marketing, technology, and AI systems that remove it.",
     "solutions.hero.secondary": "Find your constraint",
 
-    // Hero system visual. §12.5 mandates the visual but §12 defines no copy for
-    // it, so these seven labels are transcribed verbatim from the approved
-    // mockup (docs/OmniFlowAI-Solutions-Page-Mockup-v3.html) and translated.
-    "solutions.viz.before": "Disconnected tools",
-    "solutions.viz.after": "One growth system",
-    "solutions.viz.hub": "Growth system",
-    "solutions.viz.attr1": "Measured",
-    "solutions.viz.attr2": "Connected",
-    "solutions.viz.attr3": "Owned",
-    "solutions.viz.aria":
-      "Five disconnected business functions on the left resolving into one connected growth system on the right.",
+    // Hero visual — the Business Diagnostic (components/systems/
+    // BusinessDiagnostic.tsx). §12.5 mandates a hero visual but defines no copy
+    // for it. Seven growth SIGNALS in the language a CEO would use, grouped
+    // onto three ROOT CONSTRAINTS. Deliberately a different axis from the five
+    // §2.2 pains below it — those are symptoms stated plainly, these are
+    // signals traced to a cause — so the page never says the same thing twice.
+    // The three systems built from the constraints are NOT keyed here: they
+    // read from solutions.work.*.title, so the capability names are spelled
+    // out in exactly one place site-wide.
+    // {s} = signal count, {c} = constraint count, {n} = signals in the
+    // selected group. All are substituted from the component's data, so a
+    // figure here can never drift from what is on screen.
+    "solutions.diag.title": "Business diagnosis",
+    "solutions.diag.systemTitle": "Growth operating system",
+    "solutions.diag.summary": "{s} signals · {c} root constraints",
+    "solutions.diag.rootLabel": "Root constraint",
+    "solutions.diag.hint":
+      "Select any signal to reveal what it's really connected to.",
+    "solutions.diag.trace": "{n} of {s} signals trace to this constraint",
+    "solutions.diag.buildLabel": "We build",
+    "solutions.diag.showSystem": "Show the system",
+    "solutions.diag.showSignals": "Back to the signals",
+    "solutions.diag.strategyLabel": "Strategy",
+    "solutions.diag.strategyBody":
+      "The business diagnosis decides which of the three you need, and in what order.",
+    "solutions.diag.thesis":
+      "Most growth problems are symptoms of one missing system.",
 
-    // Trust strip. Stat VALUES reuse the existing home.reach.* keys — no new
-    // numbers are invented for this page (spec §12.3).
-    "solutions.trust.label":
-      "Trusted by brands across the US, the GCC and Egypt",
+    // Each signal carries two strings: `label` is the map chip (short enough
+    // to stay one or two lines inside a node), `text` is the full statement,
+    // which becomes the chip's accessible name so screen readers get the
+    // business meaning rather than a two-word fragment.
+    "solutions.diag.s1.label": "Inconsistent growth",
+    "solutions.diag.s1.text": "Growth is inconsistent, not compounding.",
+    "solutions.diag.s2.label": "Untraceable spend",
+    "solutions.diag.s2.text": "Spend can't be traced to revenue.",
+    "solutions.diag.s3.label": "Handoff delays",
+    "solutions.diag.s3.text": "Work stalls at every handoff.",
+    "solutions.diag.s4.label": "Manual reporting",
+    "solutions.diag.s4.text": "Every report is rebuilt by hand.",
+    "solutions.diag.s5.label": "Founder-dependent decisions",
+    "solutions.diag.s5.text": "Decisions route through a few people.",
+    "solutions.diag.s6.label": "Headcount-bound capacity",
+    "solutions.diag.s6.text": "More volume still means more headcount.",
+    "solutions.diag.s7.label": "Stalled AI adoption",
+    "solutions.diag.s7.text": "AI is discussed, never operational.",
 
-    // Problem recognition
-    "solutions.problem.heading": "Growth creates new problems.",
-    "solutions.problem.sub":
-      "You built a successful business. The systems that got you here aren't always the systems that take you further.",
-    "solutions.problem.item1": "Growth depends on a few people.",
-    "solutions.problem.item2": "Your tools don't talk to each other.",
-    "solutions.problem.item3": "Teams repeat the same manual work.",
-    "solutions.problem.item4": "You can't see what's actually driving revenue.",
-    "solutions.problem.item5":
-      "AI is everywhere, but nobody on the team really uses it.",
-    "solutions.problem.close":
-      "None of these is a tool problem. They're system problems — and they get diagnosed before they get built.",
+    "solutions.diag.c1.name": "Demand isn't a system.",
+    "solutions.diag.c1.impact":
+      "Revenue depends on effort, so it can't be forecast or compounded.",
+    "solutions.diag.c2.name": "The business runs on people, not systems.",
+    "solutions.diag.c2.impact":
+      "Every process needs a person inside it, so complexity grows faster than output.",
+    "solutions.diag.c3.name": "Capacity only scales by hiring.",
+    "solutions.diag.c3.impact":
+      "Output is capped by headcount — the slowest and most expensive way to grow.",
 
-    // The shift (before → after chain)
-    "solutions.shift.nowLabel": "What you're running on",
-    "solutions.shift.now1": "Founder judgement",
-    "solutions.shift.now2": "More people",
-    "solutions.shift.now3": "Manual handoffs",
-    "solutions.shift.now4": "Spreadsheets",
-    "solutions.shift.now5": "A ceiling",
-    "solutions.shift.arrow": "Diagnosis",
-    "solutions.shift.nextLabel": "What it becomes",
-    "solutions.shift.next1": "Defined process",
-    "solutions.shift.next2": "Automation",
-    "solutions.shift.next3": "Connected data",
-    "solutions.shift.next4": "Visibility",
-    "solutions.shift.next5": "Scale",
+    // NOTE: solutions.trust.*, solutions.problem.* and solutions.shift.* were
+    // removed with the trust strip and the problem-recognition section. Both
+    // restated the homepage (home.reach.*, home.valueProp.*, home.transform.*)
+    // rather than adding anything the Solutions page needed. The homepage keys
+    // they duplicated are untouched and still in use there.
 
     // Diagnostic router
     "solutions.router.eyebrow": "Business diagnostic",
@@ -342,6 +362,13 @@ const translations: Record<Language, Record<string, string>> = {
     "solutions.grid.priceNote2":
       "Not a monthly retainer. A system your business owns.",
     "solutions.grid.detailLink": "See the full solution",
+    // The Recommended mark is driven by the diagnostic router, so it moves with
+    // the selected constraint and never asserts that one solution outranks
+    // another. The note keeps that legible to anyone who scrolled past the
+    // router — without it the badge would read as a fixed ranking.
+    "solutions.grid.recommended": "Recommended",
+    "solutions.grid.recommendedNote":
+      "Marked against the growth constraint selected above. Change the constraint and the recommendation changes with it.",
 
     // Foundation — promises DIAGNOSIS, never implementation. Do not reintroduce
     // "build", "create" or "deliver" into this block (spec §2.5).
@@ -356,18 +383,39 @@ const translations: Record<Language, Record<string, string>> = {
       "Companies that know something is limiting growth but can't name it — and don't want to commit to a build before they can.",
     "solutions.foundation.problem":
       "Your business is growing, but the reason it's slowing isn't obvious from the inside. Every proposal you receive assumes an answer nobody has actually verified.",
+    // Every capability appears here as something ASSESSED, never delivered —
+    // that is the whole line between Foundation and the other two (§2.5).
     "solutions.foundation.inc1.title": "Business Diagnosis",
     "solutions.foundation.inc1.body":
-      "How the business actually runs today — processes, handoffs, and where work stops moving.",
-    "solutions.foundation.inc2.title": "Workflow and bottleneck assessment",
+      "How the company runs today — where work moves, where it stops, and why.",
+    "solutions.foundation.inc1.item1":
+      "Processes, workflows and operational structure",
+    "solutions.foundation.inc1.item2":
+      "Marketing performance and the customer acquisition journey",
+    "solutions.foundation.inc1.item3": "The current technology stack and its limits",
+    "solutions.foundation.inc1.item4": "Data visibility and reporting gaps",
+    "solutions.foundation.inc2.title": "Growth and bottleneck assessment",
     "solutions.foundation.inc2.body":
-      "The specific points where growth is being limited, and what each one is costing.",
-    "solutions.foundation.inc3.title": "Growth and technology opportunity map",
+      "The specific points where growth is being capped, and what each one is costing.",
+    "solutions.foundation.inc2.item1": "Where opportunities are being lost",
+    "solutions.foundation.inc2.item2": "Which processes are slowing growth",
+    "solutions.foundation.inc2.item3": "Which manual work is capping scale",
+    "solutions.foundation.inc2.item4": "The highest-impact areas to address first",
+    "solutions.foundation.inc3.title": "Marketing and technology opportunity map",
     "solutions.foundation.inc3.body":
-      "Where marketing, systems, and automation create measurable impact — and in what order.",
+      "Where each capability would pay off in this business — and in what order.",
+    "solutions.foundation.inc3.item1": "SEO and organic growth",
+    "solutions.foundation.inc3.item2": "Paid acquisition and media buying",
+    "solutions.foundation.inc3.item3": "Funnel and conversion",
+    "solutions.foundation.inc3.item4": "CRM and customer management",
+    "solutions.foundation.inc3.item5": "Business automation",
+    "solutions.foundation.inc3.item6": "Custom software and platforms",
     "solutions.foundation.inc4.title": "AI opportunity identification",
     "solutions.foundation.inc4.body":
       "Which workflows are genuinely worth applying AI to, and which aren't.",
+    "solutions.foundation.inc4.item1": "Which departments benefit first",
+    "solutions.foundation.inc4.item2": "Which workflows should be automated",
+    "solutions.foundation.inc4.item3": "Where AI creates measurable impact",
     "solutions.foundation.outcome":
       "A clear roadmap showing where technology, AI, and systems create measurable business impact.",
     "solutions.foundation.note":
@@ -385,15 +433,38 @@ const translations: Record<Language, Record<string, string>> = {
       "Companies with real demand, held back by inconsistent acquisition, scattered marketing, and manual follow-through.",
     "solutions.growth.problem":
       "Revenue is growing, but growth depends on disconnected campaigns, manual processes, and people pushing everything forward.",
+    // The constraint at this stage is COMMERCIAL, so every component serves the
+    // path from stranger to customer. Where a capability also appears in Scale
+    // (CRM, websites, automation, AI, reporting), the body states the depth
+    // difference — that boundary is what stops the two solutions overlapping.
     "solutions.growth.inc1.title": "Marketing Systems",
     "solutions.growth.inc1.body":
-      "SEO, paid acquisition, conversion optimization, funnel tracking, and performance measurement — wired together as one engine.",
-    "solutions.growth.inc2.title": "AI Enablement",
+      "The acquisition engine — planned, built and measured as one system rather than separate campaigns.",
+    "solutions.growth.inc1.item1": "Marketing strategy and plan",
+    "solutions.growth.inc1.item2": "SEO and organic growth",
+    "solutions.growth.inc1.item3": "Media buying and paid campaigns",
+    "solutions.growth.inc1.item4": "Funnel strategy and conversion optimization",
+    "solutions.growth.inc1.item5": "Performance tracking and attribution",
+    "solutions.growth.inc2.title": "Conversion assets",
     "solutions.growth.inc2.body":
-      "Department-specific use cases, workflow adoption, and practical team enablement — so AI ends up in daily work, not in a training deck.",
-    "solutions.growth.inc3.title": "Business Automation",
+      "What the funnel points at — the pages the acquisition system needs in order to convert.",
+    "solutions.growth.inc2.item1": "CMS website",
+    "solutions.growth.inc2.item2": "Landing pages",
+    "solutions.growth.inc2.item3": "Campaign pages",
+    "solutions.growth.inc3.title": "Revenue operations",
     "solutions.growth.inc3.body":
-      "CRM improvements, workflow automation, and data connection across the tools you already use.",
+      "CRM set up for lead management across the commercial team, with the follow-through automated.",
+    "solutions.growth.inc3.item1": "CRM for lead capture and pipeline",
+    "solutions.growth.inc3.item2": "Lead routing and follow-up automation",
+    "solutions.growth.inc3.item3": "The handoff from marketing to sales",
+    "solutions.growth.inc3.item4": "Data connected across the tools already in use",
+    "solutions.growth.inc4.title": "AI Enablement",
+    "solutions.growth.inc4.body":
+      "AI inside the daily work of the commercial teams — not a training deck.",
+    "solutions.growth.inc4.item1": "Department-specific use cases",
+    "solutions.growth.inc4.item2": "Employee AI training",
+    "solutions.growth.inc4.item3":
+      "AI-assisted workflows inside existing processes",
     "solutions.growth.outcome":
       "More qualified opportunities, clearer visibility, and a team operating with AI inside real workflows.",
 
@@ -414,15 +485,37 @@ const translations: Record<Language, Record<string, string>> = {
       "The visibility layer: measurement, reporting, and business data connection — so the decisions after the build are made on evidence, not instinct.",
     "solutions.scale.expandsLabel":
       "Then expands, based on the business diagnosis, into:",
-    "solutions.scale.inc1.title": "Business Technology",
+    // The constraint here is OPERATIONAL. Where a capability is shared with
+    // Growth Engine it appears at a different depth: CRM as the system of
+    // record rather than lead management, platforms rather than pages,
+    // cross-department automation rather than marketing workflows.
+    "solutions.scale.inc1.title": "Core business systems",
     "solutions.scale.inc1.body":
-      "CRM and ERP platforms, internal systems, and customer-facing platforms — built to own, integrate, and scale.",
-    "solutions.scale.inc2.title": "Advanced automation and AI",
+      "The systems of record the business runs on, integrated rather than stacked side by side.",
+    "solutions.scale.inc1.item1": "CRM as the system of record across departments",
+    "solutions.scale.inc1.item2": "ERP platforms",
+    "solutions.scale.inc1.item3": "Business development performance management",
+    "solutions.scale.inc1.item4": "Integration between the core systems",
+    "solutions.scale.inc2.title": "Custom applications",
     "solutions.scale.inc2.body":
-      "AI-powered workflows, process automation, and cross-department systems that remove manual handoffs.",
-    "solutions.scale.inc3.title": "Operational enablement",
+      "Software built for how this business works, where nothing off the shelf fits.",
+    "solutions.scale.inc2.item1": "Internal business applications",
+    "solutions.scale.inc2.item2": "Custom software solutions",
+    "solutions.scale.inc2.item3": "B2B mobile applications",
+    "solutions.scale.inc2.item4": "Customer portals and internal tools",
+    "solutions.scale.inc3.title": "Advanced automation and AI",
     "solutions.scale.inc3.body":
-      "Process redesign, adoption support, and the change work that makes new systems stick after handover.",
+      "Automation across departments, and AI embedded in the systems rather than bolted beside them.",
+    "solutions.scale.inc3.item1": "Cross-department workflow automation",
+    "solutions.scale.inc3.item2": "AI embedded in the business systems",
+    "solutions.scale.inc3.item3": "Intelligent reporting and decision support",
+    "solutions.scale.inc3.item4": "Org-wide AI adoption and employee training",
+    "solutions.scale.inc4.title": "Operational enablement",
+    "solutions.scale.inc4.body":
+      "The change work that makes new systems stick after handover.",
+    "solutions.scale.inc4.item1": "Process redesign",
+    "solutions.scale.inc4.item2": "Adoption support",
+    "solutions.scale.inc4.item3": "Continuous optimization after handover",
     "solutions.scale.outcome":
       "A scalable business infrastructure built around how your company actually operates.",
 
@@ -488,6 +581,13 @@ const translations: Record<Language, Record<string, string>> = {
       "Book a strategy call. We'll tell you honestly where the constraint is — and if we're not the right partner, we'll say that too.",
 
     // --- SERVICE DETAIL (shared labels) ---
+    // Shared across the three capability pages.
+    // REMOVED with the page rewrite: `serviceDetail.included`, `.how.title`,
+    // `.how.sub` and every `*.proc.*` step. The site already carries a process
+    // on the homepage and on Solutions; a third per-page variant contradicted
+    // both, and one of its steps promised a "fixed price" that the Solutions
+    // page explicitly does not offer. The per-page `*.cta` labels are gone too
+    // — all three pages now share one label for one destination.
     "serviceDetail.backAll": "← All services",
     "serviceDetail.seeExamples": "See examples",
     "serviceDetail.notFound.title": "Service not found",
@@ -495,48 +595,74 @@ const translations: Record<Language, Record<string, string>> = {
     "serviceDetail.related.title": "Proven Results",
     "serviceDetail.related.sub": "See how we've helped companies like yours.",
     "serviceDetail.related.viewPortfolio": "View Full Portfolio",
-    "serviceDetail.included": "What's included",
-    "serviceDetail.how.title": "How it works",
-    "serviceDetail.how.sub":
-      "No mystery. No endless meetings. Here's the process.",
     "serviceDetail.faqTitle": "Common questions",
-    "serviceDetail.cta.title": "Ready to get started?",
+    "serviceDetail.lives.heading": "Where this sits in the solutions",
+    "serviceDetail.lives.sub":
+      "The same capability appears at different depths depending on what the business diagnosis finds. This is not a service you buy on its own.",
+    "serviceDetail.lives.assessed": "Assessed here",
+    "serviceDetail.lives.built": "Built here",
+    "serviceDetail.cta.title": "Not sure this is your constraint?",
     "serviceDetail.cta.body":
-      "Book a strategy call. We'll discuss your needs and tell you honestly if we're the right fit — no pressure, no sales pitch.",
+      "That is what the business diagnosis is for. Start from the solutions and find where your growth is actually blocked.",
+    "serviceDetail.cta.button": "See the solutions",
 
-    // Service Detail — SOFTWARE
+    // Service Detail — SOFTWARE (Business Technology)
+    "serviceDetail.software.label": "Business Technology",
     "serviceDetail.software.title":
       "Business Technology: software, ERP, CRM, and automation",
     "serviceDetail.software.desc":
       "ERP and CRM platforms, customer-facing web, mobile apps, and the automation that connects them — designed to own, integrate, and scale.",
-    "serviceDetail.software.cta": "Build your system",
-    "serviceDetail.software.feat.1.title": "Business Systems (ERP / CRM)",
-    "serviceDetail.software.feat.1.desc":
-      "Custom platforms that centralize your sales, operations, and customer data into one source of truth. Built on proven frameworks, shaped to how your business actually runs.",
-    "serviceDetail.software.feat.2.title": "Web Platforms",
-    "serviceDetail.software.feat.2.desc":
-      "High-performance websites and web apps engineered for conversion and speed — connected to your systems from day one, not bolted on later.",
-    "serviceDetail.software.feat.3.title": "Mobile Apps",
-    "serviceDetail.software.feat.3.desc":
-      "Customer-facing and internal apps built for real-world use and scale, integrated with the same backend as everything else.",
-    "serviceDetail.software.feat.4.title": "Automation & AI",
-    "serviceDetail.software.feat.4.desc":
-      "Workflow automation and AI integrations that remove manual work — lead routing, data sync, follow-ups, and the repetitive tasks eating your team's time.",
-    "serviceDetail.software.proc.1.title": "Discovery",
-    "serviceDetail.software.proc.1.desc":
-      "We learn your business, goals, and technical requirements.",
-    "serviceDetail.software.proc.2.title": "Proposal",
-    "serviceDetail.software.proc.2.desc":
-      "Clear scope, timeline, and a fixed price.",
-    "serviceDetail.software.proc.3.title": "Design",
-    "serviceDetail.software.proc.3.desc":
-      "Wireframes and visual design — you approve before we build.",
-    "serviceDetail.software.proc.4.title": "Build",
-    "serviceDetail.software.proc.4.desc":
-      "We build and integrate, with weekly reviews. No surprises.",
-    "serviceDetail.software.proc.5.title": "Launch",
-    "serviceDetail.software.proc.5.desc":
-      "Tested, live, and handed over — full ownership transferred.",
+    "serviceDetail.software.pain.heading":
+      "When the systems are the constraint, it looks like this.",
+    "serviceDetail.software.pain.item1":
+      "Three teams keep three versions of the same customer list.",
+    "serviceDetail.software.pain.item2":
+      "Every report is exported, pasted and reconciled by hand.",
+    "serviceDetail.software.pain.item3":
+      "The tools you bought don't talk, so people are the integration.",
+    "serviceDetail.software.pain.item4":
+      "The system you run was built for a smaller company than the one you have.",
+    "serviceDetail.software.build.heading": "What we build",
+    "serviceDetail.software.build.sub":
+      "Six systems, and the constraint each one removes. Which of them you need comes out of the business diagnosis — this is not a catalogue to order from.",
+    "serviceDetail.software.build.1.title": "ERP platforms",
+    "serviceDetail.software.build.1.pain":
+      "Finance, inventory and operations each keep their own numbers.",
+    "serviceDetail.software.build.1.body":
+      "One operational backbone — procurement, inventory, finance and fulfilment on the same data, so a number means the same thing in every department.",
+    "serviceDetail.software.build.2.title": "CRM platforms",
+    "serviceDetail.software.build.2.pain":
+      "Nobody can say what stage a deal is at without asking the person who owns it.",
+    "serviceDetail.software.build.2.body":
+      "A pipeline the whole commercial team works inside — accounts, stages, activity and history in one place, with the reporting that makes forecasting possible.",
+    "serviceDetail.software.build.3.title":
+      "Business development performance systems",
+    "serviceDetail.software.build.3.pain":
+      "Sales performance is judged on impressions rather than measured.",
+    "serviceDetail.software.build.3.body":
+      "Targets, quotas, activity and outcomes tracked per rep and per team, so business development is managed on evidence instead of on who sounds busiest.",
+    "serviceDetail.software.build.4.title": "Custom internal applications",
+    "serviceDetail.software.build.4.pain":
+      "A core process runs on a spreadsheet that one person guards.",
+    "serviceDetail.software.build.4.body":
+      "The workflow that makes your business different, built as a real application — permissions, audit trail, and integration with the rest of the stack.",
+    "serviceDetail.software.build.5.title":
+      "Customer portals and B2B mobile apps",
+    "serviceDetail.software.build.5.pain":
+      "Customers and partners phone your team for information they should be able to see.",
+    "serviceDetail.software.build.5.body":
+      "Direct access for clients, partners or field teams to their own orders, status, documents and requests — instead of routing every question through a person.",
+    "serviceDetail.software.build.6.title": "Web platforms",
+    "serviceDetail.software.build.6.pain":
+      "The website is a brochure, disconnected from everything behind it.",
+    "serviceDetail.software.build.6.body":
+      "Sites and web applications connected to your systems from day one, so a form submission becomes a record in the CRM rather than an email somebody re-types.",
+    "serviceDetail.software.lives.foundation":
+      "Your current stack, its limits and the reporting gaps are assessed. Nothing is built at this stage — the point is deciding what should be.",
+    "serviceDetail.software.lives.growth-engine":
+      "The commercial layer: a CMS website and landing pages that convert, and CRM set up for lead capture, pipeline and follow-up across the sales team.",
+    "serviceDetail.software.lives.scale-infrastructure":
+      "The operational layer: CRM as the system of record across departments, ERP, business development performance systems, custom applications, portals and B2B mobile.",
     "serviceDetail.software.faq.1.q": "Do we own the code?",
     "serviceDetail.software.faq.1.a":
       "Yes. Full source code and IP transfer on completion. No lock-in, no fees to access your own system.",
@@ -551,28 +677,52 @@ const translations: Record<Language, Record<string, string>> = {
     "serviceDetail.software.faq.4.a":
       "We rebuild or extend what you have, whichever actually makes sense for your situation.",
 
-    // Service Detail — DIGITAL MARKETING
+    // Service Detail — DIGITAL MARKETING (Marketing Systems)
+    "serviceDetail.dm.label": "Marketing Systems",
     "serviceDetail.dm.title": "Marketing Systems: SEO, paid, and conversion",
     "serviceDetail.dm.desc":
       "SEO, paid campaigns, and conversion strategy wired into one measurable engine that brings in qualified buyers — not vanity traffic.",
-    "serviceDetail.dm.cta": "Scale your acquisition",
-    "serviceDetail.dm.feat.1.title":
-      "Paid campaigns (Google / Meta / LinkedIn)",
-    "serviceDetail.dm.feat.2.title": "Buyer-intent SEO",
-    "serviceDetail.dm.feat.3.title": "Conversion-rate optimization",
-    "serviceDetail.dm.feat.4.title": "Funnel strategy & tracking",
-    "serviceDetail.dm.proc.1.title": "Audit",
-    "serviceDetail.dm.proc.1.desc":
-      "We review your funnel, channels, and competitors.",
-    "serviceDetail.dm.proc.2.title": "Strategy",
-    "serviceDetail.dm.proc.2.desc":
-      "A clear plan — channels, offers, and what we'll test.",
-    "serviceDetail.dm.proc.3.title": "Setup",
-    "serviceDetail.dm.proc.3.desc":
-      "Tracking, campaigns, and landing pages built and launched.",
-    "serviceDetail.dm.proc.4.title": "Optimize",
-    "serviceDetail.dm.proc.4.desc":
-      "Continuous testing against real performance data.",
+    "serviceDetail.dm.pain.heading":
+      "When acquisition is the constraint, it looks like this.",
+    "serviceDetail.dm.pain.item1":
+      "Leads arrive in bursts you can't forecast.",
+    "serviceDetail.dm.pain.item2":
+      "You're spending on ads and can't say which spend produced a customer.",
+    "serviceDetail.dm.pain.item3": "Traffic goes up. Qualified enquiries don't.",
+    "serviceDetail.dm.pain.item4":
+      "Follow-up depends on somebody remembering.",
+    "serviceDetail.dm.build.heading": "What we build",
+    "serviceDetail.dm.build.sub":
+      "Five parts of one acquisition system. Run separately they compete for budget; wired together they compound.",
+    "serviceDetail.dm.build.1.title": "Marketing strategy and planning",
+    "serviceDetail.dm.build.1.pain":
+      "Channels were chosen one at a time, by whoever pitched last.",
+    "serviceDetail.dm.build.1.body":
+      "Which buyers, which channels, which offers, in what order — and what you stop doing. The plan the other four parts execute against.",
+    "serviceDetail.dm.build.2.title": "Buyer-intent SEO",
+    "serviceDetail.dm.build.2.pain":
+      "You rank for terms that bring readers, not buyers.",
+    "serviceDetail.dm.build.2.body":
+      "Targeting the searches made by someone with a budget and a deadline, then building the pages and technical foundation to hold those positions.",
+    "serviceDetail.dm.build.3.title": "Media buying",
+    "serviceDetail.dm.build.3.pain":
+      "Ad spend is a monthly bill nobody can defend.",
+    "serviceDetail.dm.build.3.body":
+      "Google, Meta and LinkedIn campaigns built around the cost of a qualified lead rather than clicks, with the account structure and creative testing to bring that cost down.",
+    "serviceDetail.dm.build.4.title": "Conversion rate optimization",
+    "serviceDetail.dm.build.4.pain":
+      "You're paying to send traffic to pages that lose it.",
+    "serviceDetail.dm.build.4.body":
+      "Landing pages, forms and offers rebuilt and tested against real behaviour, so the same spend produces more enquiries.",
+    "serviceDetail.dm.build.5.title": "Funnel strategy and tracking",
+    "serviceDetail.dm.build.5.pain":
+      "The report says the campaign worked. Sales says the leads were bad.",
+    "serviceDetail.dm.build.5.body":
+      "Measurement from first touch to closed deal, so a channel is judged on revenue instead of on what the ad platform reports about itself.",
+    "serviceDetail.dm.lives.foundation":
+      "Where SEO, paid, funnel and conversion would pay off in your business, and in what order. Assessment only — nothing is run at this stage.",
+    "serviceDetail.dm.lives.growth-engine":
+      "All five, built and run as one acquisition engine, together with the conversion assets and the CRM the system needs in order to work.",
     "serviceDetail.dm.faq.1.q": "What's the minimum to make this work?",
     "serviceDetail.dm.faq.1.a":
       "We're honest about fit — we're upfront about whether the budget justifies the work, and we'll tell you before you commit.",
@@ -583,27 +733,53 @@ const translations: Record<Language, Record<string, string>> = {
     "serviceDetail.dm.faq.3.a":
       "We guarantee our work and our process, not market conditions. Targets are agreed upfront and we're accountable to them.",
 
-    // Service Detail — AI TRAINING
+    // Service Detail — AI TRAINING (AI Enablement)
+    // §2.9 honesty constraint: CAPABILITY ONLY on this page. No results claim,
+    // no client count, no "proven" framing, until delivery history exists.
+    "serviceDetail.ai.label": "AI Enablement",
     "serviceDetail.ai.title": "AI Enablement and team AI training",
     "serviceDetail.ai.desc":
       "AI enablement isn't sold on its own — it's built into every solution. Department-specific use cases, workflow adoption, and practical team enablement, so AI ends up in daily work rather than in a training deck.",
-    "serviceDetail.ai.cta": "See the solutions",
-    "serviceDetail.ai.feat.1.title": "Executive AI strategy sessions",
-    "serviceDetail.ai.feat.2.title": "Department-level adoption programs",
-    "serviceDetail.ai.feat.3.title": "Hands-on workflow integration workshops",
-    "serviceDetail.ai.feat.4.title": "Implementation support",
-    "serviceDetail.ai.proc.1.title": "Assess",
-    "serviceDetail.ai.proc.1.desc":
-      "We map your team's workflows and where AI actually helps.",
-    "serviceDetail.ai.proc.2.title": "Design",
-    "serviceDetail.ai.proc.2.desc":
-      "A program built around your tools and real tasks.",
-    "serviceDetail.ai.proc.3.title": "Train",
-    "serviceDetail.ai.proc.3.desc":
-      "Hands-on sessions for leadership and teams.",
-    "serviceDetail.ai.proc.4.title": "Embed",
-    "serviceDetail.ai.proc.4.desc":
-      "Documented workflows your team keeps and reuses.",
+    "serviceDetail.ai.pain.heading":
+      "When AI adoption is the constraint, it looks like this.",
+    "serviceDetail.ai.pain.item1":
+      "Everyone is talking about AI. Nobody on the team uses it on real work.",
+    "serviceDetail.ai.pain.item2":
+      "You're paying for licences that sit unopened.",
+    "serviceDetail.ai.pain.item3":
+      "The team tried it once, got a bad answer, and went back to the old way.",
+    "serviceDetail.ai.pain.item4":
+      "You can't tell which processes are genuinely worth automating.",
+    "serviceDetail.ai.build.heading": "How the work is delivered",
+    "serviceDetail.ai.build.sub":
+      "AI Enablement is a layer inside the other solutions, never a standalone purchase. These are the formats that layer takes.",
+    "serviceDetail.ai.build.1.title": "Executive AI strategy sessions",
+    "serviceDetail.ai.build.1.pain":
+      "Leadership is being sold AI without a way to judge it.",
+    "serviceDetail.ai.build.1.body":
+      "Where AI changes the economics of your business and where it does not, so the investment decision is made on the same basis as any other.",
+    "serviceDetail.ai.build.2.title": "Department-level adoption programs",
+    "serviceDetail.ai.build.2.pain":
+      "Generic training teaches tools nobody's job requires.",
+    "serviceDetail.ai.build.2.body":
+      "Use cases built from what a specific department actually does each week — sales, finance, operations, service — with the tools they already have open.",
+    "serviceDetail.ai.build.3.title":
+      "Hands-on workflow integration workshops",
+    "serviceDetail.ai.build.3.pain":
+      "People leave training impressed and change nothing.",
+    "serviceDetail.ai.build.3.body":
+      "Working sessions on live tasks, so the team finishes with AI inside a process they actually run rather than with a set of notes.",
+    "serviceDetail.ai.build.4.title": "Implementation support",
+    "serviceDetail.ai.build.4.pain":
+      "Adoption fades in the month after the training ends.",
+    "serviceDetail.ai.build.4.body":
+      "Follow-through while the new way of working becomes the normal one — the part that decides whether any of the rest survives.",
+    "serviceDetail.ai.lives.foundation":
+      "Which departments benefit first, which workflows should be automated, and where AI would create measurable impact. Identification only.",
+    "serviceDetail.ai.lives.growth-engine":
+      "The commercial teams: department use cases, employee training, and AI-assisted workflows inside the processes that already run.",
+    "serviceDetail.ai.lives.scale-infrastructure":
+      "Organisation-wide adoption, plus AI embedded in the business systems themselves rather than sitting beside them.",
     "serviceDetail.ai.faq.1.q": "Is this generic AI training?",
     "serviceDetail.ai.faq.1.a":
       "No. Programs are built around your actual workflows and tools, not a stock curriculum.",
@@ -732,7 +908,6 @@ const translations: Record<Language, Record<string, string>> = {
     "nav.portfolio": "أعمالنا",
     "nav.about": "من نحن",
     "nav.contact": "تواصل معنا",
-    "nav.cta": "لنتحدث",
 
     // --- COMMON ---
     "common.cta.bookCall": "احجز مكالمة استراتيجية",
@@ -930,47 +1105,48 @@ const translations: Record<Language, Record<string, string>> = {
       "أعمالك تعمل بالفعل. ما تحتاجه الآن هو البنية التي تتيح لها التوسّع. نكتشف ما الذي يعيق النمو، ثم نبني أنظمة التسويق والتقنية والذكاء الاصطناعي التي تزيله.",
     "solutions.hero.secondary": "حدّد القيد لديك",
 
-    // Hero system visual
-    "solutions.viz.before": "أدوات غير مترابطة",
-    "solutions.viz.after": "نظام نمو واحد",
-    "solutions.viz.hub": "نظام النمو",
-    "solutions.viz.attr1": "قابل للقياس",
-    "solutions.viz.attr2": "مترابط",
-    "solutions.viz.attr3": "مملوك لك",
-    "solutions.viz.aria":
-      "خمس وظائف أعمال غير مترابطة على اليسار تتحوّل إلى نظام نمو واحد مترابط على اليمين.",
+    // Hero visual — the Business Diagnostic
+    "solutions.diag.title": "تشخيص الأعمال",
+    "solutions.diag.systemTitle": "نظام تشغيل النمو",
+    "solutions.diag.summary": "{s} إشارات · {c} قيود جذرية",
+    "solutions.diag.rootLabel": "قيد جذري",
+    "solutions.diag.hint": "اختر أي إشارة لتكشف ما ترتبط به فعلاً.",
+    "solutions.diag.trace": "{n} من {s} إشارات تعود إلى هذا القيد",
+    "solutions.diag.buildLabel": "نبني",
+    "solutions.diag.showSystem": "اعرض النظام",
+    "solutions.diag.showSignals": "العودة إلى الإشارات",
+    "solutions.diag.strategyLabel": "الاستراتيجية",
+    "solutions.diag.strategyBody":
+      "تشخيص الأعمال هو ما يحدّد أيّاً من الثلاثة تحتاج، وبأي ترتيب.",
+    "solutions.diag.thesis": "معظم مشكلات النمو أعراضٌ لنظام واحد مفقود.",
+
+    "solutions.diag.s1.label": "نمو غير منتظم",
+    "solutions.diag.s1.text": "النمو غير منتظم ولا يتراكم.",
+    "solutions.diag.s2.label": "إنفاق لا يُقاس",
+    "solutions.diag.s2.text": "لا يمكن ربط الإنفاق بالإيرادات.",
+    "solutions.diag.s3.label": "تعثّر عند التسليم",
+    "solutions.diag.s3.text": "العمل يتعثّر عند كل عملية تسليم.",
+    "solutions.diag.s4.label": "تقارير يدوية",
+    "solutions.diag.s4.text": "كل تقرير يُعاد بناؤه يدوياً.",
+    "solutions.diag.s5.label": "قرارات معتمدة على المؤسّس",
+    "solutions.diag.s5.text": "القرارات تمرّ عبر عدد قليل من الأشخاص.",
+    "solutions.diag.s6.label": "طاقة مقيّدة بالتوظيف",
+    "solutions.diag.s6.text": "زيادة الحجم ما زالت تعني زيادة الموظفين.",
+    "solutions.diag.s7.label": "تبنٍّ متعثّر للذكاء الاصطناعي",
+    "solutions.diag.s7.text": "الذكاء الاصطناعي يُناقَش ولا يُشغَّل.",
+
+    "solutions.diag.c1.name": "الطلب ليس نظاماً.",
+    "solutions.diag.c1.impact":
+      "الإيرادات تعتمد على الجهد، فلا يمكن توقّعها ولا مراكمتها.",
+    "solutions.diag.c2.name": "الأعمال تُدار بالأشخاص لا بالأنظمة.",
+    "solutions.diag.c2.impact":
+      "كل عملية تحتاج شخصاً بداخلها، فيتزايد التعقيد أسرع من الإنتاج.",
+    "solutions.diag.c3.name": "الطاقة لا تتوسّع إلا بالتوظيف.",
+    "solutions.diag.c3.impact":
+      "الإنتاج مسقوف بعدد الموظفين — وهو أبطأ طرق النمو وأغلاها.",
 
     // Trust strip
-    "solutions.trust.label":
-      "موثوقون من علاماتٍ تجارية في الولايات المتحدة ودول الخليج ومصر",
-
-    // Problem recognition
-    "solutions.problem.heading": "النمو يخلق مشكلات جديدة.",
-    "solutions.problem.sub":
-      "لقد بنيت عملاً ناجحاً. لكن الأنظمة التي أوصلتك إلى هنا ليست دائماً الأنظمة التي تأخذك إلى أبعد.",
-    "solutions.problem.item1": "النمو يعتمد على عدد قليل من الأشخاص.",
-    "solutions.problem.item2": "أدواتك لا تتحدّث إلى بعضها.",
-    "solutions.problem.item3": "الفِرق تكرّر العمل اليدوي نفسه.",
-    "solutions.problem.item4": "لا ترى ما الذي يقود الإيرادات فعلاً.",
-    "solutions.problem.item5":
-      "الذكاء الاصطناعي في كل مكان، لكن لا أحد في الفريق يستخدمه فعلاً.",
-    "solutions.problem.close":
-      "لا شيء من هذا مشكلة أداة. كلها مشكلات أنظمة — تُشخَّص قبل أن تُبنى.",
-
-    // The shift
-    "solutions.shift.nowLabel": "ما تعمل به الآن",
-    "solutions.shift.now1": "تقدير المؤسّس",
-    "solutions.shift.now2": "مزيد من الموظفين",
-    "solutions.shift.now3": "تسليم يدوي",
-    "solutions.shift.now4": "جداول بيانات",
-    "solutions.shift.now5": "سقف لا يُتجاوز",
-    "solutions.shift.arrow": "التشخيص",
-    "solutions.shift.nextLabel": "ما الذي تصبح عليه",
-    "solutions.shift.next1": "عملية محدّدة",
-    "solutions.shift.next2": "أتمتة",
-    "solutions.shift.next3": "بيانات مترابطة",
-    "solutions.shift.next4": "رؤية واضحة",
-    "solutions.shift.next5": "توسّع",
+    // solutions.trust.* / .problem.* / .shift.* removed — see the EN block.
 
     // Diagnostic router
     "solutions.router.eyebrow": "تشخيص الأعمال",
@@ -1014,6 +1190,9 @@ const translations: Record<Language, Record<string, string>> = {
     "solutions.grid.priceNote1": "يُحدَّد النطاق النهائي بعد تشخيص الأعمال.",
     "solutions.grid.priceNote2": "ليس اشتراكاً شهرياً. بل نظام تملكه أعمالك.",
     "solutions.grid.detailLink": "تفاصيل الحل كاملة",
+    "solutions.grid.recommended": "موصى به",
+    "solutions.grid.recommendedNote":
+      "محدَّد بناءً على قيد النمو المختار أعلاه. غيّر القيد لتتغيّر التوصية معه.",
 
     // Foundation
     "solutions.foundation.name": "Foundation",
@@ -1028,16 +1207,34 @@ const translations: Record<Language, Record<string, string>> = {
       "أعمالك تنمو، لكن سبب تباطؤها ليس واضحاً من الداخل. وكل عرض يصلك يفترض إجابة لم يتحقّق منها أحد فعلاً.",
     "solutions.foundation.inc1.title": "تشخيص الأعمال",
     "solutions.foundation.inc1.body":
-      "كيف تعمل الأعمال فعلاً اليوم — العمليات وعمليات التسليم وأين يتوقّف العمل.",
-    "solutions.foundation.inc2.title": "تقييم سير العمل والاختناقات",
+      "كيف تعمل الشركة اليوم — أين يتحرّك العمل، وأين يتوقّف، ولماذا.",
+    "solutions.foundation.inc1.item1": "العمليات وسير العمل والهيكل التشغيلي",
+    "solutions.foundation.inc1.item2": "أداء التسويق ورحلة استقطاب العملاء",
+    "solutions.foundation.inc1.item3": "المنظومة التقنية الحالية وحدودها",
+    "solutions.foundation.inc1.item4": "فجوات وضوح البيانات والتقارير",
+    "solutions.foundation.inc2.title": "تقييم النمو والاختناقات",
     "solutions.foundation.inc2.body":
       "النقاط المحدّدة التي يُقيَّد عندها النمو، وكلفة كلٍّ منها.",
-    "solutions.foundation.inc3.title": "خريطة فرص النمو والتقنية",
+    "solutions.foundation.inc2.item1": "أين تُفقد الفرص",
+    "solutions.foundation.inc2.item2": "أي العمليات تُبطئ النمو",
+    "solutions.foundation.inc2.item3": "أي عمل يدوي يحدّ من التوسّع",
+    "solutions.foundation.inc2.item4": "أعلى المجالات أثراً للبدء بها",
+    "solutions.foundation.inc3.title": "خريطة فرص التسويق والتقنية",
     "solutions.foundation.inc3.body":
-      "أين يصنع التسويق والأنظمة والأتمتة أثراً قابلاً للقياس — وبأي ترتيب.",
+      "أين تحقّق كل قدرة عائداً في هذه الأعمال — وبأي ترتيب.",
+    "solutions.foundation.inc3.item1": "تحسين محركات البحث والنمو العضوي",
+    "solutions.foundation.inc3.item2": "الاستقطاب المدفوع وشراء الوسائط",
+    "solutions.foundation.inc3.item3": "المسار التسويقي والتحويل",
+    "solutions.foundation.inc3.item4": "أنظمة إدارة العملاء (CRM)",
+    "solutions.foundation.inc3.item5": "أتمتة الأعمال",
+    "solutions.foundation.inc3.item6": "البرمجيات والمنصّات المخصّصة",
     "solutions.foundation.inc4.title": "تحديد فرص الذكاء الاصطناعي",
     "solutions.foundation.inc4.body":
       "أي مسارات العمل تستحق فعلاً تطبيق الذكاء الاصطناعي عليها، وأيها لا.",
+    "solutions.foundation.inc4.item1": "أي الأقسام تستفيد أولاً",
+    "solutions.foundation.inc4.item2": "أي مسارات العمل ينبغي أتمتتها",
+    "solutions.foundation.inc4.item3":
+      "أين يصنع الذكاء الاصطناعي أثراً قابلاً للقياس",
     "solutions.foundation.outcome":
       "خارطة طريق واضحة تُبيّن أين تصنع التقنية والذكاء الاصطناعي والأنظمة أثراً قابلاً للقياس.",
     "solutions.foundation.note":
@@ -1057,13 +1254,33 @@ const translations: Record<Language, Record<string, string>> = {
       "الإيرادات تنمو، لكن النمو يعتمد على حملات غير مترابطة وعمليات يدوية وأشخاص يدفعون كل شيء إلى الأمام.",
     "solutions.growth.inc1.title": "أنظمة التسويق",
     "solutions.growth.inc1.body":
-      "تحسين محركات البحث، والاستقطاب المدفوع، وتحسين التحويل، وتتبّع المسار، وقياس الأداء — مترابطة معاً كمحرّك واحد.",
-    "solutions.growth.inc2.title": "تمكين الذكاء الاصطناعي",
+      "محرّك الاستقطاب — يُخطَّط ويُبنى ويُقاس كنظام واحد لا كحملات منفصلة.",
+    "solutions.growth.inc1.item1": "استراتيجية التسويق وخطة التنفيذ",
+    "solutions.growth.inc1.item2": "تحسين محركات البحث والنمو العضوي",
+    "solutions.growth.inc1.item3": "شراء الوسائط والحملات المدفوعة",
+    "solutions.growth.inc1.item4": "استراتيجية المسار وتحسين التحويل",
+    "solutions.growth.inc1.item5": "تتبّع الأداء وإسناد النتائج",
+    "solutions.growth.inc2.title": "أصول التحويل",
     "solutions.growth.inc2.body":
-      "استخدامات خاصة بكل قسم، وتبنٍّ داخل سير العمل، وتمكين عملي للفريق — ليصبح الذكاء الاصطناعي جزءاً من العمل اليومي لا شريحة في عرض تدريبي.",
-    "solutions.growth.inc3.title": "أتمتة الأعمال",
+      "ما يوجّه إليه المسار التسويقي — الصفحات التي يحتاجها نظام الاستقطاب ليحوّل.",
+    "solutions.growth.inc2.item1": "موقع بنظام إدارة محتوى",
+    "solutions.growth.inc2.item2": "صفحات هبوط",
+    "solutions.growth.inc2.item3": "صفحات الحملات",
+    "solutions.growth.inc3.title": "عمليات الإيرادات",
     "solutions.growth.inc3.body":
-      "تحسين إدارة العملاء، وأتمتة سير العمل، وربط البيانات عبر الأدوات التي تستخدمها بالفعل.",
+      "نظام إدارة عملاء مهيّأ لإدارة العملاء المحتملين عبر الفريق التجاري، مع أتمتة المتابعة.",
+    "solutions.growth.inc3.item1":
+      "نظام CRM لالتقاط العملاء المحتملين وإدارة المسار",
+    "solutions.growth.inc3.item2": "توجيه العملاء المحتملين وأتمتة المتابعة",
+    "solutions.growth.inc3.item3": "التسليم من التسويق إلى المبيعات",
+    "solutions.growth.inc3.item4": "ربط البيانات عبر الأدوات المستخدمة بالفعل",
+    "solutions.growth.inc4.title": "تمكين الذكاء الاصطناعي",
+    "solutions.growth.inc4.body":
+      "الذكاء الاصطناعي داخل العمل اليومي للفرق التجارية — لا شريحة في عرض تدريبي.",
+    "solutions.growth.inc4.item1": "استخدامات خاصة بكل قسم",
+    "solutions.growth.inc4.item2": "تدريب الموظفين على الذكاء الاصطناعي",
+    "solutions.growth.inc4.item3":
+      "مسارات عمل مدعومة بالذكاء الاصطناعي ضمن العمليات القائمة",
     "solutions.growth.outcome":
       "فرص أكثر تأهيلاً، ورؤية أوضح، وفريق يعمل بالذكاء الاصطناعي داخل مسارات عمل حقيقية.",
 
@@ -1081,15 +1298,34 @@ const translations: Record<Language, Record<string, string>> = {
       "طبقة الرؤية: القياس والتقارير وربط بيانات الأعمال — لتُتّخذ القرارات بعد البناء على أدلة لا على حدس.",
     "solutions.scale.expandsLabel":
       "ثم يتوسّع، بناءً على تشخيص الأعمال، ليشمل:",
-    "solutions.scale.inc1.title": "تقنية الأعمال",
+    "solutions.scale.inc1.title": "الأنظمة الأساسية للأعمال",
     "solutions.scale.inc1.body":
-      "منصّات إدارة العملاء وتخطيط الموارد، والأنظمة الداخلية، والمنصّات الموجّهة للعملاء — مبنية لتملكها وتربطها وتوسّعها.",
-    "solutions.scale.inc2.title": "أتمتة وذكاء اصطناعي متقدّم",
+      "أنظمة السجلّ التي تقوم عليها الأعمال، مترابطة لا مرصوفة جنباً إلى جنب.",
+    "solutions.scale.inc1.item1": "نظام CRM كسجلّ موحّد عبر الأقسام",
+    "solutions.scale.inc1.item2": "منصّات تخطيط الموارد ERP",
+    "solutions.scale.inc1.item3": "أنظمة إدارة أداء تطوير الأعمال",
+    "solutions.scale.inc1.item4": "الربط بين الأنظمة الأساسية",
+    "solutions.scale.inc2.title": "التطبيقات المخصّصة",
     "solutions.scale.inc2.body":
-      "مسارات عمل مدعومة بالذكاء الاصطناعي، وأتمتة العمليات، وأنظمة عابرة للأقسام تزيل عمليات التسليم اليدوية.",
-    "solutions.scale.inc3.title": "التمكين التشغيلي",
+      "برمجيات مبنية على طريقة عمل هذه الشركة، حيث لا يناسبها أي حل جاهز.",
+    "solutions.scale.inc2.item1": "تطبيقات الأعمال الداخلية",
+    "solutions.scale.inc2.item2": "حلول برمجية مخصّصة",
+    "solutions.scale.inc2.item3": "تطبيقات جوال للأعمال B2B",
+    "solutions.scale.inc2.item4": "بوابات العملاء والأدوات الداخلية",
+    "solutions.scale.inc3.title": "أتمتة وذكاء اصطناعي متقدّم",
     "solutions.scale.inc3.body":
-      "إعادة تصميم العمليات، ودعم التبنّي، وعمل التغيير الذي يجعل الأنظمة الجديدة تستمر بعد التسليم.",
+      "أتمتة عابرة للأقسام، وذكاء اصطناعي مدمج في الأنظمة لا ملحق بها.",
+    "solutions.scale.inc3.item1": "أتمتة سير العمل عبر الأقسام",
+    "solutions.scale.inc3.item2": "ذكاء اصطناعي مدمج في أنظمة الأعمال",
+    "solutions.scale.inc3.item3": "تقارير ذكية ودعم القرار",
+    "solutions.scale.inc3.item4":
+      "تبنّي الذكاء الاصطناعي على مستوى الشركة وتدريب الموظفين",
+    "solutions.scale.inc4.title": "التمكين التشغيلي",
+    "solutions.scale.inc4.body":
+      "عمل التغيير الذي يجعل الأنظمة الجديدة تستمر بعد التسليم.",
+    "solutions.scale.inc4.item1": "إعادة تصميم العمليات",
+    "solutions.scale.inc4.item2": "دعم التبنّي",
+    "solutions.scale.inc4.item3": "التحسين المستمر بعد التسليم",
     "solutions.scale.outcome":
       "بنية أعمال قابلة للتوسّع مبنية حول الطريقة التي تعمل بها شركتك فعلاً.",
 
@@ -1160,109 +1396,185 @@ const translations: Record<Language, Record<string, string>> = {
     "serviceDetail.related.title": "نتائج مثبتة",
     "serviceDetail.related.sub": "شاهد كيف ساعدنا شركات مثل شركتك.",
     "serviceDetail.related.viewPortfolio": "عرض كامل الأعمال",
-    "serviceDetail.included": "ما الذي تحصل عليه",
-    "serviceDetail.how.title": "كيف يسير العمل",
-    "serviceDetail.how.sub": "لا غموض ولا اجتماعات بلا نهاية. إليك الآلية.",
     "serviceDetail.faqTitle": "أسئلة شائعة",
-    "serviceDetail.cta.title": "جاهز للبدء؟",
+    "serviceDetail.lives.heading": "أين يقع هذا ضمن الحلول",
+    "serviceDetail.lives.sub":
+      "القدرة نفسها تظهر بعمق مختلف بحسب ما يكشفه تشخيص الأعمال. وهي ليست خدمة تُشترى منفردة.",
+    "serviceDetail.lives.assessed": "يُقيَّم هنا",
+    "serviceDetail.lives.built": "يُبنى هنا",
+    "serviceDetail.cta.title": "لست متأكداً أن هذا هو القيد لديك؟",
     "serviceDetail.cta.body":
-      "احجز مكالمة استراتيجية. سنناقش احتياجاتك ونخبرك بصدق إن كنا الخيار المناسب — بلا ضغط ولا عروض بيعية.",
+      "لهذا وُجد تشخيص الأعمال. ابدأ من الحلول واكتشف أين يُعاق نموك فعلاً.",
+    "serviceDetail.cta.button": "استعرض الحلول",
 
     // Service Detail — SOFTWARE
+    "serviceDetail.software.label": "تقنية الأعمال",
     "serviceDetail.software.title":
       "تقنية الأعمال: البرمجيات وتخطيط الموارد وإدارة العملاء والأتمتة",
     "serviceDetail.software.desc":
-      "منصّات ERP وCRM، ومواقع موجّهة للعملاء، وتطبيقات جوال، والأتمتة التي تربطها — مصمّمة لتملكها وتدمجها وتوسّعها.",
-    "serviceDetail.software.cta": "ابنِ نظامك",
-    "serviceDetail.software.feat.1.title": "أنظمة الأعمال (ERP / CRM)",
-    "serviceDetail.software.feat.1.desc":
-      "منصّات مخصّصة توحّد بيانات مبيعاتك وعملياتك وعملائك في مصدر واحد موثوق. مبنية على أطر عمل مُثبتة، ومصمّمة وفق طريقة عمل شركتك الفعلية.",
-    "serviceDetail.software.feat.2.title": "منصّات الويب",
-    "serviceDetail.software.feat.2.desc":
-      "مواقع وتطبيقات ويب عالية الأداء مصمّمة للتحويل والسرعة — مرتبطة بأنظمتك منذ اليوم الأول، لا مضافة لاحقاً.",
-    "serviceDetail.software.feat.3.title": "تطبيقات الجوال",
-    "serviceDetail.software.feat.3.desc":
-      "تطبيقات للعملاء وأخرى داخلية، مبنية للاستخدام الواقعي والتوسّع، ومدمجة مع الأنظمة الخلفية نفسها.",
-    "serviceDetail.software.feat.4.title": "الأتمتة والذكاء الاصطناعي",
-    "serviceDetail.software.feat.4.desc":
-      "أتمتة سير العمل وتكاملات الذكاء الاصطناعي التي تزيل العمل اليدوي — توجيه العملاء المحتملين، ومزامنة البيانات، والمتابعات، والمهام المتكرّرة التي تستهلك وقت فريقك.",
-    "serviceDetail.software.proc.1.title": "الاكتشاف",
-    "serviceDetail.software.proc.1.desc":
-      "نتعرّف على أعمالك وأهدافك ومتطلباتك التقنية.",
-    "serviceDetail.software.proc.2.title": "العرض",
-    "serviceDetail.software.proc.2.desc": "نطاق واضح، وجدول زمني، وسعر ثابت.",
-    "serviceDetail.software.proc.3.title": "التصميم",
-    "serviceDetail.software.proc.3.desc":
-      "مخططات هيكلية وتصميم بصري — تعتمده قبل أن نبدأ البناء.",
-    "serviceDetail.software.proc.4.title": "البناء",
-    "serviceDetail.software.proc.4.desc":
-      "نبني وندمج، مع مراجعات أسبوعية. بلا مفاجآت.",
-    "serviceDetail.software.proc.5.title": "الإطلاق",
-    "serviceDetail.software.proc.5.desc":
-      "مختبر ومُفعّل ومُسلّم — مع نقل الملكية الكاملة.",
-    "serviceDetail.software.faq.1.q": "هل نملك الشيفرة البرمجية؟",
+      "منصّات تخطيط الموارد وإدارة العملاء، ومواقع موجّهة للعملاء، وتطبيقات جوال، والأتمتة التي تربطها — مصمّمة لتملكها وتربطها وتوسّعها.",
+    "serviceDetail.software.pain.heading":
+      "حين تكون الأنظمة هي القيد، تبدو الصورة هكذا.",
+    "serviceDetail.software.pain.item1":
+      "ثلاثة فرق تحتفظ بثلاث نسخ من قائمة العملاء نفسها.",
+    "serviceDetail.software.pain.item2":
+      "كل تقرير يُصدَّر ويُلصق ويُطابَق يدوياً.",
+    "serviceDetail.software.pain.item3":
+      "الأدوات التي اشتريتها لا تتحدّث إلى بعضها، فصار الموظفون هم حلقة الربط.",
+    "serviceDetail.software.pain.item4":
+      "النظام الذي تعمل عليه بُني لشركة أصغر من شركتك الحالية.",
+    "serviceDetail.software.build.heading": "ما الذي نبنيه",
+    "serviceDetail.software.build.sub":
+      "ستة أنظمة، والقيد الذي يزيله كلٌّ منها. وأيّها تحتاج يتحدّد من تشخيص الأعمال — فهذه ليست قائمة تختار منها.",
+    "serviceDetail.software.build.1.title": "منصّات تخطيط الموارد ERP",
+    "serviceDetail.software.build.1.pain":
+      "المالية والمخزون والعمليات، لكلٍّ منها أرقامه الخاصة.",
+    "serviceDetail.software.build.1.body":
+      "عمود تشغيلي واحد — المشتريات والمخزون والمالية والتنفيذ على البيانات نفسها، ليحمل الرقم المعنى ذاته في كل قسم.",
+    "serviceDetail.software.build.2.title": "منصّات إدارة العملاء CRM",
+    "serviceDetail.software.build.2.pain":
+      "لا أحد يعرف في أي مرحلة صفقةٌ ما دون أن يسأل صاحبها.",
+    "serviceDetail.software.build.2.body":
+      "مسار مبيعات يعمل داخله الفريق التجاري كاملاً — الحسابات والمراحل والأنشطة والسجل في مكان واحد، مع التقارير التي تجعل التنبّؤ ممكناً.",
+    "serviceDetail.software.build.3.title": "أنظمة إدارة أداء تطوير الأعمال",
+    "serviceDetail.software.build.3.pain":
+      "أداء المبيعات يُقدَّر بالانطباعات بدل أن يُقاس.",
+    "serviceDetail.software.build.3.body":
+      "أهداف وحصص وأنشطة ونتائج تُتابَع لكل مندوب ولكل فريق، ليُدار تطوير الأعمال على أدلة لا على من يبدو أكثر انشغالاً.",
+    "serviceDetail.software.build.4.title": "تطبيقات داخلية مخصّصة",
+    "serviceDetail.software.build.4.pain":
+      "عملية أساسية تعمل على جدول بيانات يحرسه شخص واحد.",
+    "serviceDetail.software.build.4.body":
+      "سير العمل الذي يميّز أعمالك، مبنيّاً كتطبيق حقيقي — بصلاحيات وسجلّ تدقيق وربط ببقية الأنظمة.",
+    "serviceDetail.software.build.5.title": "بوابات العملاء وتطبيقات الجوال B2B",
+    "serviceDetail.software.build.5.pain":
+      "العملاء والشركاء يتّصلون بفريقك لمعلومات ينبغي أن يروها بأنفسهم.",
+    "serviceDetail.software.build.5.body":
+      "وصول مباشر للعملاء أو الشركاء أو الفرق الميدانية إلى طلباتهم وحالتها ومستنداتهم — بدل تمرير كل سؤال عبر شخص.",
+    "serviceDetail.software.build.6.title": "منصّات الويب",
+    "serviceDetail.software.build.6.pain":
+      "الموقع مجرّد كتيّب تعريفي، منفصل عن كل ما خلفه.",
+    "serviceDetail.software.build.6.body":
+      "مواقع وتطبيقات ويب مرتبطة بأنظمتك من اليوم الأول، ليتحوّل إرسال النموذج إلى سجلّ في نظام إدارة العملاء لا إلى بريد يعيد أحدهم كتابته.",
+    "serviceDetail.software.lives.foundation":
+      "تُقيَّم منظومتك التقنية الحالية وحدودها وفجوات التقارير فيها. ولا يُبنى شيء في هذه المرحلة — الغاية هي تحديد ما ينبغي بناؤه.",
+    "serviceDetail.software.lives.growth-engine":
+      "الطبقة التجارية: موقع بنظام إدارة محتوى وصفحات هبوط تحوّل، ونظام إدارة عملاء مهيّأ لالتقاط العملاء المحتملين وإدارة المسار والمتابعة عبر فريق المبيعات.",
+    "serviceDetail.software.lives.scale-infrastructure":
+      "الطبقة التشغيلية: نظام إدارة العملاء كسجلّ موحّد عبر الأقسام، وتخطيط الموارد، وأنظمة إدارة أداء تطوير الأعمال، والتطبيقات المخصّصة والبوابات وتطبيقات الجوال.",
+    "serviceDetail.software.faq.1.q": "هل نملك الشيفرة المصدرية؟",
     "serviceDetail.software.faq.1.a":
-      "نعم. نقل كامل للشيفرة المصدرية والملكية الفكرية عند الانتهاء. لا احتكار، ولا رسوم للوصول إلى نظامك الخاص.",
-    "serviceDetail.software.faq.2.q": "هل يمكن أن يتكامل مع أدواتنا الحالية؟",
+      "نعم. تُنقل الشيفرة المصدرية كاملة والملكية الفكرية عند الإنجاز. لا تقييد، ولا رسوم للوصول إلى نظامك.",
+    "serviceDetail.software.faq.2.q": "هل يمكن ربطه بأدواتنا الحالية؟",
     "serviceDetail.software.faq.2.a":
-      "هذا هو الهدف تماماً. نربط النظام بأنظمة CRM وERP وبقية أدواتك منذ اليوم الأول.",
+      "هذا هو المقصود. نربطه بنظام إدارة العملاء وتخطيط الموارد وأدواتك الحالية من اليوم الأول.",
     "serviceDetail.software.faq.3.q": "كم يستغرق البناء؟",
     "serviceDetail.software.faq.3.a":
-      "يعتمد على النطاق — نمنحك جدولاً زمنياً محدداً في العرض، لا تقديراً مبهماً.",
+      "يعتمد على النطاق — نعطيك جدولاً زمنياً محدّداً في العرض، لا مدى غامضاً.",
     "serviceDetail.software.faq.4.q": "ماذا لو كان لدينا نظام بالفعل؟",
     "serviceDetail.software.faq.4.a":
-      "نعيد بناء ما لديك أو نطوّره، أيّهما أنسب لوضعك فعلاً.",
+      "نعيد بناء ما لديك أو نوسّعه، بحسب ما يناسب وضعك فعلاً.",
 
     // Service Detail — DIGITAL MARKETING
-    "serviceDetail.dm.title": "أنظمة التسويق: تحسين محركات البحث والإعلانات المدفوعة والتحويل",
+    "serviceDetail.dm.label": "أنظمة التسويق",
+    "serviceDetail.dm.title":
+      "أنظمة التسويق: تحسين محركات البحث والإعلانات المدفوعة والتحويل",
     "serviceDetail.dm.desc":
-      "تحسين محركات البحث والحملات المدفوعة واستراتيجية التحويل، مدمجة في محرك واحد قابل للقياس يجلب مشترين مؤهّلين — لا زيارات شكلية.",
-    "serviceDetail.dm.cta": "وسّع قاعدة عملائك",
-    "serviceDetail.dm.feat.1.title": "حملات مدفوعة (جوجل / ميتا / لينكدإن)",
-    "serviceDetail.dm.feat.2.title": "تحسين محركات بحث موجّه لنيّة الشراء",
-    "serviceDetail.dm.feat.3.title": "تحسين معدّل التحويل",
-    "serviceDetail.dm.feat.4.title": "استراتيجية مسار المبيعات وتتبّعه",
-    "serviceDetail.dm.proc.1.title": "التدقيق",
-    "serviceDetail.dm.proc.1.desc": "نراجع مسار مبيعاتك وقنواتك ومنافسيك.",
-    "serviceDetail.dm.proc.2.title": "الاستراتيجية",
-    "serviceDetail.dm.proc.2.desc": "خطة واضحة — القنوات والعروض وما سنختبره.",
-    "serviceDetail.dm.proc.3.title": "الإعداد",
-    "serviceDetail.dm.proc.3.desc":
-      "بناء وإطلاق أدوات التتبّع والحملات وصفحات الهبوط.",
-    "serviceDetail.dm.proc.4.title": "التحسين",
-    "serviceDetail.dm.proc.4.desc":
-      "اختبار مستمر استناداً إلى بيانات الأداء الحقيقية.",
-    "serviceDetail.dm.faq.1.q": "ما الحد الأدنى اللازم لنجاح ذلك؟",
+      "تحسين محركات البحث والحملات المدفوعة واستراتيجية التحويل، مترابطة في محرّك واحد قابل للقياس يجلب مشترين مؤهّلين — لا زيارات بلا قيمة.",
+    "serviceDetail.dm.pain.heading":
+      "حين يكون الاستقطاب هو القيد، تبدو الصورة هكذا.",
+    "serviceDetail.dm.pain.item1":
+      "العملاء المحتملون يصلون على دفعات لا يمكن توقّعها.",
+    "serviceDetail.dm.pain.item2":
+      "تنفق على الإعلانات ولا تستطيع تحديد أي إنفاق جاء بعميل.",
+    "serviceDetail.dm.pain.item3":
+      "الزيارات ترتفع. أما الطلبات المؤهّلة فلا.",
+    "serviceDetail.dm.pain.item4": "المتابعة تعتمد على تذكّر أحدهم.",
+    "serviceDetail.dm.build.heading": "ما الذي نبنيه",
+    "serviceDetail.dm.build.sub":
+      "خمسة أجزاء من نظام استقطاب واحد. منفصلةً تتنافس على الميزانية، ومترابطةً تتراكم نتائجها.",
+    "serviceDetail.dm.build.1.title": "استراتيجية التسويق والتخطيط",
+    "serviceDetail.dm.build.1.pain":
+      "اختيرت القنوات واحدة تلو الأخرى، بحسب من قدّم العرض أخيراً.",
+    "serviceDetail.dm.build.1.body":
+      "أي المشترين، وأي القنوات، وأي العروض، وبأي ترتيب — وما الذي تتوقّف عنه. إنها الخطة التي تنفّذها الأجزاء الأربعة الأخرى.",
+    "serviceDetail.dm.build.2.title": "تحسين محركات البحث بنيّة الشراء",
+    "serviceDetail.dm.build.2.pain":
+      "تتصدّر كلمات تجلب قرّاءً لا مشترين.",
+    "serviceDetail.dm.build.2.body":
+      "استهداف عمليات البحث التي يجريها من لديه ميزانية وموعد نهائي، ثم بناء الصفحات والأساس التقني للحفاظ على تلك المراكز.",
+    "serviceDetail.dm.build.3.title": "شراء الوسائط",
+    "serviceDetail.dm.build.3.pain":
+      "الإنفاق الإعلاني فاتورة شهرية لا يستطيع أحد تبريرها.",
+    "serviceDetail.dm.build.3.body":
+      "حملات على Google وMeta وLinkedIn مبنية حول كلفة العميل المحتمل المؤهّل لا حول النقرات، مع بنية الحسابات واختبار المحتوى الذي يخفض تلك الكلفة.",
+    "serviceDetail.dm.build.4.title": "تحسين معدّل التحويل",
+    "serviceDetail.dm.build.4.pain":
+      "تدفع لتوجيه زيارات إلى صفحات تفقدها.",
+    "serviceDetail.dm.build.4.body":
+      "صفحات هبوط ونماذج وعروض يُعاد بناؤها واختبارها على سلوك حقيقي، ليُنتج الإنفاق نفسه طلبات أكثر.",
+    "serviceDetail.dm.build.5.title": "استراتيجية المسار والقياس",
+    "serviceDetail.dm.build.5.pain":
+      "التقرير يقول إن الحملة نجحت. والمبيعات تقول إن العملاء لم يكونوا مؤهّلين.",
+    "serviceDetail.dm.build.5.body":
+      "قياس من أول تفاعل حتى إغلاق الصفقة، لتُقيَّم القناة بالإيرادات لا بما تقوله منصّة الإعلانات عن نفسها.",
+    "serviceDetail.dm.lives.foundation":
+      "أين يحقّق تحسين محركات البحث والإعلانات المدفوعة والمسار والتحويل عائداً في أعمالك، وبأي ترتيب. تقييم فقط — لا يُشغَّل شيء في هذه المرحلة.",
+    "serviceDetail.dm.lives.growth-engine":
+      "الخمسة جميعاً، مبنيّة ومُشغَّلة كمحرّك استقطاب واحد، مع أصول التحويل ونظام إدارة العملاء الذي يحتاجه النظام ليعمل.",
+    "serviceDetail.dm.faq.1.q": "ما الحد الأدنى ليعمل هذا؟",
     "serviceDetail.dm.faq.1.a":
-      "نحن صريحون معك — نصارحك إن كانت ميزانيتك تبرّر العمل، قبل أن تلتزم بأي شيء.",
+      "نحن صرحاء بشأن الملاءمة — نخبرك مباشرة إن كانت الميزانية تبرّر العمل، قبل أن تلتزم.",
     "serviceDetail.dm.faq.2.q": "متى تظهر النتائج؟",
     "serviceDetail.dm.faq.2.a":
-      "الحملات المدفوعة تبدأ نتائجها خلال أسابيع؛ أما تحسين محركات البحث فيحتاج بضعة أشهر لزيارات ذات قيمة. نضع توقعات واقعية قبل أن نبدأ.",
+      "الإعلانات المدفوعة تتحرّك خلال أسابيع؛ وتحسين محركات البحث يحتاج أشهراً لزيارات ذات أثر. نضع توقّعات واقعية قبل البدء.",
     "serviceDetail.dm.faq.3.q": "هل تضمنون النتائج؟",
     "serviceDetail.dm.faq.3.a":
-      "نضمن عملنا ومنهجيتنا، لا ظروف السوق. نتّفق على الأهداف مسبقاً ونكون مسؤولين عنها.",
+      "نضمن عملنا ومنهجيتنا، لا ظروف السوق. تُتّفق الأهداف مسبقاً ونكون مسؤولين أمامها.",
 
     // Service Detail — AI TRAINING
+    "serviceDetail.ai.label": "تمكين الذكاء الاصطناعي",
     "serviceDetail.ai.title": "تمكين الذكاء الاصطناعي وتدريب الفرق عليه",
     "serviceDetail.ai.desc":
       "تمكين الذكاء الاصطناعي لا يُباع منفرداً — بل هو مدمج في كل حل. استخدامات خاصة بكل قسم، وتبنٍّ داخل سير العمل، وتمكين عملي للفريق، ليصبح الذكاء الاصطناعي جزءاً من العمل اليومي لا شريحة في عرض تدريبي.",
-    "serviceDetail.ai.cta": "استعرض الحلول",
-    "serviceDetail.ai.feat.1.title":
-      "جلسات استراتيجية للمدراء حول الذكاء الاصطناعي",
-    "serviceDetail.ai.feat.2.title": "برامج تبنٍّ على مستوى الأقسام",
-    "serviceDetail.ai.feat.3.title":
-      "ورش عملية لدمج الذكاء الاصطناعي في سير العمل",
-    "serviceDetail.ai.feat.4.title": "دعم التنفيذ",
-    "serviceDetail.ai.proc.1.title": "التقييم",
-    "serviceDetail.ai.proc.1.desc":
-      "نرسم خريطة سير عمل فريقك ومواضع الفائدة الفعلية للذكاء الاصطناعي.",
-    "serviceDetail.ai.proc.2.title": "التصميم",
-    "serviceDetail.ai.proc.2.desc": "برنامج مبني حول أدواتك ومهامك الحقيقية.",
-    "serviceDetail.ai.proc.3.title": "التدريب",
-    "serviceDetail.ai.proc.3.desc": "جلسات عملية للقيادات والفرق.",
-    "serviceDetail.ai.proc.4.title": "الترسيخ",
-    "serviceDetail.ai.proc.4.desc":
-      "سير عمل موثّق يحتفظ به فريقك ويعيد استخدامه.",
+    "serviceDetail.ai.pain.heading":
+      "حين يكون تبنّي الذكاء الاصطناعي هو القيد، تبدو الصورة هكذا.",
+    "serviceDetail.ai.pain.item1":
+      "الجميع يتحدّث عن الذكاء الاصطناعي. ولا أحد في الفريق يستخدمه في عمل حقيقي.",
+    "serviceDetail.ai.pain.item2": "تدفع مقابل تراخيص لا يفتحها أحد.",
+    "serviceDetail.ai.pain.item3":
+      "جرّبه الفريق مرة، فجاءته إجابة سيئة، فعاد إلى الطريقة القديمة.",
+    "serviceDetail.ai.pain.item4":
+      "لا تستطيع تحديد أي العمليات تستحق الأتمتة فعلاً.",
+    "serviceDetail.ai.build.heading": "كيف يُنفَّذ العمل",
+    "serviceDetail.ai.build.sub":
+      "تمكين الذكاء الاصطناعي طبقة داخل الحلول الأخرى، لا شراءً منفرداً. وهذه هي الصيغ التي تأخذها هذه الطبقة.",
+    "serviceDetail.ai.build.1.title": "جلسات استراتيجية للقيادات",
+    "serviceDetail.ai.build.1.pain":
+      "يُعرض على القيادة ذكاء اصطناعي دون معيار للحكم عليه.",
+    "serviceDetail.ai.build.1.body":
+      "أين يغيّر الذكاء الاصطناعي اقتصاديات أعمالك وأين لا يفعل، ليُتّخذ قرار الاستثمار على الأساس نفسه الذي تُتّخذ به بقية القرارات.",
+    "serviceDetail.ai.build.2.title": "برامج تبنٍّ على مستوى الأقسام",
+    "serviceDetail.ai.build.2.pain":
+      "التدريب العام يعلّم أدوات لا يحتاجها عمل أحد.",
+    "serviceDetail.ai.build.2.body":
+      "استخدامات مبنية على ما يفعله قسم بعينه كل أسبوع — المبيعات والمالية والعمليات وخدمة العملاء — بالأدوات المفتوحة أمامه أصلاً.",
+    "serviceDetail.ai.build.3.title": "ورش دمج عملية في سير العمل",
+    "serviceDetail.ai.build.3.pain":
+      "يخرج الناس من التدريب معجبين ولا يغيّرون شيئاً.",
+    "serviceDetail.ai.build.3.body":
+      "جلسات عمل على مهام حيّة، لينتهي الفريق والذكاء الاصطناعي داخل عملية يديرها فعلاً، لا بمجرّد ملاحظات.",
+    "serviceDetail.ai.build.4.title": "دعم التطبيق",
+    "serviceDetail.ai.build.4.pain":
+      "يخفت التبنّي في الشهر الذي يلي انتهاء التدريب.",
+    "serviceDetail.ai.build.4.body":
+      "مواكبة حتى تصبح الطريقة الجديدة في العمل هي الطريقة المعتادة — وهي الجزء الذي يقرّر بقاء ما سبق من عدمه.",
+    "serviceDetail.ai.lives.foundation":
+      "أي الأقسام تستفيد أولاً، وأي مسارات العمل ينبغي أتمتتها، وأين يصنع الذكاء الاصطناعي أثراً قابلاً للقياس. تحديد فقط.",
+    "serviceDetail.ai.lives.growth-engine":
+      "الفرق التجارية: استخدامات خاصة بكل قسم، وتدريب الموظفين، ومسارات عمل مدعومة بالذكاء الاصطناعي داخل العمليات القائمة.",
+    "serviceDetail.ai.lives.scale-infrastructure":
+      "تبنٍّ على مستوى الشركة، مع ذكاء اصطناعي مدمج في أنظمة الأعمال نفسها لا ملحق بها.",
     "serviceDetail.ai.faq.1.q": "هل هذا تدريب عام على الذكاء الاصطناعي؟",
     "serviceDetail.ai.faq.1.a":
       "لا. البرامج مبنية حول سير عملك وأدواتك الفعلية، لا منهجاً جاهزاً.",
